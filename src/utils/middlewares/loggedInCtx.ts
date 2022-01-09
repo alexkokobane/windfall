@@ -9,6 +9,7 @@ const loggedInCtx = async(req: Request, res: Response, next: NextFunction) => {
 		session ? res.redirect('/') : next()
 	} catch(err: any){
 		console.log(err)
+		console.log("THE ERROR IS ON loggedInCtx")
 	}
 }
 

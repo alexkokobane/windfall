@@ -1,4 +1,4 @@
-interface ShopTypes {
+declare interface ShopTypes {
 	shop: string,
 	pricePlan?: string,
 	scope?: [string],
@@ -8,14 +8,14 @@ interface ShopTypes {
 		name?: string,
 		receiptAddress?: string,
 		body?: string,
-		createdAt?: string
+		createdAt?: number
 	}],
 	winnerNotificationTemplate?: [{
 		id: number,
 		name?: string,
 		receiptAddress?: string,
 		body?: string,
-		createdAt?: string
+		createdAt?: number
 	}],
 	campaigns?: [{
 		id: number,
@@ -46,7 +46,7 @@ interface ShopTypes {
 			entrantName?: string,
 			entrantEmail?: string
 		}],
-		createdAt?: string
+		createdAt?: number
 	}],
 	superGiveaway?: [{
 		id: number,
@@ -68,7 +68,7 @@ interface ShopTypes {
 		toSuper?: boolean,
 		winners?: [object],
 		active?: boolean,
-		createdAt: string
+		createdAt: number
 	}],
 	customerList?: [{
 		customerId: number,
@@ -78,7 +78,9 @@ interface ShopTypes {
 		totalPoints?: number,
 		autoindex?: number,
 		lastIndex?: number,
-		createdAt?: string
+		createdAt?: number
 	}],
-	createdAt: string
+	createdAt?: number
 }
+
+export { ShopTypes }

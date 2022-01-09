@@ -23,6 +23,7 @@ export const storeCallback = async (session: SessionInterface): Promise<boolean>
 		return true
 	} catch(err: any) {
 		console.log(err)
+		console.log("THE ERROR IS ON THE storeCallback")
 	}
 }
 
@@ -37,6 +38,7 @@ export const loadCallback = async (id: string): Promise<SessionInterface | undef
 		}
 	} catch(err: any) {
 		console.log(err)
+		console.log("THE ERROR IS ON THE loadCallback")
 	}
 }
 
@@ -46,5 +48,6 @@ export const deleteCallback = async (id: string): Promise<boolean> => {
 		return true
 	} catch(err: any) {
 		console.log(err)
+		console.log("THE ERROR IS ON THE deleteCallback")
 	}
 }

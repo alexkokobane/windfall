@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { ShopTypes } from './__types'
 
 const ShopSchema = new mongoose.Schema({
 	shop: {
@@ -14,14 +15,20 @@ const ShopSchema = new mongoose.Schema({
 		name: String,
 		receiptAddress: String,
 		body: String,
-		createdAt: Date.now()
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
 	}],
 	winnerNotificationTemplates: [{
 		id: Number,
 		name: String,
 		receiptAddress: String,
 		body: String,
-		createdAt: Date.now()
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
 	}],
 	campaigns: [{
 		id: Number,
@@ -52,7 +59,10 @@ const ShopSchema = new mongoose.Schema({
 			entrantName: String,
 			entrantEmail: String
 		}],
-		createdAt: Date.now(),
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		},
 	}],
 	superGiveaway: [{
 		id: Number,
@@ -66,7 +76,10 @@ const ShopSchema = new mongoose.Schema({
 				entrantEmail: String
 			}]
 		}],
-		createdAt: Date.now()
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
 	}],
 	campaignTemplate: [{
 		id: Number,
@@ -74,7 +87,10 @@ const ShopSchema = new mongoose.Schema({
 		toSuper: Boolean,
 		winners: [Object],
 		active: Boolean,
-		createdAt: Date.now()
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
 	}],
 	customerList: [{
 		customerId: Number,
@@ -84,7 +100,10 @@ const ShopSchema = new mongoose.Schema({
 		totalPoints: Number,
 		autoindex: Number,
 		lastIndex: Number,
-		createdAt: Date.now()
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
 	}],
 	createdAt: {
 		type: Date,

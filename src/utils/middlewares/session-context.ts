@@ -18,6 +18,7 @@ const sessionContext = async (req: Request, res: Response, next: NextFunction) =
 		next()
 	} catch(err: any){
 		console.log(err)
+		console.log("THE ERROR IS ON sessionContext")
 	}
 }
 

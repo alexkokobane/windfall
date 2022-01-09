@@ -3,12 +3,11 @@ import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 
+const pricing = express.Router()
 
-const home = express.Router()
-
-home.get('/', checkAuth, async (req, res) => {
-	
-	res.send("Homepage")
+pricing.get('/plans', checkAuth, (req, res) => {
+	res.send('These are the Pricing plans')
 })
 
-export default home
+
+export default pricing
