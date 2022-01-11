@@ -4,12 +4,12 @@ import checkAuth from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 
 
-const home = express.Router()
+const campaign = express.Router()
 
-home.get('/', checkAuth, async (req, res) => {
+campaign.get('/new', checkAuth, async (req, res) => {
 	
-	res.render('pages/home')
+	res.render('pages/campaign-create')
 })
 
 
-export default home
+export default campaign
