@@ -46,14 +46,18 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
 
 auth.get('/callback', async (req: Request, res: Response) => {
   try {
-    const shop = getShop(req)
-
+    
     const session = await Shopify.Auth.validateAuthCallback(
       req,
       res,
       req.query as unknown as AuthQuery,
     );
+
+    if(!session){
+      return res.send("Authentication Failed").end()
+    }
     
+    const shop = getShop(req)
     const checkShop = await Shop.findOne({shop: session.shop})
 
     if(checkShop == null){
