@@ -64,6 +64,48 @@
                     </div>
                     <div class="Polaris-Card">
                         <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">Prize distribution</h2>
+                        </div>
+                        <div class="Polaris-Card__Section">
+                            <div class="Polaris-Stack Polaris-Stack--vertical">
+                                <div class="Polaris-Stack__Item">
+                                    <div><label class="Polaris-Choice" for="equitable"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="equitable" name="distribution" type="radio" class="Polaris-RadioButton__Input" aria-describedby="disabledHelpText" value="" checked=""><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Equitable</span></label>
+                                        <div class="Polaris-Choice__Descriptions">
+                                            <div class="Polaris-Choice__HelpText" id="disabledHelpText">All winners get the same prize, there is no hierarchy.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="Polaris-Stack__Item">
+                                    <div><label class="Polaris-Choice" for="Hierarchical"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="Hierarchical" name="distribution" type="radio" class="Polaris-RadioButton__Input" aria-describedby="optionalHelpText" value=""><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Hierarchical</span></label>
+                                        <div class="Polaris-Choice__Descriptions">
+                                            <div class="Polaris-Choice__HelpText" id="optionalHelpText">Each winner's prize will reflect on their rank as chosen by you.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Polaris-Card">
+                        <div class="Polaris-Card__Header">
+                            <h2 class="Polaris-Heading">All winner will get</h2>
+                        </div>
+                        <div class="Polaris-Card__Section">
+                            <div class="Polaris-Labelled--hidden">
+                                <div class="Polaris-Labelled__LabelWrapper">
+                                    <div class="Polaris-Label"><label id="PolarisTextField4Label" for="PolarisTextField4" class="Polaris-Label__Text">Giveaway name</label></div>
+                                </div>
+                                <div class="Polaris-Connected">
+                                    <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+                                        <div class="Polaris-TextField"><input id="PolarisTextField4" placeholder="" autocomplete="off" class="Polaris-TextField__Input" aria-labelledby="PolarisTextField4Label" aria-invalid="false" value="">
+                                            <div class="Polaris-TextField__Backdrop"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Polaris-Card">
+                        <div class="Polaris-Card__Header">
                             <h2 class="Polaris-Heading">Winners</h2>
                         </div>
                         <div class="Polaris-Card__Section">
@@ -82,17 +124,13 @@
                                     </div>
                                 </div>
                                 <div class="Polaris-Stack__Item">
-                                    <div class="Polaris-Connected">
-                                        <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
-                                            <fieldset class="Polaris-ChoiceList" id="PolarisChoiceList2" aria-invalid="false">
-                                                <legend class="Polaris-ChoiceList__Title">Type of prize</legend>
-                                                <ul class="Polaris-ChoiceList__Choices">
-                                                    <li><label class="Polaris-Choice" for="PolarisRadioButton4"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="PolarisRadioButton1" name="PolarisChoiceList2" type="radio" class="Polaris-RadioButton__Input" value="hidden" checked=""><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Voucher</span></label></li>
-                                                    <li><label class="Polaris-Choice" for="PolarisRadioButton5"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="PolarisRadioButton2" name="PolarisChoiceList2" type="radio" class="Polaris-RadioButton__Input" value="optional"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Product</span></label></li>
-                                                </ul>
-                                            </fieldset>
-                                        </div>
-                                    </div>
+                                    <fieldset class="Polaris-ChoiceList" id="PolarisChoiceList2" aria-invalid="false">
+                                        <legend class="Polaris-ChoiceList__Title">Type of prize</legend>
+                                        <ul class="Polaris-ChoiceList__Choices">
+                                            <li><label class="Polaris-Choice" for="voucher1"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="voucher1" name="number1" type="radio" class="Polaris-RadioButton__Input" value="hidden" checked><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Voucher</span></label></li>
+                                            <li><label class="Polaris-Choice" for="products1"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="products1" name="number1" type="radio" class="Polaris-RadioButton__Input" value="optional"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Product</span></label></li>
+                                        </ul>
+                                    </fieldset>
                                 </div>
                                 <div class="Polaris-Labelled">
                                     <div class="Polaris-Labelled__LabelWrapper">
@@ -145,17 +183,13 @@
                                     </div>
                                 </div>
                                 <div class="Polaris-Stack__Item">
-                                    <div class="Polaris-Connected">
-                                        <div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
-                                            <fieldset class="Polaris-ChoiceList" id="PolarisChoiceList2" aria-invalid="false">
-                                                <legend class="Polaris-ChoiceList__Title">Type of prize</legend>
-                                                <ul class="Polaris-ChoiceList__Choices">
-                                                    <li><label class="Polaris-Choice" for="PolarisRadioButton3"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="PolarisRadioButton3" name="PolarisChoiceList3" type="radio" class="Polaris-RadioButton__Input" value="hidden" checked=""><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Voucher</span></label></li>
-                                                    <li><label class="Polaris-Choice" for="PolarisRadioButton4"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="PolarisRadioButton4" name="PolarisChoiceList4" type="radio" class="Polaris-RadioButton__Input" value="optional"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Product</span></label></li>
-                                                </ul>
-                                            </fieldset>
-                                        </div>
-                                    </div>
+                                    <fieldset class="Polaris-ChoiceList" id="PolarisChoiceList2" aria-invalid="false">
+                                        <legend class="Polaris-ChoiceList__Title">Type of prize</legend>
+                                        <ul class="Polaris-ChoiceList__Choices">
+                                            <li><label class="Polaris-Choice" for="voucher2"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="voucher2" name="number2" type="radio" class="Polaris-RadioButton__Input" value="voucher" checked=""><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Voucher</span></label></li>
+                                            <li><label class="Polaris-Choice" for="products2"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="products2" name="number2" type="radio" class="Polaris-RadioButton__Input" value="product"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Product</span></label></li>
+                                        </ul>
+                                    </fieldset>
                                 </div>
                                 <div class="Polaris-Labelled">
                                     <div class="Polaris-Labelled__LabelWrapper">
