@@ -47,17 +47,13 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
 auth.get('/callback', async (req: Request, res: Response) => {
   try {
     
-    console.log("Here are the cookie: "+JSON.parse(req.cookies))
+    console.log("Here are the cookie")
     const session = await Shopify.Auth.validateAuthCallback(
       req,
       res,
       req.query as unknown as AuthQuery,
     );
-
-    if(!session){
-      return res.send("Authentication Failed").end()
-    }
-
+    
     const shop = getShop(req)
     const checkShop = await Shop.findOne({shop: session.shop})
 
@@ -74,6 +70,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     console.log("THE ERROR IS ON auth/callback")
+    res.send("Authentication Failed")
   }
 })
 
