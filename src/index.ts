@@ -14,7 +14,7 @@ import checkAuth from './utils/middlewares/check-auth'
 import auth from './routes/auth'
 import home from './routes/home'
 import settings from './routes/settings'
-import pricing from './routes/pricing'
+import billing from './routes/billing'
 import campaign from './routes/campaign'
 
 import login from './api/login'
@@ -46,7 +46,7 @@ db.on('error', console.error.bind(console, "MongoDB connection errors"))
 app.use('/auth', auth)
 app.use('/', home)
 app.use('/settings', settings)
-app.use('/pricing', pricing)
+app.use('/pricing', billing)
 app.use('/campaign', campaign)
 // App API routes
 app.use('/login', login)
