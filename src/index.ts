@@ -46,7 +46,7 @@ db.on('error', console.error.bind(console, "MongoDB connection errors"))
 app.use('/auth', auth)
 app.use('/', home)
 app.use('/settings', settings)
-app.use('/pricing', billing)
+app.use('/billing', billing)
 app.use('/campaign', campaign)
 // App API routes
 app.use('/login', login)

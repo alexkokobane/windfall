@@ -6,7 +6,7 @@ import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 const billing = express.Router()
 
 billing.get('/', checkAuth, async (req, res) => {
-	res.send("This is where the store's current plan will be displayed ")
+	res.render('pages/billing')
 })
 
 billing.get('/plans', checkAuth, async (req, res) => {
