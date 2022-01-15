@@ -8,7 +8,7 @@ const checkAuth = async (req: Request, res: Response, next:NextFunction) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = getShop(req)
 		if (!session && shop === 'undefined') {
-			return res.status(401).send("You're not logged in")
+			return res.status(401).render('pages/login', {layout: 'layouts/minimal'})
 		} else if(!session && shop !== 'undefined') {
 			const store = await Shop.findOne({shop: shop})
 			if(!store){

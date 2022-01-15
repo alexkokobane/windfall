@@ -54,7 +54,7 @@ app.use('/customers', customers)
 app.use('/shop', shopInfo)
 
 //Catch All
-app.use('*', async (req: Request, res: Response, next: NextFunction) => {
+app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) => {
   res.status(404).send("Not found my dear")
 })
 // Run the app
