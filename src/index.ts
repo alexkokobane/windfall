@@ -55,7 +55,7 @@ app.use('/shop', shopInfo)
 
 //Catch All
 app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) => {
-  res.status(404).send("Not found my dear")
+  res.status(404).render('pages/404')
 })
 // Run the app
 app.listen(4000, () => {

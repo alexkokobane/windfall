@@ -6,6 +6,7 @@ import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-ses
 import Shop from '../models/shop-model'
 import sessionContext from '../utils/middlewares/session-context'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
+import checkAuth from '../utils/middlewares/check-auth'
 import { corsMiddleware } from '../utils/middlewares/experimental'
 const auth = express.Router()
 
@@ -44,7 +45,7 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
   }
 });
 
-auth.get('/callback', async (req: Request, res: Response) => {
+auth.get('/callback', checkAuth, async (req: Request, res: Response) => {
   try {
     
     console.log("Here are the cookie")
@@ -70,8 +71,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     console.log("THE ERROR IS ON auth/callback")
-    res.send("Authentication Failed")
-  }
+    res.status(501).render('pages/501')  }
 })
 
 export default auth
