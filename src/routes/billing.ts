@@ -10,7 +10,7 @@ billing.get('/', checkAuth, async (req, res) => {
 })
 
 billing.get('/plans', checkAuth, async (req, res) => {
-	res.send('These are the Pricing plans')
+	res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
 })
 
 billing.post('/plans', checkAuth, async (req, res) => {
@@ -18,7 +18,7 @@ billing.post('/plans', checkAuth, async (req, res) => {
 })
 
 billing.post('/change', checkAuth, async (req, res) => {
-	res.send("Billing plan has been updted")
+	res.render('pages/plans-starter', {layout: 'layouts/minimal'})
 })
 
 export default billing
