@@ -1,14 +1,22 @@
 $(document).ready(function(){
-
-	$("#TopBar-Nav-Menu").click(function(){
+	//theme
+	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
+		$("#AppFrameNavBackdrop").toggle()
+		$("#AppFrameNavDismissButton").toggle()
 	})
-
-	$("#TopBar-Nav-Menu-Two").click(function(){
-		$("[data-portal-id='popover-Polarisportal5']").toggle()
+	$("#AppFrameNavBackdrop").click(function(){
+		$("#AppFrameNav").toggle()
+		$("#AppFrameNavDismissButton").toggle()
+		$("#AppFrameNavBackdrop").toggle()
+	})
+	$("#AppFrameNavDismissButton").click(function(){
+		$("#AppFrameNav").toggle()
+		$("#AppFrameNavBackdrop").toggle()
+		$("#AppFrameNavDismissButton").toggle()
 	})
 	
-	$("#logout-link").click(function(e){
+	$("#LogoutButton").click(function(e){
 		e.preventDefault()
 		$.ajax({
 			url: "/login/logout",
@@ -18,13 +26,23 @@ $(document).ready(function(){
 			}
 		})
 	})
-
+	$("#HomeBtn").click(function(){
+		location.href="/"
+	})
+	$("#BillingBtn").click(function(){
+		location.href="/billing"
+	})
+	$("#SettingsBtn").click(function(){
+		location.href="/settings"
+	})
 	$.ajax({
 		url: '/shop',
 		success: function(data){
-			$("#to-admin").click(function(){
+			$("#ToShopifyBtn").click(function(){
 				location.href="https://"+data.shop+"/admin"
 			})
 		}
 	})
+
+
 })

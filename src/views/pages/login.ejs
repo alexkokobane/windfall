@@ -12,11 +12,11 @@
 										<div class="Polaris-FormLayout__Item">
 												<div class="">
 														<div class="Polaris-Labelled__LabelWrapper">
-																<div class="Polaris-Label"><label id="PolarisTextField2Label" for="PolarisTextField2" class="Polaris-Label__Text">Domain</label></div>
+																<div class="Polaris-Label"><label id="DomainFieldLabel" for="DomainField" class="Polaris-Label__Text">Domain</label></div>
 														</div>
 														<div class="Polaris-Connected">
 																<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
-																		<div class="Polaris-TextField"><input id="PolarisTextField2" autocomplete="off" class="Polaris-TextField__Input" type="text"  placeholder="yourstore.myshopify.com" aria-describedby="PolarisTextField2HelpText" aria-labelledby="PolarisTextField2Label" aria-invalid="false" value="">
+																		<div class="Polaris-TextField"><input id="DomainField" autocomplete="off" class="Polaris-TextField__Input" type="text"  placeholder="yourstore.myshopify.com" aria-invalid="false" value="">
 																				<div class="Polaris-TextField__Backdrop"></div>
 																		</div>
 																</div>
@@ -24,7 +24,7 @@
 														<div class="Polaris-Labelled__HelpText" id="PolarisTextField2HelpText"><span>Enter your myshopify domain to login.</span></div>
 												</div>
 										</div>
-										<div class="Polaris-FormLayout__Item"><button class="Polaris-Button Polaris-Button--primary"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Login</span></span></button></div>
+										<div class="Polaris-FormLayout__Item"><button id="LoginButtonOne" class="Polaris-Button Polaris-Button--primary"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Login</span></span></button></div>
 								</div><span class="Polaris-VisuallyHidden"><button type="submit" aria-hidden="true" tabindex="-1">Submit</button></span>
 						</form>
 					</div>
@@ -33,3 +33,21 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+			$("#LoginButtonOne").click(function(e){
+				e.preventDefault()
+				const name = $("#DomainField").val()
+				console.log(name)
+				$.ajax({
+					url: "/login",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({"shop": name}),
+					success: function(data){
+						location.href = data
+					}
+				})
+			})
+	});
+</script>

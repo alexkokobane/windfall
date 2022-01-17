@@ -20,6 +20,7 @@ import campaign from './routes/campaign'
 import login from './api/login'
 import customers from './api/customers'
 import shopInfo from './api/shop-info'
+import data from './api/data'
 
 const app = express()
 
@@ -52,6 +53,7 @@ app.use('/campaign', campaign)
 app.use('/login', login)
 app.use('/customers', customers)
 app.use('/shop', shopInfo)
+app.use('/data', data)
 
 //Catch All
 app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) => {
