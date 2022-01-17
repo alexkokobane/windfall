@@ -16,6 +16,7 @@ import home from './routes/home'
 import settings from './routes/settings'
 import billing from './routes/billing'
 import campaign from './routes/campaign'
+import participants from './routes/participants'
 
 import login from './api/login'
 import customers from './api/customers'
@@ -49,6 +50,7 @@ app.use('/', home)
 app.use('/settings', settings)
 app.use('/billing', billing)
 app.use('/campaign', campaign)
+app.use('/participants', participants)
 // App API routes
 app.use('/login', login)
 app.use('/customers', customers)

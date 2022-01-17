@@ -35,6 +35,9 @@ $(document).ready(function(){
 	$("#SettingsBtn").click(function(){
 		location.href="/settings"
 	})
+	$("#ParticipantsBtn").click(function(){
+		location.href="/participants"
+	})
 	$.ajax({
 		url: '/shop',
 		success: function(data){

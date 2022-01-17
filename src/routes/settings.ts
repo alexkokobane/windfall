@@ -3,9 +3,9 @@ import checkAuth from '../utils/middlewares/check-auth'
 
 const settings = express.Router()
 
-settings.get('/', checkAuth,(req, res) => {
+settings.get('/', checkAuth, async (req, res) => {
 
-  res.send('example /settings route')
+  res.render('pages/settings')
 })
 
 export default settings
