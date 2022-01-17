@@ -44,5 +44,8 @@ $(document).ready(function(){
 		}
 	})
 
-
+	//url == /
+	$(".CreateGiveaway").click(function(){
+		location.href="/campaign/new"
+	})
 })
