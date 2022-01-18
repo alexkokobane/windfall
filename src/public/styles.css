@@ -1,3 +1,6 @@
+.disappear {
+    display: none;
+}
 #CampaignCreateOne {
     display: none;
 }
