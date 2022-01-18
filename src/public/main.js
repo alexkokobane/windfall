@@ -63,10 +63,8 @@ $(document).ready(function(e){
 		})
 		$("#Equitable").click(function(){
 			$("#AllWinnersCard").toggle()
-			$("#EachWinnerCard").toggle()
 		})
 		$("#Hierarchical").click(function(){
-			$("#AllWinnersCard").toggle()
 			$("#EachWinnerCard").toggle()
 		})
 	}
