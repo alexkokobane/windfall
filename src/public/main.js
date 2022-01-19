@@ -53,19 +53,38 @@ $(document).ready(function(e){
 	})
 	//url == /campaign/new
 	function formMagic(){
+		let ofWinners
+		let manyWinners
 		$("#GiveawayNameInput").on("input", function(){
 			console.log($(this).val())
 			$("#GiveawayName").text($(this).val())
 		})
-		$("#SelectInput > option").click(function(){
-			console.log($(this).val())
-			$("#SelectInputChosen").text($(this).val())
+		$("#OfWinners").on("input", function(){
+			ofWinners = $(this).val()
+			console.log(ofWinners)
+			manyWinners = Array.from(Array(ofWinners > 1 ? ofWinners : 1).keys())
+			console.log(manyWinners)
 		})
+		
 		$("#Equitable").click(function(){
-			$("#AllWinnersCard").toggle()
+			const one = $("#AllWinnersCard").hasClass("disappear")
+			const many = $("#EachWinnerCard").hasClass("disappear")
+			if(one === false){
+				many === false ? $("#EachWinnerCard").addClass("disappear") : null
+			} else if (one === true) {
+				$("#AllWinnersCard").removeClass("disappear")
+				many === true ? null : $("#EachWinnerCard").addClass("disappear")
+			}
 		})
 		$("#Hierarchical").click(function(){
-			$("#EachWinnerCard").toggle()
+			const one = $("#AllWinnersCard").hasClass("disappear")
+			const many = $("#EachWinnerCard").hasClass("disappear")
+			if(many === false){
+				one === false ? $("#AllWinnersCard").addClass("disappear") : null
+			} else if (many === true) {
+				$("#EachWinnerCard").removeClass("disappear")
+				one === true ? null : $("#AllWinnersCard").addClass("disappear")
+			}
 		})
 	}
 	formMagic()
