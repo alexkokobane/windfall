@@ -57,7 +57,35 @@ $(document).ready(function(e){
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#StartTime").attr("min", new Date().toISOString().split('T')[1].substring(0,5))
 	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
-	$("#EndTime").attr("min", new Date().toISOString().split('T')[1].substring(0,5))
+	$("#ContinueButton").click(function(e){
+		e.preventDefault()
+		console.log($("input[type='radio'][name='distribution']:checked").val())
+		let name = $("#GiveawayNameInput").val()
+		let startDate = $("#StartDate").val()
+		let startTime = $("#StartTime").val()
+		let endDate = $("#EndDate").val()
+		let endTime = $("#EndTime").val()
+		let ofWinners = $("#OfWinners").val()
+		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+		let form = {
+			"name": name,
+			"startDate": startDate,
+			"startTime": startTime,
+			"endDate": endDate,
+			"endTime": endTime,
+			"ofWinners": ofWinners,
+			"distribution": distrubution
+		}
+		console.log(form)
+		$.ajax({
+			url: "/campaign/new",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({form}),
+			success: function(data){ location.href=data},
+			error: function(data){alert(data)}
+		})
+	})
 	function formMagic(){
 		let ofWinners
 		let manyWinners = []
@@ -65,6 +93,7 @@ $(document).ready(function(e){
 			console.log($(this).val())
 			//$("#GiveawayName").text($(this).val())
 		})
+		/*
 		$("#OfWinners").on("input", function(){
 			// not if statement
 			ofWinners = $(this).val()
@@ -258,7 +287,7 @@ $(document).ready(function(e){
 				$("#ProductSearchFieldContainer").removeClass("disappear")
 				voucher === true ? null : $("#VoucherInputFieldContainer").addClass("disappear")
 			}
-		})
+		})*/
 	}
 	formMagic()
 })

@@ -1,5 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
+import Shop from '../models/shop-model'
 import checkAuth from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 
@@ -16,16 +17,84 @@ campaign.get('/new', checkAuth, async (req, res) => {
 })
 
 campaign.post('/new', checkAuth, async (req, res) => {
-	res.send("Ressource created")
+	try {
+		const data = req.body.form
+		console.log(req.body.form)
+		const giveawayId = Math.floor(Math.random() * 1000000000)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const store = await Shop.findOne({shop: session.shop})
+
+		if(store === null){
+			return res.status(404).send("Error, shop was not found")
+		} else {
+			await Shop.findOneAndUpdate({shop: session.shop},{
+				campaigns: {
+					id: giveawayId,
+					name: data.name,
+					startDate: new Date(`${data.startDate}T${data.startTime}:00`),
+					endDtate: new Date(`${data.endDate}T${data.endTime}:00`),
+					distributionType: data.distribution,
+					winnersTotal: parseInt(data.ofWinners)
+				}
+			}, {new: true}, (err: any) => res.status(404).send("Error, a database error"))
+		}
+
+		if(data.distribution === "Equitable"){
+			res.send(`/campaign/new/equitable?id=${giveawayId}`)
+		} else if (data.distribution === "Hierarchical"){
+			res.send(`/campaign/new/hierarchical?id=${giveawayId}`)
+		} else {
+			res.status(401).send("Error, choose a distribution type")
+		}
+	} catch(err: any){
+		console.log(err)
+		res.send("Error, could not submit the form")
+	}
 })
 
 campaign.get('/new/equitable', checkAuth, async (req, res) => {
-	
-	res.render('pages/campaign-create')
+	try {
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+		  	decoyId = req.query.id
+		} else {
+		  	return null
+		}
+		const giveawayId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveawayData = await Shop.findOne({shop: session.shop, campaigns: {id: giveawayId}}, (err: any) => {
+			console.log(err)
+			res.status(404).render('pages/404')
+		}) 
+		if(giveawayData === null){
+			return res.status(404).render('pages/404')
+		}
+		res.render('pages/equitable')
+	} catch(err: any) {
+		console.log(err)
+	}
 })
 campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
-	
-	res.render('pages/campaign-create')
+	try {
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+		  	decoyId = req.query.id
+		} else {
+		  	return null
+		}
+		const giveawayId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveawayData = await Shop.findOne({shop: session.shop, campaigns: {id: giveawayId}}, (err: any) => {
+			console.log(err)
+			res.status(404).render('pages/404')
+		}) 
+		if(giveawayData === null){
+			return res.status(404).render('pages/404')
+		}
+		res.render('pages/hierarchical', {winners: giveawayData.campaigns.winnersTotal})
+	} catch(err: any) {
+		console.log(err)
+	}
 })
 
 campaign.get('/:id', checkAuth, async (req, res) => {

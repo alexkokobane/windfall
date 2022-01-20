@@ -25,7 +25,7 @@ login.post('/', loggedInCtx, async (req, res) => {
 login.post('/logout', checkAuth, async (req, res) => {
 	try {
 		await Shopify.Utils.deleteCurrentSession(req, res, true)
-		res.send("Logged out, successfully")
+		res.redirect("/")
 	} catch(err: any) {
 		console.log(err)
 	}

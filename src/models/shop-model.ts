@@ -36,6 +36,7 @@ const ShopSchema = new mongoose.Schema({
 		startDate: Date,
 		endDate: Date,
 		toSuper: Boolean,
+		distributionType: String,
 		entries: [{
 			id: Number,
 			reference: Number,
@@ -43,8 +44,10 @@ const ShopSchema = new mongoose.Schema({
 			email: String,
 			points: Number
 		}],
+		winnersTotal: Number,
 		winners: [{
 			prizeId: Number,
+			prizeType: String,
 			productPrize: [{
 				productId: String,
 				productName: String,
