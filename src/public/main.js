@@ -52,6 +52,12 @@ $(document).ready(function(e){
 		location.href="/campaign/new"
 	})
 	//url == /campaign/new
+	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+	console.log(new Date().toISOString().split('T')[1].substring(0,5))
+	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
+	$("#StartTime").attr("min", new Date().toISOString().split('T')[1].substring(0,5))
+	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
+	$("#EndTime").attr("min", new Date().toISOString().split('T')[1].substring(0,5))
 	function formMagic(){
 		let ofWinners
 		let manyWinners = []
@@ -62,6 +68,8 @@ $(document).ready(function(e){
 		$("#OfWinners").on("input", function(){
 			// not if statement
 			ofWinners = $(this).val()
+			$("#AllWinnersCard").addClass("disappear")
+			$("#EachWinnerCard").addClass("disappear")
 			$("#DistributionCard") ? $("#DistributionCard").remove() : null
 			$("#OfWinnersCard").after(`
 				<div id="DistributionCard" class="Polaris-Card">
@@ -88,6 +96,26 @@ $(document).ready(function(e){
 						</div>
 				</div>
 				`)
+			$("#Equitable").click(function(){
+				const one = $("#AllWinnersCard").hasClass("disappear")
+				const many = $("#EachWinnerCard").hasClass("disappear")
+				if(one === false){
+					many === false ? $("#EachWinnerCard").addClass("disappear") : null
+				} else if (one === true) {
+					$("#AllWinnersCard").removeClass("disappear")
+					many === true ? null : $("#EachWinnerCard").addClass("disappear")
+				}
+			})
+			$("#Hierarchical").click(function(){
+				const one = $("#AllWinnersCard").hasClass("disappear")
+				const many = $("#EachWinnerCard").hasClass("disappear")
+				if(many === false){
+					one === false ? $("#AllWinnersCard").addClass("disappear") : null
+				} else if (many === true) {
+					$("#EachWinnerCard").removeClass("disappear")
+					one === true ? null : $("#AllWinnersCard").addClass("disappear")
+				}
+			})
 			$("#EachWinnerCard").empty()
 			$("#EachWinnerCard").html(`<div id="EachWinnerHeader"  class="Polaris-Card__Header">
 					<h2 class="Polaris-Heading">Each winner's prize</h2>
@@ -191,6 +219,7 @@ $(document).ready(function(e){
 						if(voucher === false){
 							products === false ? $(`#ProductsFieldContainer${val}`).addClass("disappear") : null
 						} else if (voucher === true){
+							$(`#VoucherFIeldContainer${val}`).removeClass("disappear")
 							products === true ? null : $(`#ProductsFieldContainer${val}`).addClass("disappear")
 						}
 					})
@@ -209,26 +238,7 @@ $(document).ready(function(e){
 				return null
 			}
 		})
-		$("#Equitable").click(function(){
-			const one = $("#AllWinnersCard").hasClass("disappear")
-			const many = $("#EachWinnerCard").hasClass("disappear")
-			if(one === false){
-				many === false ? $("#EachWinnerCard").addClass("disappear") : null
-			} else if (one === true) {
-				$("#AllWinnersCard").removeClass("disappear")
-				many === true ? null : $("#EachWinnerCard").addClass("disappear")
-			}
-		})
-		$("#Hierarchical").click(function(){
-			const one = $("#AllWinnersCard").hasClass("disappear")
-			const many = $("#EachWinnerCard").hasClass("disappear")
-			if(many === false){
-				one === false ? $("#AllWinnersCard").addClass("disappear") : null
-			} else if (many === true) {
-				$("#EachWinnerCard").removeClass("disappear")
-				one === true ? null : $("#AllWinnersCard").addClass("disappear")
-			}
-		})
+		
 		$("#VoucherChoice").click(function(){
 			const voucher = $("#VoucherInputFieldContainer").hasClass("disappear")
 			const products = $("#ProductSearchFieldContainer").hasClass("disappear")

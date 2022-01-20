@@ -19,6 +19,15 @@ campaign.post('/new', checkAuth, async (req, res) => {
 	res.send("Ressource created")
 })
 
+campaign.get('/new/equitable', checkAuth, async (req, res) => {
+	
+	res.render('pages/campaign-create')
+})
+campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
+	
+	res.render('pages/campaign-create')
+})
+
 campaign.get('/:id', checkAuth, async (req, res) => {
 	res.send("This is where a giveaway will display")
 })
