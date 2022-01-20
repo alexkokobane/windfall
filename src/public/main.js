@@ -291,3 +291,32 @@ $(document).ready(function(e){
 	}
 	formMagic()
 })
+
+/*
+{ 
+	"_id": ObjectId("61db194a79a8454557a604b9"), 
+	"shop": "toally.myshopify.com", 
+	"scope": ["write_customers"], 
+	"email": "alexkokobane@gmail.com", 
+	"createdAt": ISODate("2022-01-09T17:18:01.110Z"), 
+	"entryNotificationTemplates": [], 
+	"winnerNotificationTemplates": [], 
+	"campaigns": [
+		{ 
+			"id": 246322424, 
+			"name": "Hushpuppi Giveaway", 
+			"startDate": ISODate("2022-01-20T17:34:00Z"), 
+			"distributionType": "Equitable", 
+			"winnersTotal": 5, 
+			"createdAt": ISODate("2022-01-20T17:23:42.796Z"), 
+			"_id": ObjectId("61e99d54d7f15cee264794a9"), 
+			"entries": [], 
+			"winners": [] 
+		}
+	], 
+	"superGiveaway": [], 
+	"campaignTemplate": [], 
+	"customerList": [], 
+	"__v": 0 
+}
+*/

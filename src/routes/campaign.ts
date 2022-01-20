@@ -23,18 +23,21 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		const giveawayId = Math.floor(Math.random() * 1000000000)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const store = await Shop.findOne({shop: session.shop})
-
+		console.log(new Date(`${data.startDate}T${data.startTime}:00`))
+		console.log(new Date(`${data.endDate}T${data.endTime}:00`))
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
 		} else {
 			await Shop.findOneAndUpdate({shop: session.shop},{
-				campaigns: {
-					id: giveawayId,
-					name: data.name,
-					startDate: new Date(`${data.startDate}T${data.startTime}:00`),
-					endDtate: new Date(`${data.endDate}T${data.endTime}:00`),
-					distributionType: data.distribution,
-					winnersTotal: parseInt(data.ofWinners)
+				$push: {
+					campaigns: {
+						id: giveawayId,
+						name: data.name,
+						startDate: new Date(`${data.startDate}T${data.startTime}:00`),
+						endDtate: new Date(`${data.endDate}T${data.endTime}:00`),
+						distributionType: data.distribution,
+						winnersTotal: parseInt(data.ofWinners)
+					}
 				}
 			}, {new: true}, (err: any) => res.status(404).send("Error, a database error"))
 		}
@@ -48,7 +51,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		}
 	} catch(err: any){
 		console.log(err)
-		res.send("Error, could not submit the form")
+		//res.status(401).send("Error, could not submit the form")
 	}
 })
 
