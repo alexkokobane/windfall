@@ -28,18 +28,22 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
 		} else {
-			await Shop.findOneAndUpdate({shop: session.shop},{
-				$push: {
-					campaigns: {
-						id: giveawayId,
-						name: data.name,
-						startDate: new Date(`${data.startDate}T${data.startTime}:00`),
-						endDtate: new Date(`${data.endDate}T${data.endTime}:00`),
-						distributionType: data.distribution,
-						winnersTotal: parseInt(data.ofWinners)
+			await Shop.findOneAndUpdate(
+				{shop: session.shop},
+				{
+					$push: {
+						campaigns: {
+							id: giveawayId,
+							name: data.name,
+							startDate: new Date(`${data.startDate}T${data.startTime}:00`),
+							endDate: new Date(`${data.endDate}T${data.endTime}:00`),
+							distributionType: data.distribution,
+							winnersTotal: parseInt(data.ofWinners)
+						}
 					}
-				}
-			}, {new: true}, (err: any) => res.status(404).send("Error, a database error"))
+				},
+				{new: true}
+			)
 		}
 
 		if(data.distribution === "Equitable"){
@@ -65,10 +69,11 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveawayData = await Shop.findOne({shop: session.shop, campaigns: {id: giveawayId}}, (err: any) => {
-			console.log(err)
-			res.status(404).render('pages/404')
+		const giveawayData = await Shop.findOne({
+			shop: session.shop, campaigns: {id: giveawayId}
 		}) 
+		console.log(giveawayId)
+		console.log(giveawayData)
 		if(giveawayData === null){
 			return res.status(404).render('pages/404')
 		}
@@ -114,3 +119,4 @@ campaign.delete('/:id', checkAuth, async (req, res) => {
 
 
 export default campaign
+

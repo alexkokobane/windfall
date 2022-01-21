@@ -82,8 +82,14 @@ $(document).ready(function(e){
 			type: "POST",
 			contentType: "application/json",
 			data: JSON.stringify({form}),
-			success: function(data){ location.href=data},
-			error: function(data){alert(data)}
+			success: function(data){
+				console.log(data) 
+				return location.href=data
+			},
+			error: function(data){
+				console.log(data.responseText)
+				return alert(data.responseText)
+			}
 		})
 	})
 	function formMagic(){
