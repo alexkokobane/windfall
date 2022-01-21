@@ -49,7 +49,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		if(data.distribution === "Equitable"){
 			res.send(`/campaign/new/equitable?id=${giveawayId}`)
 		} else if (data.distribution === "Hierarchical"){
-			res.send(`/campaign/new/hierarchical?id=${giveawayId}`)
+			res.send(`/campaign/new/hierarchical?id=${giveawayId}&winners=${data.ofWinners}`)
 		} else {
 			res.status(401).send("Error, choose a distribution type")
 		}
@@ -70,10 +70,9 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const giveawayData = await Shop.findOne({
-			shop: session.shop, campaigns: {id: giveawayId}
+			'shop': session.shop, 'campaigns.id': giveawayId
 		}) 
-		console.log(giveawayId)
-		console.log(giveawayData)
+		
 		if(giveawayData === null){
 			return res.status(404).render('pages/404')
 		}
@@ -82,24 +81,34 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		console.log(err)
 	}
 })
+
 campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 	try {
 		let decoyId: string
+		let decoyWinners: string
 		if (req.query.id && typeof req.query.id === 'string') {
 		  	decoyId = req.query.id
 		} else {
 		  	return null
 		}
+		if(req.query.winners && typeof req.query.winners === 'string') {
+			decoyWinners = req.query.winners
+		} else {
+			return null
+		}
 		const giveawayId: number = parseInt(decoyId)
+		const giveawayWinners: number = parseInt(decoyWinners)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveawayData = await Shop.findOne({shop: session.shop, campaigns: {id: giveawayId}}, (err: any) => {
-			console.log(err)
-			res.status(404).render('pages/404')
-		}) 
-		if(giveawayData === null){
+		const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}) 
+		if(shop === null){
 			return res.status(404).render('pages/404')
 		}
-		res.render('pages/hierarchical', {winners: giveawayData.campaigns.winnersTotal})
+		const giveawayData = shop.campaigns.find((item: any) => item.id === giveawayId )
+
+		if(giveawayData.winnersTotal !== giveawayWinners){
+			res.status(404).render('pages/404')
+		}
+		res.render('pages/hierarchical', { data: giveawayData})
 	} catch(err: any) {
 		console.log(err)
 	}
