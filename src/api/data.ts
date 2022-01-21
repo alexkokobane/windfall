@@ -15,4 +15,32 @@ data.get('/total-revenue', checkAuth, async (req, res) => {
 	res.send("Revenue counter")
 })
 
+data.get('/products', checkAuth, async (req, res) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const storeProducts = await client.query({
+			data: `
+				{
+					products(first:100 ){
+						edges{
+							node{
+								id,
+								title,
+								featuredImage{
+									altText
+								}
+							}
+						}
+					}
+				}
+			`
+		})
+		console.log(storeProducts)
+		res.json(storeProducts)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
 export default data
