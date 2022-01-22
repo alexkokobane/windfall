@@ -193,6 +193,65 @@ $(document).ready(function(e){
 					voucher === true ? null : $(`#VoucherFIeldContainer${val}`).addClass("disappear")
 				}
 			})
+			$(`#ProductsFieldBtn${val}`).click(function(){
+				$("#ProductsModal").removeClass("disappear")
+				$.ajax({
+					url: "/data/products",
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						const products = data.data.products.edges
+						console.log(products)
+						if(data) {
+							let superContent = ""
+							products.forEach((prod) => {
+								$("#ProductAppender").after(`
+									<li class="Polaris-ResourceItem__ListItem">
+										<div class="Polaris-ResourceItem__ItemWrapper">
+											<div class="Polaris-ResourceItem Polaris-ResourceItem--selectable">
+												<div class="Polaris-ResourceItem__Container" id="111">
+													<div class="Polaris-ResourceItem__Owned">
+														<div class="Polaris-ResourceItem__Handle">
+															<div class="Polaris-ResourceItem__CheckboxWrapper">
+																<div>
+																	<label class="Polaris-Choice Polaris-Choice--labelHidden" for="P${val}${prod.node.id}">
+																		<span class="Polaris-Choice__Control">
+																			<span class="Polaris-Checkbox">
+																				<input id="P${val}${prod.node.id}" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" value="${prod.node.title}+${prod.node.id}">
+																				<span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon">
+																					<span class="Polaris-Icon">
+																						<span class="Polaris-VisuallyHidden"></span>
+																						<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																							<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+																						</svg>
+																					</span>
+																				</span>
+																			</span>
+																		</span>
+																		<span class="Polaris-Choice__Label">View details for Mae Jemison</span>
+																	</label>
+																</div>
+															</div>
+														</div>
+														<div class="Polaris-ResourceItem__Media">
+															<span class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+																<img src=${prod.node.featuredImage.originalSrc} alt="${prod.node.featuredImage.altText}">
+															</span>
+														</div>
+													</div>
+													<div class="Polaris-ResourceItem__Content">
+														<h3><span class="Polaris-TextStyle--variationStrong">${prod.node.title}</span></h3>
+													</div>
+												</div>
+											</div>
+										</div>
+									</li>
+								`)
+							})
+						}
+					}
+				})
+			})
 		})
 	}
 
