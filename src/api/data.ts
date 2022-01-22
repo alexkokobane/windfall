@@ -28,7 +28,8 @@ data.get('/products', checkAuth, async (req, res) => {
 								id,
 								title,
 								featuredImage{
-									altText
+									altText,
+									originalSrc
 								}
 							}
 						}
@@ -36,8 +37,8 @@ data.get('/products', checkAuth, async (req, res) => {
 				}
 			`
 		})
-		console.log(storeProducts)
-		res.json(storeProducts)
+		console.log(storeProducts.body)
+		res.json(storeProducts.body)
 	} catch(err: any) {
 		console.log(err)
 	}
