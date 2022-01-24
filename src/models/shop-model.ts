@@ -47,10 +47,7 @@ const ShopSchema = new mongoose.Schema({
 		winnersTotal: Number,
 		winners: [{
 			prizeId: Number,
-			voucherPrize: {
-				voucherId: Number,
-				amount: Number
-			},
+			voucherPrize: Number,
 			entryReference: Number,
 			entrantId: Number,
 			entrantName: String,

@@ -120,7 +120,21 @@ campaign.post('/create', checkAuth, async (req, res) => {
 		const giveawayId = req.body.id
 		console.log(amounts)
 		console.log(giveawayId)
-		//const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		if(shop === null){
+			return res.status(404).send('Invalid giveaway')
+		}
+		let winnerInfo: [object] = [{}]
+		Object.keys(amounts).forEach((key) => {
+			winnerInfo.push({
+				prizeId: parseInt(key),
+				voucherPrize: parseInt(amounts[key])
+			})
+		})
+		console.log(winnerInfo)
+		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
+
 		res.send('giveaway created')
 	} catch(err: any) {
 		console.log(err)
