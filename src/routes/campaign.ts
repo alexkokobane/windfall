@@ -114,6 +114,19 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/create', checkAuth, async (req, res) => {
+	try {
+		const amounts = req.body.amounts
+		const giveawayId = req.body.id
+		console.log(amounts)
+		console.log(giveawayId)
+		//const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		res.send('giveaway created')
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
 campaign.get('/:id', checkAuth, async (req, res) => {
 	res.send("This is where a giveaway will display")
 })

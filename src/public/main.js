@@ -103,8 +103,9 @@ $(document).ready(function(e){
 	for(let i = 0; i < hData; i++){
 		render.unshift(i)
 	}
-		console.log(render)
+	console.log(render)
 	if(hData !== null){
+		let vouchers = {}
 		render.forEach((val) => {
 			val++
 			console.log(val)
@@ -118,8 +119,8 @@ $(document).ready(function(e){
 											</svg></span></span>
 								</div>
 								<div class="Polaris-Stack__Item">
-									<div class="Polaris-TextContainer">
-										<h2 id="WinnerNumber${val}" class="Polaris-Heading">Number ${val}</h2>
+									<div class="Polaris-Card__SectionHeader">
+										<h2 id="WinnerNumber${val}" class="Polaris-Subheading">Number ${val}</h2>
 									</div>
 								</div>
 							</div>
@@ -132,7 +133,7 @@ $(document).ready(function(e){
 								<div class="Polaris-Connected">
 									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
 										<div class="Polaris-TextField Polaris-TextField--hasValue">
-											<div class="Polaris-TextField__Prefix" id="VoucherInputFieldPrefix${val}">$</div><input id="VoucherInputField${val}" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputField${val} VoucherInputFieldPrefix${val}" aria-invalid="false" value="100.00">
+											<div class="Polaris-TextField__Prefix" id="VoucherInputFieldPrefix${val}">$</div><input id="VoucherInputField${val}" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputField${val} VoucherInputFieldPrefix${val}" aria-invalid="false" value="">
 											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
 									</div>
@@ -142,6 +143,31 @@ $(document).ready(function(e){
 					</div>
 				</div>`
 			)
+
+			$(`#VoucherInputField${val}`).on("input", function(){
+				vouchers[val] = $(this).val()
+				console.log(vouchers)
+			})
+		})
+		$("#HCreate").click(function(e){
+			e.preventDefault()
+			if($.isEmptyObject(vouchers)){
+			  return alert("Enter voucher amounts for all winners")
+			}
+			console.log({id: params.id, amounts: vouchers})
+			$.ajax({
+				url: "/campaign/create",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({id: parseInt(params.id), amounts: vouchers}),
+				success: function(data){
+					console.log(data)
+					//location.href=data
+				},
+				error: function(data){
+					alert(data.responseText)
+				}
+			})
 		})
 	}
 })
