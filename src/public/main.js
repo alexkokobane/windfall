@@ -156,13 +156,12 @@ $(document).ready(function(e){
 			}
 			console.log({id: params.id, amounts: vouchers})
 			$.ajax({
-				url: "/campaign/create",
+				url: "/campaign/new/hierarchical/create",
 				type: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({id: parseInt(params.id), amounts: vouchers}),
 				success: function(data){
-					console.log(data)
-					//location.href=data
+					location.href=data
 				},
 				error: function(data){
 					alert(data.responseText)
@@ -170,4 +169,25 @@ $(document).ready(function(e){
 			})
 		})
 	}
+
+	//url === /campaign/new/equitable
+	$("#ECreate").click(function(e){
+		e.preventDefault()
+		const voucher = $("#VoucherInputField").val()
+		if(voucher === "" && parseInt(voucher) == null){
+			return alert("Enter voucher amount and make sure they are number")
+		}
+		$.ajax({
+			url: "/campaign/new/equitable/create",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({id: parseInt(params.id), amounts: parseInt(voucher)}),
+			success: function(data){
+				location.href=data
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+	})
 })

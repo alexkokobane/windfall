@@ -114,7 +114,7 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/create', checkAuth, async (req, res) => {
+campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
 		const giveawayId = req.body.id
@@ -138,15 +138,77 @@ campaign.post('/create', checkAuth, async (req, res) => {
 			{'shop': session.shop, 'campaigns.id': giveawayId },
 			{ '$set': {'campaigns.$.winners' : winnerInfo}}
 		)
-		res.send('giveaway created')
+		res.send(`/campaign/${giveawayId}`)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
+	try {
+		const amount = req.body.amounts
+		const giveawayId = req.body.id
+		console.log(amount)
+		console.log(giveawayId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Shop.findOne(
+			{'campaigns.id': giveawayId}, 
+			{
+				'shop': session.shop, 
+				campaigns : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		if(giveaway === null){
+			return res.status(404).send('Invalid giveaway')
+		}
+		const ofWinners: number = giveaway.campaigns[0].winnersTotal
+		const winnerArray: any = []  
+		for(let i = 0; i < ofWinners; i++){
+			winnerArray.push(i)
+		}
+		let winnerInfo: any = []
+		winnerArray.forEach((item: number) => {
+			item++
+			winnerInfo.push({
+				prizeId: item,
+				voucherPrize: parseInt(amount)
+			})
+		})
+		console.log(winnerInfo)
+		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
+		await Shop.findOneAndUpdate(
+			{'shop': session.shop, 'campaigns.id': giveawayId },
+			{ '$set': {'campaigns.$.winners' : winnerInfo}}
+		)
+		res.send(`/campaign/${giveawayId}`)
 	} catch(err: any) {
 		console.log(err)
 	}
 })
 
 campaign.get('/:id', checkAuth, async (req, res) => {
-	console.log(req.params)
-	res.send("This is where a giveaway will display")
+	try {
+		const giveawayId = parseInt(req.params.id)
+		if(giveawayId == null){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		if(giveaway === null){
+			return res.status(404).render('pages/404')
+		}
+		const realObject = await Shop.findOne(
+			{'campaigns.id': giveawayId}, 
+			{
+				'shop': session.shop, 
+				campaigns : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		console.log(realObject)
+		res.render('pages/campaign')
+	} catch(err: any) {
+		console.log(err)
+	}
 })
 
 campaign.put('/:id', checkAuth, async (req, res) => {
