@@ -125,7 +125,7 @@ campaign.post('/create', checkAuth, async (req, res) => {
 		if(shop === null){
 			return res.status(404).send('Invalid giveaway')
 		}
-		let winnerInfo: [object] = [{}]
+		let winnerInfo: any = []
 		Object.keys(amounts).forEach((key) => {
 			winnerInfo.push({
 				prizeId: parseInt(key),
@@ -134,7 +134,10 @@ campaign.post('/create', checkAuth, async (req, res) => {
 		})
 		console.log(winnerInfo)
 		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
-
+		await Shop.findOneAndUpdate(
+			{'shop': session.shop, 'campaigns.id': giveawayId },
+			{ '$set': {'campaigns.$.winners' : winnerInfo}}
+		)
 		res.send('giveaway created')
 	} catch(err: any) {
 		console.log(err)
@@ -142,6 +145,7 @@ campaign.post('/create', checkAuth, async (req, res) => {
 })
 
 campaign.get('/:id', checkAuth, async (req, res) => {
+	console.log(req.params)
 	res.send("This is where a giveaway will display")
 })
 
