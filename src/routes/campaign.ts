@@ -205,7 +205,7 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 			}
 		)
 		console.log(realObject)
-		res.render('pages/campaign')
+		res.render('pages/campaign', {data: realObject})
 	} catch(err: any) {
 		console.log(err)
 	}

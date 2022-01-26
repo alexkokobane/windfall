@@ -67,6 +67,9 @@ $(document).ready(function(e){
 		let endTime = $("#EndTime").val()
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+		if(name === "" || startDate === "" || startTime === "" || endDate === "" || endTime === "" || ofWinners === "" || distrubution === ""){
+			return alert("Please fill all fields")
+		}
 		let form = {
 			"name": name,
 			"startDate": startDate,
@@ -190,4 +193,25 @@ $(document).ready(function(e){
 			}
 		})
 	})
+
+	//url === /campaign/:id
+	console.log(window.location.pathname)
+	const path = window.location.pathname
+	const idForGiveaway = parseInt(path.split("/")[2])
+	console.log(idForGiveaway)
+	if(idForGiveaway !== NaN || idForGiveaway === undefined){
+		$.ajax({
+			url: `/data/campaign/${idForGiveaway}`,
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				console.log(data)
+				
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+	}
+
 })

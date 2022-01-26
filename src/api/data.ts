@@ -44,4 +44,41 @@ data.get('/products', checkAuth, async (req, res) => {
 	}
 })
 
+data.get('/campaign/:id',  checkAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(giveawayId == null){
+			return res.status(404).send("Giveaway not found")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.findOne(
+			{'campaigns.id': giveawayId}, 
+			{
+				'shop': session.shop, 
+				campaigns : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		if(rawGiveaway === null){
+			return res.status(404).send("Giveaway not found")
+		}
+		console.log(rawGiveaway)
+		const theOne: any = rawGiveaway.campaigns[0]
+		console.log(theOne)
+		const filteredGiveaway = {
+			"id": theOne.id,
+			"title": theOne.name,
+			"startDate": theOne.startDate,
+			"type": theOne.distributionType,
+			"endDate": theOne.endDate,
+			"entriesTotal": theOne.entries.length,
+			"winnersTotal": theOne.winnersTotal,
+			"winners": theOne.winners
+		}
+		console.log(filteredGiveaway)
+		res.json(filteredGiveaway)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
 export default data
