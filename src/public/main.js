@@ -206,7 +206,15 @@ $(document).ready(function(e){
 			contentType: "application/json",
 			success: function(data){
 				console.log(data)
-				
+				$("#GiveawayName").text(data.title)
+				$("#ForTotalEntries").text(data.entriesTotal)
+				$("#ForActiveDates").text(`From ${new Date(data.startDate).toLocaleString()} to ${new Date(data.endDate).toLocaleString()}`)
+				$("#ForType").text(data.type)
+				data.winners.reverse().forEach(function(item){
+					$("#GiveawayWinnerListDecoy").after(`
+						<li class="Polaris-List__Item">Number ${item.prizeId} - $${item.voucherPrize} store voucher</li>
+					`)
+				})
 			},
 			error: function(data){
 				alert(data.responseText)
