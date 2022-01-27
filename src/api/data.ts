@@ -82,17 +82,61 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/active', checkAuth, async (req, res) => {
+data.get('/campaigns/past', checkAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.find(
+		const rawGiveaway = await Shop.findOne(
 			{'shop': session.shop},
-			{					
-				'campaigns.startDate': {'$gt': Date.now()}
+			{
+				'shop': session.shop,
+				'campaigns': {
+					'$elemMatch': {
+						'$and': [
+							{'startDate': {'$lt': new Date}, 'endDate': {'$lt': new Date}}
+						]
+					}
+				}
 			}
 		)
 		console.log(rawGiveaway)
 		res.json(rawGiveaway)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/active', checkAuth, async (req, res) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.findOne(
+			{
+				'shop': session.shop,
+				'campaigns.startDate': {'$lte': Date.now()},
+				'campaigns.endDate': {'$gte': Date.now()}
+			},
+			{
+				'shop': session.shop,
+				'campaigns': {
+					'$push': {
+						'$elemMatch': {
+							'distributionType': 'Hierarchical'
+						}
+					}
+				}
+			}
+		)
+		console.log(rawGiveaway)
+		res.json(rawGiveaway)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/everything', checkAuth, async (req, res) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const allData = await Shop.findOne({'shop': session.shop})
+		res.json(allData)
 	} catch(err: any) {
 		console.log(err)
 	}

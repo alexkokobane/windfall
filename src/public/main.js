@@ -199,7 +199,7 @@ $(document).ready(function(e){
 	const path = window.location.pathname
 	const idForGiveaway = parseInt(path.split("/")[2])
 	console.log(idForGiveaway)
-	if(idForGiveaway !== NaN || idForGiveaway === undefined){
+	if(isNaN(idForGiveaway) === false){
 		$.ajax({
 			url: `/data/campaign/${idForGiveaway}`,
 			type: "GET",
