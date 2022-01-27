@@ -47,7 +47,8 @@ data.get('/products', checkAuth, async (req, res) => {
 data.get('/campaign/:id',  checkAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
-		if(giveawayId == null){
+		console.log(giveawayId)
+		if(isNaN(giveawayId) === true){
 			return res.status(404).send("Giveaway not found")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -58,10 +59,10 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 				campaigns : {'$elemMatch' : {'id': giveawayId}}
 			}
 		)
+		console.log(rawGiveaway)
 		if(rawGiveaway === null){
 			return res.status(404).send("Giveaway not found")
 		}
-		console.log(rawGiveaway)
 		const theOne: any = rawGiveaway.campaigns[0]
 		console.log(theOne)
 		const filteredGiveaway = {
@@ -76,6 +77,22 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 		}
 		console.log(filteredGiveaway)
 		res.json(filteredGiveaway)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/active', checkAuth, async (req, res) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.find(
+			{'shop': session.shop},
+			{					
+				'campaigns.startDate': {'$gt': Date.now()}
+			}
+		)
+		console.log(rawGiveaway)
+		res.json(rawGiveaway)
 	} catch(err: any) {
 		console.log(err)
 	}
