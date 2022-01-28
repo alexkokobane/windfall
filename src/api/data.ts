@@ -108,23 +108,18 @@ data.get('/campaigns/past', checkAuth, async (req, res) => {
 data.get('/campaigns/active', checkAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.findOne(
-			{
-				'shop': session.shop,
-				'campaigns.startDate': {'$lte': Date.now()},
-				'campaigns.endDate': {'$gte': Date.now()}
-			},
-			{
-				'shop': session.shop,
-				'campaigns': {
-					'$push': {
-						'$elemMatch': {
-							'distributionType': 'Hierarchical'
-						}
-					}
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns'},
+			{'$filter': {
+				'input': '$campaigns',
+				'as': 'campaign',
+				'cond': {
+					'$$campaign.startDate': {'$lt': Date.now()}
 				}
-			}
-		)
+			}},
+			{'$project': {'campaigns': 1}}
+		])
 		console.log(rawGiveaway)
 		res.json(rawGiveaway)
 	} catch(err: any) {
