@@ -111,13 +111,14 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 		const rawGiveaway = await Shop.aggregate([
 			{'$match': {'shop': session.shop}},
 			{'$unwind': '$campaigns'},
-			{'$filter': {
-				'input': '$campaigns',
-				'as': 'campaign',
-				'cond': {
-					'$$campaign.startDate': {'$lt': Date.now()}
+			{'$project': {'campaigns': 1}},
+			{
+				'$match': {
+					'$expr': {
+						'$lt': [{'$startDate': '$startDate'}, {'$startDate' :new Date()}]
+					}
 				}
-			}},
+			},
 			{'$project': {'campaigns': 1}}
 		])
 		console.log(rawGiveaway)
