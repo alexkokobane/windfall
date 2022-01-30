@@ -225,4 +225,87 @@ $(document).ready(function(e){
 		})
 	}
 
+	//url === /campaign/giveaways
+	if(window.location.pathname === "/campaign/giveaways"){
+		$.ajax({
+			url: "/data/campaigns/active",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$("#ActiveContentSkeleton").remove()
+				if(data.length === 0){
+					return (
+						$("#ActiveContentHeader").after(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--fullWidth Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
+												<div class="Polaris-EmptyState__Content">
+													<p>Get started with creating your first giveaway rightaway.</p>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__Actions">
+												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+													<div class="Polaris-Stack__Item">
+														<button class="Polaris-Button Polaris-Button--primary" type="button">
+															<span class="Polaris-Button__Content">
+																<span class="Polaris-Button__Text">Create</span>
+															</span>
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="Polaris-EmptyState__ImageContainer">
+										<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+									</div>
+								</div>
+							</div>
+						`)
+					)
+				}
+				$("#ActiveContentHeader").after(`
+					<div class="Polaris-ResourceList__ResourceListWrapper">
+						<ul class="Polaris-ResourceList" aria-live="polite">
+							<span id="ActiveContentDataDecoy"></span>
+						</ul>
+					</div>
+				`)
+				data.forEach(function(giv){
+					$("#ActiveContentDataDecoy").after(`
+						<li class="Polaris-ResourceItem__ListItem">
+							<div class="Polaris-ResourceItem__ItemWrapper">
+								<div class="Polaris-ResourceItem" data-href="/campaign/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+										<div class="Polaris-ResourceItem__Owned">
+											<div class="Polaris-ResourceItem__Media">
+												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<div style="background: orange;"></div>
+												</span>
+											</div>
+										</div>
+										<div class="Polaris-ResourceItem__Content">
+											<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+											<div>${giv.type}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					`)
+					$(`#${giv.id}`).click(function(){
+						location.href=`/campaign/${giv.id}`
+					})
+				})
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+	}
+
 })

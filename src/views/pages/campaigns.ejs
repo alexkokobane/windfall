@@ -19,30 +19,62 @@
 	</div>
 	<div class="Polaris-Page__Content">
 		<div class="Polaris-Layout"><a id="SkipToContentTarget" tabindex="-1"></a>
-			<div class="Polaris-Layout__Section">
-				<div class="Polaris-Card">
-					<div class="Polaris-Card__Header">
-						<h2 class="Polaris-Heading">Your plan</h2>
-					</div>
-					<div class="Polaris-Card__Section">
-						<div class="Polaris-TextContainer">
-							<p>You are currently on the Starter plan for $12.00 per month.</p>
-						</div>
-					</div>
-					<div class="Polaris-Card__Section">
-							<div class="Polaris-Stack Polaris-Stack--vertical">
-								<div class="Polaris-Stack__Item">
-									<div class="Polaris-TextContainer">
-										<p>Is your current plan no longer a good fit for your business?</p>
-									</div>
+		<div class="Polaris-Layout__Section">
+			<div class="Polaris-Card">
+				<div>
+						<div class="Polaris-Tabs__Wrapper">
+								<div class="Polaris-Tabs Polaris-Tabs__TabMeasurer">
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="all-customers-fitted-2Measurer" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab Polaris-Tabs__Tab--selected" aria-selected="true"><span class="Polaris-Tabs__Title">Active</span></button></li>
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="accepts-marketing-fitted-2Measurer" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false"><span class="Polaris-Tabs__Title">Upcoming</span></button></li>
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="accepts-marketing-fitted-2Measurer" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false"><span class="Polaris-Tabs__Title">Expired</span></button></li>
 								</div>
-								<div class="Polaris-Stack__Item">
-									<button class="Polaris-Button Polaris-Button--fullWidth" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Change your plan</span></span></button>
-								</div>
-							</div>
+								<ul role="tablist" class="Polaris-Tabs Polaris-Tabs--fitted">
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="ActiveGiveawaysTab" role="tab" type="button" tabindex="0" class="Polaris-Tabs__Tab Polaris-Tabs__Tab--selected" aria-selected="true" aria-controls="ActiveGiveawaysTabContent" aria-label="All customers"><span class="Polaris-Tabs__Title">Active</span></button></li>
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="UpcomingGiveawaysTab" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="UpcomingGiveawaysTabContent"><span class="Polaris-Tabs__Title">Upcoming</span></button></li>
+										<li class="Polaris-Tabs__TabContainer" role="presentation"><button id="ExpiredGiveawaysTab" role="tab" type="button" tabindex="-1" class="Polaris-Tabs__Tab" aria-selected="false" aria-controls="ExpiredGiveawaysTabContent"><span class="Polaris-Tabs__Title">Expired</span></button></li>
+								</ul>
 						</div>
-					</div>
+						<div class="Polaris-Tabs__Panel" id="ActiveGiveawaysTabContent" role="tabpanel" aria-labelledby="ActiveGiveawaysTab" tabindex="-1">
+								<div class="Polaris-Card__Section">
+										<div id="ActiveContentHeader" class="Polaris-Card__SectionHeader">
+												<h3 aria-label="Active giveaways" class="Polaris-Subheading">Active giveaways</h3>
+										</div>
+										<div id="ActiveContentSkeleton">
+											<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+										</div>
+								</div>
+						</div>
+						<div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="UpcomingGiveawaysTabContent" role="tabpanel" aria-labelledby="UpcomingGiveawaysTab" tabindex="-1">
+							<div class="Polaris-Card__Section">
+										<div id="UpcomingContentHeader" class="Polaris-Card__SectionHeader">
+												<h3 aria-label="Upcoming giveaways" class="Polaris-Subheading">Upcoming giveaway</h3>
+										</div>
+										<div id="UpcomingContentSkeleton">
+											<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+										</div>
+								</div>
+						</div>
+						<div class="Polaris-Tabs__Panel Polaris-Tabs__Panel--hidden" id="ExpiredGiveawaysTabContent" role="tabpanel" aria-labelledby="ExpiredGiveawaysTab" tabindex="-1">
+							<div class="Polaris-Card__Section">
+										<div id="ExpiredContentHeader" class="Polaris-Card__SectionHeader">
+												<h3 aria-label="Expired giveaways" class="Polaris-Subheading">Expired giveaways</h3>
+										</div>
+										<div id="ExpiredContentSkeleton">
+											<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+					  				<div class="Polaris-SkeletonBodyText"></div>
+										</div>
+								</div>
+						</div>
 				</div>
+			</div>
 		</div>
 	</div>
 </div>
