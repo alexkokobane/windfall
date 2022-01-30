@@ -8,7 +8,7 @@ import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 const campaign = express.Router()
 
 campaign.get('/giveaways', checkAuth, async (req, res) => {
-	res.json({this: "pagination"})
+	res.render('pages/campaigns')
 })
 
 campaign.get('/new', checkAuth, async (req, res) => {

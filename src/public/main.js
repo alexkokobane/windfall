@@ -38,6 +38,9 @@ $(document).ready(function(e){
 	$("#ParticipantsBtn").click(function(){
 		location.href="/participants"
 	})
+	$("#GiveawaysBtn").click(function(){
+		location.href="/campaign/giveaways"
+	})
 	$.ajax({
 		url: '/shop',
 		success: function(data){
