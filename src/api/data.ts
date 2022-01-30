@@ -107,19 +107,24 @@ data.get('/campaigns/past', checkAuth, async (req, res) => {
 
 data.get('/campaigns/active', checkAuth, async (req, res) => {
 	try {
+		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const rawGiveaway = await Shop.aggregate([
 			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns'},
-			{'$project': {'campaigns': 1}},
+			//{'$unwind': '$campaigns'},
 			{
-				'$match': {
-					'$expr': {
-						'$lt': [{'$startDate': '$startDate'}, {'$startDate' :new Date()}]
+				'$project': {
+					'campaigns': {
+						'$filter': {
+							'input': '$campaigns',
+							'as': 'campaign',
+							'cond': {
+								'$lte': ['$$campaign.startDate', new Date(dateNow)]
+							}
+						}
 					}
 				}
-			},
-			{'$project': {'campaigns': 1}}
+			}
 		])
 		console.log(rawGiveaway)
 		res.json(rawGiveaway)
