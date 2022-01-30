@@ -212,10 +212,10 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 				}
 			}
 		])
-		let upcomig: any = []
+		let upcoming: any = []
 		rawGiveaway.forEach((item) => {
 			const obj = item.campaigns
-			upcomig.push({
+			upcoming.push({
 				"id": obj.id,
 				"name": obj.name,
 				"type": obj.distributionType,
@@ -225,8 +225,112 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 				"winnersTotal": obj.winnersTotal 
 			})
 		})
-		console.log(upcomig)
-		res.json(upcomig)
+		console.log(upcoming)
+		res.json(upcoming)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/hierarchical', checkAuth, async (req, res) => {
+	try {
+		const dateNow = new Date().toISOString()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns' },
+			{'$match': {'campaigns.distributionType': 'Hierarchical'}},
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
+			}
+		])
+		let hierarchy: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			hierarchy.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(hierarchy)
+		res.json(hierarchy)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/equitable', checkAuth, async (req, res) => {
+	try {
+		const dateNow = new Date().toISOString()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns' },
+			{'$match': {'campaigns.distributionType': 'Equitable'}},
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
+			}
+		])
+		let equity: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			equity.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(equity)
+		res.json(equity)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/all', checkAuth, async (req, res) => {
+	try {
+		const dateNow = new Date().toISOString()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns' },
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
+			}
+		])
+		let all: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			all.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(all)
+		res.json(all)
 	} catch(err: any) {
 		console.log(err)
 	}
