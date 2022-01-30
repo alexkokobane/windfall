@@ -275,6 +275,7 @@ $(document).ready(function(e){
 					</div>
 				`)
 				data.forEach(function(giv){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
 					$("#ActiveContentDataDecoy").after(`
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
@@ -284,7 +285,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<div style="background: orange;"></div>
+													<div style="background: ${colour};"></div>
 												</span>
 											</div>
 										</div>
@@ -305,6 +306,296 @@ $(document).ready(function(e){
 			error: function(data){
 				alert(data.responseText)
 			}
+		})
+		$("#ActiveGiveawaysTab").click(function(){
+			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			if(active === false){
+				upcoming === false ? $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+				expired === false ? $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+			} else if(active === true){
+				$("#ActiveGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
+				upcoming === true ? null :  $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+				expired === true ? null : $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			if(document.getElementById("ActiveContentSkeleton") == null){
+				return
+			}
+			$.ajax({
+				url: "/data/campaigns/active",
+				type: "GET",
+				contentType: "application/json",
+				success: function(data){
+					$("#ActiveContentSkeleton").remove()
+					if(data.length === 0){
+						return (
+							$("#ActiveContentHeader").after(`
+								<div id="ActiveEmptyState" class="Polaris-EmptyState Polaris-EmptyState--fullWidth Polaris-EmptyState--withinContentContainer">
+									<div class="Polaris-EmptyState__Section">
+										<div class="Polaris-EmptyState__DetailsContainer">
+											<div class="Polaris-EmptyState__Details">
+												<div class="Polaris-TextContainer">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
+													<div class="Polaris-EmptyState__Content">
+														<p>Get started with creating your first giveaway rightaway.</p>
+													</div>
+												</div>
+												<div class="Polaris-EmptyState__Actions">
+													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+														<div class="Polaris-Stack__Item">
+															<button class="Polaris-Button Polaris-Button--primary" type="button">
+																<span class="Polaris-Button__Content">
+																	<span class="Polaris-Button__Text">Create</span>
+																</span>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-EmptyState__ImageContainer">
+											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+										</div>
+									</div>
+								</div>
+							`)
+						)
+					}
+					$("#ActiveContentHeader").after(`
+						<div id="ActiveListWrapper" class="Polaris-ResourceList__ResourceListWrapper">
+							<ul class="Polaris-ResourceList" aria-live="polite">
+								<span id="ActiveContentDataDecoy"></span>
+							</ul>
+						</div>
+					`)
+					data.forEach(function(giv){
+						const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+						$("#ActiveContentDataDecoy").after(`
+							<li class="Polaris-ResourceItem__ListItem">
+								<div class="Polaris-ResourceItem__ItemWrapper">
+									<div class="Polaris-ResourceItem" data-href="/campaign/${giv.id}">
+										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+											<div class="Polaris-ResourceItem__Owned">
+												<div class="Polaris-ResourceItem__Media">
+													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+														<div style="background: ${colour};"></div>
+													</span>
+												</div>
+											</div>
+											<div class="Polaris-ResourceItem__Content">
+												<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+												<div>${giv.type}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						`)
+						$(`#${giv.id}`).click(function(){
+							location.href=`/campaign/${giv.id}`
+						})
+					})
+				},
+				error: function(data){
+					alert(data.responseText)
+				}
+			})
+		})
+		$("#UpcomingGiveawaysTab").click(function(){
+			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			if(upcoming === false){
+				active === false ? $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+				expired === false ? $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+			} else if(upcoming ===  true){
+				$("#UpcomingGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
+				active === true ? null : $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+				expired === true ? null : $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			if(document.getElementById("UpcomingContentSkeleton") == null){
+				return
+			}
+			$.ajax({
+				url: "/data/campaigns/upcoming",
+				type: "GET",
+				contentType: "application/json",
+				success: function(data){
+					$("#UpcomingContentSkeleton").remove()
+					if(data.length === 0){
+						return (
+							$("#UpcomingContentHeader").after(`
+								<div id="UpcomingEmptyState" class="Polaris-EmptyState Polaris-EmptyState--fullWidth Polaris-EmptyState--withinContentContainer">
+									<div class="Polaris-EmptyState__Section">
+										<div class="Polaris-EmptyState__DetailsContainer">
+											<div class="Polaris-EmptyState__Details">
+												<div class="Polaris-TextContainer">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
+													<div class="Polaris-EmptyState__Content">
+														<p>Get started with creating your first giveaway rightaway.</p>
+													</div>
+												</div>
+												<div class="Polaris-EmptyState__Actions">
+													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+														<div class="Polaris-Stack__Item">
+															<button class="Polaris-Button Polaris-Button--primary" type="button">
+																<span class="Polaris-Button__Content">
+																	<span class="Polaris-Button__Text">Create</span>
+																</span>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-EmptyState__ImageContainer">
+											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+										</div>
+									</div>
+								</div>
+							`)
+						)
+					}
+					$("#UpcomingContentHeader").after(`
+						<div id="UpcomingListWrapper" class="Polaris-ResourceList__ResourceListWrapper">
+							<ul class="Polaris-ResourceList" aria-live="polite">
+								<span id="UpcomingContentDataDecoy"></span>
+							</ul>
+						</div>
+					`)
+					data.forEach(function(giv){
+						const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+						$("#UpcomingContentDataDecoy").after(`
+							<li class="Polaris-ResourceItem__ListItem">
+								<div class="Polaris-ResourceItem__ItemWrapper">
+									<div class="Polaris-ResourceItem" data-href="/campaign/${giv.id}">
+										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+											<div class="Polaris-ResourceItem__Owned">
+												<div class="Polaris-ResourceItem__Media">
+													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+														<div style="background: ${colour};"></div>
+													</span>
+												</div>
+											</div>
+											<div class="Polaris-ResourceItem__Content">
+												<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+												<div>${giv.type}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						`)
+						$(`#${giv.id}`).click(function(){
+							location.href=`/campaign/${giv.id}`
+						})
+					})
+				},
+				error: function(data){
+					alert(data.responseText)
+				}
+			})
+		})
+		$("#ExpiredGiveawaysTab").click(function(){
+			//To be implemented tomorrow
+			const greenBar = $(this).hasClass("Polaris-Tabs__Tab--selected")
+			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
+			if(expired === false){
+				active === false ? $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+				upcoming === false ? $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden") : null
+			} else if(expired === true){
+				$("#ExpiredGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
+				active === true ? null : $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+				upcoming === true ? null :  $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			if(document.getElementById("ExpiredContentSkeleton") == null){
+				return
+			}
+			$.ajax({
+				url: "/data/campaigns/expired",
+				type: "GET",
+				contentType: "application/json",
+				success: function(data){
+					$("#ExpiredContentSkeleton").remove()
+					if(data.length === 0){
+						return (
+							$("#ExpiredContentHeader").after(`
+								<div id="ExpiredEmptyState" class="Polaris-EmptyState Polaris-EmptyState--fullWidth Polaris-EmptyState--withinContentContainer">
+									<div class="Polaris-EmptyState__Section">
+										<div class="Polaris-EmptyState__DetailsContainer">
+											<div class="Polaris-EmptyState__Details">
+												<div class="Polaris-TextContainer">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
+													<div class="Polaris-EmptyState__Content">
+														<p>Get started with creating your first giveaway rightaway.</p>
+													</div>
+												</div>
+												<div class="Polaris-EmptyState__Actions">
+													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+														<div class="Polaris-Stack__Item">
+															<button class="Polaris-Button Polaris-Button--primary" type="button">
+																<span class="Polaris-Button__Content">
+																	<span class="Polaris-Button__Text">Create</span>
+																</span>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-EmptyState__ImageContainer">
+											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+										</div>
+									</div>
+								</div>
+							`)
+						)
+					}
+					$("#ExpiredContentHeader").after(`
+						<div id="ExpiredListWrapper" class="Polaris-ResourceList__ResourceListWrapper">
+							<ul class="Polaris-ResourceList" aria-live="polite">
+								<span id="ExpiredContentDataDecoy"></span>
+							</ul>
+						</div>
+					`)
+					data.forEach(function(giv){
+						const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+						$("#ExpiredContentDataDecoy").after(`
+							<li class="Polaris-ResourceItem__ListItem">
+								<div class="Polaris-ResourceItem__ItemWrapper">
+									<div class="Polaris-ResourceItem" data-href="/campaign/${giv.id}">
+										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+											<div class="Polaris-ResourceItem__Owned">
+												<div class="Polaris-ResourceItem__Media">
+													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+														<div style="background: ${colour};"></div>
+													</span>
+												</div>
+											</div>
+											<div class="Polaris-ResourceItem__Content">
+												<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+												<div>${giv.type}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						`)
+						$(`#${giv.id}`).click(function(){
+							location.href=`/campaign/${giv.id}`
+						})
+					})
+				},
+				error: function(data){
+					alert(data.responseText)
+				}
+			})
 		})
 	}
 
