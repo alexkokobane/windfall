@@ -84,20 +84,27 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 
 data.get('/campaigns/past', checkAuth, async (req, res) => {
 	try {
+		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.findOne(
-			{'shop': session.shop},
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
 			{
-				'shop': session.shop,
-				'campaigns': {
-					'$elemMatch': {
-						'$and': [
-							{'startDate': {'$lt': new Date}, 'endDate': {'$lt': new Date}}
-						]
+				'$project': {
+					'campaigns': {
+						'$filter': {
+							'input': '$campaigns',
+							'as': 'campaign',
+							'cond': {
+								'$and': [
+									{'$lt': ['$$campaign.startDate', new Date(dateNow)]},
+									{'$lt': ['$$campaign.endDate', new Date(dateNow)]}
+								]
+							}
+						}
 					}
 				}
 			}
-		)
+		])
 		console.log(rawGiveaway)
 		res.json(rawGiveaway)
 	} catch(err: any) {
@@ -111,7 +118,6 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const rawGiveaway = await Shop.aggregate([
 			{'$match': {'shop': session.shop}},
-			//{'$unwind': '$campaigns'},
 			{
 				'$project': {
 					'campaigns': {
@@ -119,7 +125,40 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 							'input': '$campaigns',
 							'as': 'campaign',
 							'cond': {
-								'$lte': ['$$campaign.startDate', new Date(dateNow)]
+								'$and': [
+									{'$lte': ['$$campaign.startDate', new Date(dateNow)]},
+									{'$gte': ['$$campaign.endDate', new Date(dateNow)]}
+								]
+							}
+						}
+					}
+				}
+			}
+		])
+		console.log(rawGiveaway)
+		res.json(rawGiveaway)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
+	try {
+		const dateNow = new Date().toISOString()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{
+				'$project': {
+					'campaigns': {
+						'$filter': {
+							'input': '$campaigns',
+							'as': 'campaign',
+							'cond': {
+								'$and': [
+									{'$gte': ['$$campaign.startDate', new Date(dateNow)]},
+									{'$gte': ['$$campaign.endDate', new Date(dateNow)]}
+								]
 							}
 						}
 					}
