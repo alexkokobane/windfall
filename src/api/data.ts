@@ -82,7 +82,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/past', checkAuth, async (req, res) => {
+data.get('/campaigns/expired', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -103,10 +103,30 @@ data.get('/campaigns/past', checkAuth, async (req, res) => {
 						}
 					}
 				}
+			},
+			{'$unwind': '$campaigns' },
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
 			}
 		])
-		console.log(rawGiveaway)
-		res.json(rawGiveaway)
+		let expired: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			expired.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(expired)
+		res.json(expired)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -133,10 +153,30 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 						}
 					}
 				}
+			},
+			{'$unwind': '$campaigns' },
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
 			}
 		])
-		console.log(rawGiveaway)
-		res.json(rawGiveaway)
+		let active: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			active.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(active)
+		res.json(active)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -163,10 +203,30 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 						}
 					}
 				}
+			},
+			{'$unwind': '$campaigns' },
+			{
+				'$project': {
+					'_id': 0,
+					'campaigns': 1
+				}
 			}
 		])
-		console.log(rawGiveaway)
-		res.json(rawGiveaway)
+		let upcomig: any = []
+		rawGiveaway.forEach((item) => {
+			const obj = item.campaigns
+			upcomig.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"startDate": obj.startDate,
+				"endDate": obj.endDate,
+				"entriesTotal": obj.entries.length,
+				"winnersTotal": obj.winnersTotal 
+			})
+		})
+		console.log(upcomig)
+		res.json(upcomig)
 	} catch(err: any) {
 		console.log(err)
 	}
