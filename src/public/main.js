@@ -308,6 +308,7 @@ $(document).ready(function(e){
 			}
 		})
 		$("#ActiveGiveawaysTab").click(function(){
+			// Toggle content
 			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
@@ -318,6 +319,18 @@ $(document).ready(function(e){
 				$("#ActiveGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
 				upcoming === true ? null :  $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
 				expired === true ? null : $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			// Toggle greenbar
+			const activeBar = $("#ActiveGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const upcomingBar = $("#UpcomingGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const expiredBar = $("#ExpiredGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			if(activeBar === false){
+				$("#ActiveGiveawaysTab").addClass("Polaris-Tabs__Tab--selected")
+				upcomingBar === false ? null : $("#UpcomingGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
+				expiredBar === false ? null : $("#ExpiredGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
+			} else if(activeBar === true){
+				upcomingBar === true ? $("#UpcomingGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
+				expiredBar === true ? $("#ExpiredGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
 			}
 			if(document.getElementById("ActiveContentSkeleton") == null){
 				return
@@ -404,6 +417,7 @@ $(document).ready(function(e){
 			})
 		})
 		$("#UpcomingGiveawaysTab").click(function(){
+			// Toggle content
 			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
@@ -414,6 +428,18 @@ $(document).ready(function(e){
 				$("#UpcomingGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
 				active === true ? null : $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
 				expired === true ? null : $("#ExpiredGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			// Toggle greenbar
+			const activeBar = $("#ActiveGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const upcomingBar = $("#UpcomingGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const expiredBar = $("#ExpiredGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			if(upcomingBar === false){
+				$("#UpcomingGiveawaysTab").addClass("Polaris-Tabs__Tab--selected")
+				activeBar === true ? $("#ActiveGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
+				expiredBar === true ? $("#ExpiredGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
+			} else if(upcomingBar ===  true){
+				activeBar === false ? null : $("#ActiveGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
+				expiredBar === false ? null : $("#ExpiredGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
 			}
 			if(document.getElementById("UpcomingContentSkeleton") == null){
 				return
@@ -500,8 +526,7 @@ $(document).ready(function(e){
 			})
 		})
 		$("#ExpiredGiveawaysTab").click(function(){
-			//To be implemented tomorrow
-			const greenBar = $(this).hasClass("Polaris-Tabs__Tab--selected")
+			// Toggle content
 			const active = $("#ActiveGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const upcoming = $("#UpcomingGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
 			const expired = $("#ExpiredGiveawaysTabContent").hasClass("Polaris-Tabs__Panel--hidden")
@@ -512,6 +537,18 @@ $(document).ready(function(e){
 				$("#ExpiredGiveawaysTabContent").removeClass("Polaris-Tabs__Panel--hidden")
 				active === true ? null : $("#ActiveGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
 				upcoming === true ? null :  $("#UpcomingGiveawaysTabContent").addClass("Polaris-Tabs__Panel--hidden")
+			}
+			// Toggle greembar
+			const activeBar = $("#ActiveGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const upcomingBar = $("#UpcomingGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			const expiredBar = $("#ExpiredGiveawaysTab").hasClass("Polaris-Tabs__Tab--selected")
+			if(expiredBar === false){
+				$("#ExpiredGiveawaysTab").addClass("Polaris-Tabs__Tab--selected")
+				activeBar === true ? $("#ActiveGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
+				upcomingBar === true ? $("#UpcomingGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected") : null
+			} else if(expiredBar === true){
+				activeBar === false ? null : $("#ActiveGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
+				upcomingBar === false ? null :  $("#UpcomingGiveawaysTab").removeClass("Polaris-Tabs__Tab--selected")
 			}
 			if(document.getElementById("ExpiredContentSkeleton") == null){
 				return
