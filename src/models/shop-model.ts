@@ -35,7 +35,7 @@ const ShopSchema = new mongoose.Schema({
 		name: String,
 		startDate: Date,
 		endDate: Date,
-		toSuper: Boolean,
+		toSuper: [String],
 		distributionType: String,
 		entries: [{
 			id: Number,
@@ -78,7 +78,9 @@ const ShopSchema = new mongoose.Schema({
 	campaignTemplate: [{
 		id: Number,
 		name: String,
-		toSuper: Boolean,
+		distributionType: String,
+		winnersTotal: Number,
+		toSuper: [String],
 		winners: [Object],
 		active: Boolean,
 		createdAt: {

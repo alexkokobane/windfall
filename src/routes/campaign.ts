@@ -65,7 +65,7 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		if (req.query.id && typeof req.query.id === 'string') {
 		  	decoyId = req.query.id
 		} else {
-		  	return null
+		  	return undefined
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -89,7 +89,7 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 		if (req.query.id && typeof req.query.id === 'string') {
 		  	decoyId = req.query.id
 		} else {
-		  	return null
+		  	return undefined
 		}
 		if(req.query.winners && typeof req.query.winners === 'string') {
 			decoyWinners = req.query.winners
@@ -219,6 +219,53 @@ campaign.delete('/:id', checkAuth, async (req, res) => {
 	res.send("Ressource has been deleted")
 })
 
+campaign.post('/store', checkAuth, async (req, res) => {
+	try {
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+		  	decoyId = req.query.id
+		} else {
+		  	return undefined
+		}
+		if(decoyId === undefined) {
+			return res.status(404).send("Giveaway ID not defined")
+		}
+		const giveawayId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const realObject = await Shop.findOne(
+			{
+				'campaigns.id': giveawayId,
+				'shop': session.shop
+			}, 
+			{
+				'shop': session.shop, 
+				campaigns : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		if(realObject === null){
+			return res.status(404).send("Did not save, giveaway does not exist")
+		}
+		const data: any = realObject.campaigns[0]
+		await Shop.findOneAndUpdate(
+			{shop: session.shop},
+			{
+				$push: {
+					campaignTemplate: {
+						id: data.id,
+						name: data.name,
+						distributionType: data.distributionType,
+						winnersTotal: data.winnersTotal,
+						winners: data.winners
+					}
+				}
+			},
+			{new: true}
+		)
+		res.send("Successfully saved your giveaway")
+	} catch(err: any) {
+		console.log(err)
+	}
+})
 
 export default campaign
 
