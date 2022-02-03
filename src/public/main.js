@@ -208,6 +208,8 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				$("#WinnersSkeleton").remove()
+				$(".Polaris-SkeletonBodyText").remove()
 				console.log(data)
 				$("#GiveawayName").text(data.title)
 				$("#ForTotalEntries").text(data.entriesTotal)
@@ -217,6 +219,18 @@ $(document).ready(function(e){
 					$("#GiveawayWinnerListDecoy").after(`
 						<li class="Polaris-List__Item">Number ${item.prizeId} - $${item.voucherPrize} store voucher</li>
 					`)
+				})
+				$(".Add-Giveaway-Template").click(function(){
+					$.ajax({
+						url: `/campaign/store?id=${data.id}`,
+						type: "POST",
+						success: function(data){
+							alert(data)
+						},
+						error: function(data){
+							alert(data.responseText)
+						}
+					})
 				})
 			},
 			error: function(data){
