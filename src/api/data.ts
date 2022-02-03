@@ -336,6 +336,35 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 	}
 })
 
+data.get('/templates', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rawGiveaway = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaignTemplate' },			
+			{
+				'$project': {
+					'_id': 0,
+					'campaignTemplate': 1
+				}
+			}
+		])
+		let templates: any = []
+		rawGiveaway.forEach((item) => {
+			let obj = item.campaignTemplate
+			templates.push({
+				"id": obj.id,
+				"name": obj.name,
+				"type": obj.distributionType,
+				"winnersTotal": obj.winnersTotal,
+			})
+		})
+		res.json(templates)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/everything', checkAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)

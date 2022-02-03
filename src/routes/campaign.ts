@@ -245,6 +245,19 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		if(realObject === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
+		const doesExist = await Shop.findOne(
+			{
+				'campaignTemplate.id': giveawayId,
+				'shop': session.shop
+			}, 
+			{
+				'shop': session.shop, 
+				campaignTemplate : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		if(doesExist !== null){
+			return res.status(403).send("This giveaway template already exist")
+		}
 		const data: any = realObject.campaigns[0]
 		await Shop.findOneAndUpdate(
 			{shop: session.shop},
