@@ -107,6 +107,7 @@ $(document).ready(function(e){
 			contentType: "application/json",
 			success: function(data){
 				if(data.length === 0){
+					$("#HUGListWrapper")
 					return (`
 						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 							<div class="Polaris-EmptyState__Section">
@@ -152,6 +153,73 @@ $(document).ready(function(e){
 												<div class="Polaris-Stack__Item Polaris-TextContainer">
 													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 													<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> ${new Date(giv.startDate).toDateString()}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					`)
+				})
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+		$.ajax({
+			url: "/data/giveaway-templates",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.length === 0){
+					$("#HGTListWrapper").remove()
+					return (`
+						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+							<div class="Polaris-EmptyState__Section">
+								<div class="Polaris-EmptyState__DetailsContainer">
+									<div class="Polaris-EmptyState__Details">
+										<div class="Polaris-TextContainer">
+											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Display your saved giveaway templates</p>
+											<div class="Polaris-EmptyState__Content">
+												<p>Save the settings of any giveaway you would like to use in the future.</p>
+											</div>
+										</div>
+										<div class="Polaris-EmptyState__Actions">
+											<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+												<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Add template</span></span></button></div>
+												<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+							</div>
+						</div>
+					`)
+				}
+				$(".HGTDecoyItem").remove()
+				data.forEach(function(giv){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					$("#HGTDataDecoy").after(`
+						<li class="Polaris-ResourceItem__ListItem">
+							<div class="Polaris-ResourceItem__ItemWrapper">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+										<div class="Polaris-ResourceItem__Owned">
+											<div class="Polaris-ResourceItem__Media">
+												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<div style="background: ${colour};"></div>
+												</span>
+											</div>
+										</div>
+										<div class="Polaris-ResourceItem__Content">
+											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+												<div class="Polaris-Stack__Item Polaris-TextContainer">
+													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+													<div><span class="Polaris-TextStyle--variationStrong">Prize distribution type :</span> ${giv.type}</div>
+													<div><span class="Polaris-TextStyle--variationStrong">Total winners :</span> ${giv.winnersTotal}</div>
 												</div>
 											</div>
 										</div>

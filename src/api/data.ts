@@ -336,7 +336,7 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/templates', checkAuth, async (req, res) => {
+data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const rawGiveaway = await Shop.aggregate([
