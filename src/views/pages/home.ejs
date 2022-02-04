@@ -30,7 +30,7 @@
 					<div class="Polaris-Card__Header">
 						<h2 class="Polaris-Heading">Giveaway templates</h2>
 					</div>
-					<div class="Polaris-Card__Section">
+					<div id="HomeGiveawayTemplates" class="Polaris-Card__Section">
 						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 								<div class="Polaris-EmptyState__Section">
 										<div class="Polaris-EmptyState__DetailsContainer">
@@ -65,7 +65,7 @@
 										<h3 class="Polaris-Subheading">Entrants' email</h3>
 									</div>
 								</div>
-								<div class="Polaris-Stack__Item">
+								<div id="HomeEntrantsEmail" class="Polaris-Stack__Item">
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 											<div class="Polaris-EmptyState__Section">
 													<div class="Polaris-EmptyState__DetailsContainer">
@@ -96,7 +96,7 @@
 										<h3 class="Polaris-Subheading">Winners' email</h3>
 									</div>
 								</div>
-								<div class="Polaris-Stack__Item">
+								<div id="WinnersWinnersEmail" class="Polaris-Stack__Item">
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 											<div class="Polaris-EmptyState__Section">
 													<div class="Polaris-EmptyState__DetailsContainer">
@@ -125,28 +125,34 @@
 			<div class="Polaris-Layout__Section Polaris-Layout__Section--secondary">
 				<div class="Polaris-Card Polaris-Card--subdued">
 					<div class="Polaris-Card__Header">
-						<h2 class="Polaris-Heading">Active giveaways</h2>
+						<h2 class="Polaris-Heading">Active giveaway</h2>
 					</div>
-					<div class="Polaris-Card__Section">
-						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
-								<div class="Polaris-EmptyState__Section">
-										<div class="Polaris-EmptyState__DetailsContainer">
-												<div class="Polaris-EmptyState__Details">
-														<div class="Polaris-TextContainer">
-																<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
-																<div class="Polaris-EmptyState__Content">
-																		<p>Incentivize customers to spend more in your store.</p>
-																</div>
-														</div>
-														<div class="Polaris-EmptyState__Actions">
-																<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-																		<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></button></div>
-																		<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
-																</div>
-														</div>
-												</div>
-										</div>
-										<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+					<div id="HomeActiveGiveaways" class="Polaris-Card__Section">
+						<div id="HomeActiveGiveawaysSkeleton" class="Polaris-TextContainer">
+								<div>Name : 
+									<span id="HAGName" class="Polaris-TextStyle--variationStrong">
+										<div id="HAGSkeleton" class="Polaris-SkeletonBodyText">
+									</span>
+								</div>
+								<div> Prize distribution type : 
+									<span id="HAGType" class="Polaris-TextStyle--variationStrong">
+										<div id="HAGSkeleton" class="Polaris-SkeletonBodyText">
+									</span>
+								</div>
+								<div>Started : 
+									<span id="HAGStarted" class="Polaris-TextStyle--variationStrong">
+										<div id="HAGSkeleton" class="Polaris-SkeletonBodyText">
+									</span>
+								</div>
+								<div>Ends : 
+									<span id="HAGEnds" class="Polaris-TextStyle--variationStrong">
+										<div id="HAGSkeleton" class="Polaris-SkeletonBodyText">
+									</span>
+								</div>
+								<div>Entries so far : 
+									<span id="HAGEntries" class="Polaris-TextStyle--variationStrong">
+										<div id="HAGSkeleton" class="Polaris-SkeletonBodyText">
+									</span>
 								</div>
 						</div>
 					</div>
@@ -155,7 +161,7 @@
 					<div class="Polaris-Card__Header">
 						<h2 class="Polaris-Heading">Upcoming giveaways</h2>
 					</div>
-					<div class="Polaris-Card__Section">
+					<div id="HomeUpcomingGiveAways" class="Polaris-Card__Section">
 						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 								<div class="Polaris-EmptyState__Section">
 										<div class="Polaris-EmptyState__DetailsContainer">

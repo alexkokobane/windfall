@@ -54,6 +54,88 @@ $(document).ready(function(e){
 	$(".CreateGiveaway").click(function(){
 		location.href="/campaign/new"
 	})
+	if(window.location.pathname === "/"){
+		$.ajax({
+			url: "/data/campaigns/active",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.length === 0){
+					$("#HomeActiveGiveawaysSkeleton").remove()
+					return (
+						$("#HomeActiveGiveaways").html(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
+												<div class="Polaris-EmptyState__Content">
+													<p>Incentivize customers to spend more in your store.</p>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__Actions">
+												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+													<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></button></div>
+													<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+								</div>
+							</div>
+						`)
+					)
+				}
+				const obj = data[0]
+				$("#HAGSkeleton").remove()
+				$("#HAGName").text(obj.name)
+				$("#HAGType").text(obj.text)
+				$("#HAGStarted").text(obj.startDate)
+				$("#HAGEnds").text(obj.endDate)
+				$("#HAGEntries").text(obj.entriesTotaln)
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+		$.ajax({
+			url: "/data/campaigns/upcoming",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.length === 0){
+					return (`
+						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+							<div class="Polaris-EmptyState__Section">
+								<div class="Polaris-EmptyState__DetailsContainer">
+									<div class="Polaris-EmptyState__Details">
+										<div class="Polaris-TextContainer">
+											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
+											<div class="Polaris-EmptyState__Content">
+												<p>Incentivize customers to spend more in your store.</p>
+											</div>
+										</div>
+										<div class="Polaris-EmptyState__Actions">
+											<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+												<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></button></div>
+												<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+							</div>
+						</div>
+					`)
+				}
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+	}
 	//url == /campaign/new
 	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 	console.log(new Date().toISOString().split('T')[1].substring(0,5))
