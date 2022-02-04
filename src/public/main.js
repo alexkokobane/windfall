@@ -89,17 +89,19 @@ $(document).ready(function(e){
 					)
 				}
 				const obj = data[0]
+				console.log(obj)
 				$("#HAGSkeleton").remove()
 				$("#HAGName").text(obj.name)
-				$("#HAGType").text(obj.text)
-				$("#HAGStarted").text(obj.startDate)
-				$("#HAGEnds").text(obj.endDate)
-				$("#HAGEntries").text(obj.entriesTotaln)
+				$("#HAGType").text(obj.type)
+				$("#HAGStarted").text(new Date(obj.startDate).toDateString())
+				$("#HAGEnds").text(new Date(obj.endDate).toDateString())
+				$("#HAGEntries").text(obj.entriesTotal)
 			},
 			error: function(data){
 				alert(data.responseText)
 			}
 		})
+		/*
 		$.ajax({
 			url: "/data/campaigns/upcoming",
 			type: "GET",
@@ -134,7 +136,7 @@ $(document).ready(function(e){
 			error: function(data){
 				alert(data.responseText)
 			}
-		})
+		})*/
 	}
 	//url == /campaign/new
 	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
