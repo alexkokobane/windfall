@@ -359,6 +359,7 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 				"winnersTotal": obj.winnersTotal,
 			})
 		})
+		console.log(templates)
 		res.json(templates)
 	} catch(err: any){
 		console.log(err)

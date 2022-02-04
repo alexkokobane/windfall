@@ -54,6 +54,9 @@ $(document).ready(function(e){
 	$(".CreateGiveaway").click(function(){
 		location.href="/campaign/new"
 	})
+	$(".ToGiveawayTemplates").click(function(){
+		location.href="/campaign/giveaways"
+	})
 	if(window.location.pathname === "/"){
 		$.ajax({
 			url: "/data/campaigns/active",
@@ -106,31 +109,34 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				console.log("The upcoming length is "+data.length)
 				if(data.length === 0){
-					$("#HUGListWrapper")
-					return (`
-						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
-							<div class="Polaris-EmptyState__Section">
-								<div class="Polaris-EmptyState__DetailsContainer">
-									<div class="Polaris-EmptyState__Details">
-										<div class="Polaris-TextContainer">
-											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
-											<div class="Polaris-EmptyState__Content">
-												<p>Incentivize customers to spend more in your store.</p>
+					$("#HUGListWrapper").remove()
+					return (
+						$("#HomeUpcomingGiveAways").html(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
+												<div class="Polaris-EmptyState__Content">
+													<p>Incentivize customers to spend more in your store.</p>
+												</div>
 											</div>
-										</div>
-										<div class="Polaris-EmptyState__Actions">
-											<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-												<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></button></div>
-												<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+											<div class="Polaris-EmptyState__Actions">
+												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+													<div class="Polaris-Stack__Item"><a href="/campaign/new" class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></a></div>
+													<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+												</div>
 											</div>
 										</div>
 									</div>
+									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
 								</div>
-								<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
 							</div>
-						</div>
-					`)
+						`)
+					)
 				}
 				$(".HUGDecoyItem").remove()
 				data.forEach(function(giv){
@@ -172,31 +178,34 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				console.log("The template length is "+data.length)
 				if(data.length === 0){
 					$("#HGTListWrapper").remove()
-					return (`
-						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
-							<div class="Polaris-EmptyState__Section">
-								<div class="Polaris-EmptyState__DetailsContainer">
-									<div class="Polaris-EmptyState__Details">
-										<div class="Polaris-TextContainer">
-											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Display your saved giveaway templates</p>
-											<div class="Polaris-EmptyState__Content">
-												<p>Save the settings of any giveaway you would like to use in the future.</p>
+					return (
+						$("#HomeGiveawayTemplates").html(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Display your saved giveaway templates</p>
+												<div class="Polaris-EmptyState__Content">
+													<p>Save the settings of any giveaway you would like to use in the future.</p>
+												</div>
 											</div>
-										</div>
-										<div class="Polaris-EmptyState__Actions">
-											<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-												<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Add template</span></span></button></div>
-												<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+											<div class="Polaris-EmptyState__Actions">
+												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+													<div class="Polaris-Stack__Item"><a href="/campaign/giveaways" class="Polaris-Button Polaris-Button--primary ToGiveawayTemplates" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Add template</span></span></a></div>
+													<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+												</div>
 											</div>
 										</div>
 									</div>
+									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
 								</div>
-								<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
 							</div>
-						</div>
-					`)
+						`)
+					)
 				}
 				$(".HGTDecoyItem").remove()
 				data.forEach(function(giv){
