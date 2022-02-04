@@ -90,7 +90,7 @@ $(document).ready(function(e){
 				}
 				const obj = data[0]
 				console.log(obj)
-				$("#HAGSkeleton").remove()
+				$(".HAGSkeleton").remove()
 				$("#HAGName").text(obj.name)
 				$("#HAGType").text(obj.type)
 				$("#HAGStarted").text(new Date(obj.startDate).toDateString())
@@ -101,7 +101,6 @@ $(document).ready(function(e){
 				alert(data.responseText)
 			}
 		})
-		/*
 		$.ajax({
 			url: "/data/campaigns/upcoming",
 			type: "GET",
@@ -132,11 +131,41 @@ $(document).ready(function(e){
 						</div>
 					`)
 				}
+				$(".HUGDecoyItem").remove()
+				data.forEach(function(giv){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					$("#HUGDataDecoy").after(`
+						<li class="Polaris-ResourceItem__ListItem">
+							<div class="Polaris-ResourceItem__ItemWrapper">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+										<div class="Polaris-ResourceItem__Owned">
+											<div class="Polaris-ResourceItem__Media">
+												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<div style="background: ${colour};"></div>
+												</span>
+											</div>
+										</div>
+										<div class="Polaris-ResourceItem__Content">
+											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+												<div class="Polaris-Stack__Item Polaris-TextContainer">
+													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+													<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> ${new Date(giv.startDate).toDateString()}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					`)
+				})
 			},
 			error: function(data){
 				alert(data.responseText)
 			}
-		})*/
+		})
 	}
 	//url == /campaign/new
 	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
@@ -389,7 +418,7 @@ $(document).ready(function(e){
 										</div>
 										<div class="Polaris-ResourceItem__Content ">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-													<div class="Polaris-Stack__Item"
+													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
@@ -510,7 +539,7 @@ $(document).ready(function(e){
 											</div>
 											<div class="Polaris-ResourceItem__Content ">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-													<div class="Polaris-Stack__Item"
+													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
@@ -632,7 +661,7 @@ $(document).ready(function(e){
 											</div>
 											<div class="Polaris-ResourceItem__Content">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-													<div class="Polaris-Stack__Item"
+													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
@@ -754,7 +783,7 @@ $(document).ready(function(e){
 											</div>
 											<div class="Polaris-ResourceItem__Content">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-													<div class="Polaris-Stack__Item"
+													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
