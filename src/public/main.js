@@ -21,8 +21,8 @@ $(document).ready(function(e){
 		$.ajax({
 			url: "/login/logout",
 			type: "POST",
-			success: function(){
-				location.href="/"
+			success: function(data){
+				location.href=data
 			}
 		})
 	})

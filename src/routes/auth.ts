@@ -37,7 +37,7 @@ const handleWebhookRequest = async (topic: string, shop: string, webhookRequestB
 }
 
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-  path: "/webhooks",
+  path: "/shop/webhooks",
   webhookHandler: handleWebhookRequest,
 })
 
@@ -81,7 +81,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
       storeShop.save()
 
       const delShop = await Shopify.Webhooks.Registry.register({
-        path: '/Webhooks',
+        path: '/shop/webhooks',
         topic: 'APP_UNINSTALLED',
         accessToken: session.accessToken,
         shop: session.shop,

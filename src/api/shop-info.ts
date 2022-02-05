@@ -19,4 +19,14 @@ shopInfo.get('/', checkAuth, async (req, res) => {
 	}
 })
 
+shopInfo.post('/webhooks', async (req, res) => {
+	try{
+		await Shopify.Webhooks.Registry.process(req, res)
+		console.log('Webhook processed')
+		res.status(200)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 export default shopInfo
