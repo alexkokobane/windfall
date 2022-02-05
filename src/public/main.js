@@ -400,10 +400,29 @@ $(document).ready(function(e){
 			success: function(data){
 				$("#WinnersSkeleton").remove()
 				$(".Polaris-SkeletonBodyText").remove()
+				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				console.log(data)
+				if(new Date(data.endDate) < new Date()){
+					$("#ChooseWinners").removeClass("Polaris-Button--disabled")
+					$("#ChooseWinners").addClass("Polaris-Button--primary")
+					$("#ChooseWinners").click(function(e){
+						e.preventDefault()
+						$.ajax({
+							url: `/campaign/${data.id}/choose-winners`,
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								alert("Successfully chosen the winners")
+							},
+							error: function(data){
+								alert(data.responseText)
+							}
+						})
+					})
+				}
 				$("#GiveawayName").text(data.title)
 				$("#ForTotalEntries").text(data.entriesTotal)
-				$("#ForActiveDates").text(`From ${new Date(data.startDate).toLocaleString()} to ${new Date(data.endDate).toLocaleString()}`)
+				$("#ForActiveDates").text(`From ${new Date(data.startDate).toDateString()} to ${new Date(data.endDate).toDateString()}`)
 				$("#ForType").text(data.type)
 				data.winners.reverse().forEach(function(item){
 					$("#GiveawayWinnerListDecoy").after(`

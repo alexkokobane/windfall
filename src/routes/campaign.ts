@@ -239,6 +239,9 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 				'campaigns': 1
 			}}
 		])
+		if(new Date(goodMeasure.endDate) > new Date()){
+			return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
+		}
 		let iter: any = []
 		for (let i = 0; i < goodMeasure.winnersTotal; i++){
 			iter.push(i)
@@ -254,7 +257,7 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 			}}
 		])
 		if(entries.length === 0){
-			return res.status(404).send("Nobody wins when not a single person entred your giveaway.")
+			return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
 		}
 		if(entries.length < goodMeasure.winnersTotal){
 			return res.status(403).send("Not enough entries to select a winners")
