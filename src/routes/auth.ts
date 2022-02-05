@@ -27,6 +27,20 @@ Shopify.Context.initialize({
    )
 });
 
+const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: string) => {
+  try{
+    await Shop.deleteOne({'shop': shop})
+    console.log(`${shop} has been deleted.`)
+  } catch(err: any){
+    console.log(err)
+  }
+}
+
+Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
+  path: "/webhooks",
+  webhookHandler: handleWebhookRequest,
+})
+
 auth.get('/', sessionContext, async (req: Request, res: Response) => {
   try {
     const shop = getShop(req)
@@ -45,7 +59,7 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
   }
 });
 
-auth.get('/callback', checkAuth, async (req: Request, res: Response) => {
+auth.get('/callback', async (req: Request, res: Response) => {
   try {
     
     console.log("Here are the cookie")
@@ -65,6 +79,17 @@ auth.get('/callback', checkAuth, async (req: Request, res: Response) => {
         email: session.onlineAccessInfo.associated_user.email,
       })
       storeShop.save()
+
+      const delShop = await Shopify.Webhooks.Registry.register({
+        path: '/Webhooks',
+        topic: 'APP_UNINSTALLED',
+        accessToken: session.accessToken,
+        shop: session.shop,
+      })
+
+      if(!delShop['APP_UNINSTALLED'].success){
+        console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
+      }
     }
     
     return res.redirect(`/`)
