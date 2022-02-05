@@ -189,7 +189,7 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 campaign.get('/:id', checkAuth, async (req, res) => {
 	try {
 		const giveawayId = parseInt(req.params.id)
-		if(giveawayId == null){
+		if(isNaN(giveawayId) === true){
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -217,6 +217,71 @@ campaign.put('/:id', checkAuth, async (req, res) => {
 
 campaign.delete('/:id', checkAuth, async (req, res) => {
 	res.send("Ressource has been deleted")
+})
+
+campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		if(giveaway === null){
+			return res.status(404).render('pages/404')
+		}
+		const goodMeasure: any = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns'},
+			{'$match': {'campaigns.id': giveawayId}},
+			{'$project': {
+				'_id': 0,
+				'campaigns': 1
+			}}
+		])
+		let iter: any = []
+		for (let i = 0; i < goodMeasure.winnersTotal; i++){
+			iter.push(i)
+		}
+		const entries: any[] = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns'},
+			{'$match': {'campaigns.id': giveawayId}},
+			{'$unwind': '$campaigns.entries'},
+			{'$project': {
+				'_id': 0,
+				'campaigns.entries': 1
+			}}
+		])
+		if(entries.length === 0){
+			return res.status(404).send("Nobody wins when not a single person entred your giveaway.")
+		}
+		if(entries.length < goodMeasure.winnersTotal){
+			return res.status(403).send("Not enough entries to select a winners")
+		}
+		let prizedWinners: any = []
+		let checker: any = []
+		iter.forEach((head: any) => {
+			let winner = head++
+			let theOne = entries[Math.floor(Math.random() * entries.length)]
+			if(checker.includes(theOne) === true){
+				// To include a time out
+				while (checker.includes(theOne) === true){
+					theOne = entries[Math.floor(Math.random() * entries.length)]
+				}
+			}
+			checker.push(theOne)
+			prizedWinners.push({winner: theOne})
+		})
+		if(prizedWinners.length !== goodMeasure.winnersTotal){
+			return res.status(403).send("Could choose a winner, try again!")
+		}
+		console.log(entries)
+		console.log(prizedWinners)
+		res.json(prizedWinners)
+	} catch(err: any) {
+		console.log(err)
+	}
 })
 
 campaign.post('/store', checkAuth, async (req, res) => {
