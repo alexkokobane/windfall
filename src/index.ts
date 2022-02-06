@@ -2,9 +2,9 @@ import express, { Request, Response, NextFunction } from 'express'
 import path from 'path'
 import morgan from 'morgan'
 import mongoose from 'mongoose'
-import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import expressLayouts from 'express-ejs-layouts'
+import Shopify from '@shopify/shopify-api'
 require('dotenv').config()
 
 const { DB_URL, API_SECRET_KEY } = process.env
@@ -25,10 +25,16 @@ import data from './api/data'
 
 const app = express()
 
+app.post('/webhooks', async (req, res) => {
+  try{
+    await Shopify.Webhooks.Registry.process(req, res)    
+  } catch(err: any){
+    console.log(err)
+  }
+})
 
 app.use(morgan('tiny'))
 app.use(express.static(path.resolve(__dirname, 'public')))
-app.use(cookieParser(API_SECRET_KEY))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(expressLayouts)

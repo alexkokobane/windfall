@@ -16,7 +16,7 @@ login.post('/', loggedInCtx, async (req, res) => {
 		if(store){
 			return res.status(200).send("/auth?shop="+store.shop)
 		}
-		res.send("Please install this app from the Shopify App Store")
+		res.status(403).send("Please install this app from the Shopify App Store")
 	} catch(err: any) {
 		console.log(err)
 	}

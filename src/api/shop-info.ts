@@ -21,10 +21,16 @@ shopInfo.get('/', checkAuth, async (req, res) => {
 
 shopInfo.post('/webhooks', async (req, res) => {
 	try{
-		await Shopify.Webhooks.Registry.process(req, res)
-		console.log('Webhook processed')
-		res.status(200)
+		await Shopify.Webhooks.Registry.process(req, res)		
 	} catch(err: any){
+		console.log(err)
+	}
+})
+
+shopInfo.post('/try', async (req, res) => {
+	try{
+		res.status(200).send("A-OK")
+	} catch(err: any) {
 		console.log(err)
 	}
 })

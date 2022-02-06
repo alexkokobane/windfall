@@ -46,6 +46,9 @@
 					data: JSON.stringify({"shop": name}),
 					success: function(data){
 						location.href = data
+					},
+					error: function(data){
+						alert(data.responseText)
 					}
 				})
 			})
