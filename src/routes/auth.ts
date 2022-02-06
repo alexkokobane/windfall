@@ -72,9 +72,18 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				accessToken: session.accessToken,
 				shop: session.shop,
 			})
+			const ordersPaid = await Shopify.Webhooks.Registry.register({
+				path: '/webhooks',
+				topic: 'ORDERS_PAID',
+				accessToken: session.accessToken,
+				shop: session.shop
+			})
 			console.log(delShop)
 			if(!delShop['APP_UNINSTALLED'].success){
 				console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
+			}
+			if(!ordersPaid['ORDERS_PAID'].success){
+				console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
 			}
 		}
 		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
@@ -84,8 +93,13 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		console.log("THE ERROR IS ON auth/callback")
 		res.status(501).render('pages/501')  }
 })
+/*
+Other webhook topics to subscribe to
+CUSTOMERS_DELETE
+ORDERS_PAID
+*/
 
-const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: string) => {
+const handleAppUninstall = async (topic: string, shop: string, webhookRequestBody: string) => {
 	try{
 		await Shop.deleteOne({'shop': shop})
 		console.log(`${shop} has been deleted.`)
@@ -95,9 +109,24 @@ const handleWebhookRequest = async (topic: string, shop: string, webhookRequestB
 	}
 }
 
+const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: string) => {
+	try{
+		console.log(topic+" was fired.")
+		console.log(`${shop} has an order that has been paid.`)
+		console.log(webhookRequestBody)
+	} catch(err: any){
+		console.log(err)
+	}
+}
+
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
 	path: "/webhooks",
-	webhookHandler: handleWebhookRequest,
+	webhookHandler: handleAppUninstall,
+})
+
+Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
+	path: "/webhooks",
+	webhookHandler: handleOrdersPaid,
 })
 
 export default auth
