@@ -22,16 +22,13 @@ import login from './api/login'
 import customers from './api/customers'
 import shopInfo from './api/shop-info'
 import data from './api/data'
+import webhooks from './api/webhooks'
 
 const app = express()
 
-app.post('/webhooks', async (req, res) => {
-  try{
-    await Shopify.Webhooks.Registry.process(req, res)    
-  } catch(err: any){
-    console.log(err)
-  }
-})
+// Special routes
+app.use('/auth', auth)
+app.use('/webhooks', webhooks)
 
 app.use(morgan('tiny'))
 app.use(express.static(path.resolve(__dirname, 'public')))
@@ -51,7 +48,6 @@ let db = mongoose.connection
 db.on('error', console.error.bind(console, "MongoDB connection errors"))
 
 // Controller routes
-app.use('/auth', auth)
 app.use('/', home)
 app.use('/settings', settings)
 app.use('/billing', billing)

@@ -67,7 +67,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			storeShop.save()
 
 			const delShop = await Shopify.Webhooks.Registry.register({
-				path: '/shop/webhooks',
+				path: '/webhooks',
 				topic: 'APP_UNINSTALLED',
 				accessToken: session.accessToken,
 				shop: session.shop,
@@ -77,7 +77,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
 			}
 		}
-		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/shop/webhooks'))
+		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
 		return res.redirect(`/`)
 	} catch (error) {
 		console.error(error);
@@ -96,7 +96,7 @@ const handleWebhookRequest = async (topic: string, shop: string, webhookRequestB
 }
 
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-	path: "/shop/webhooks",
+	path: "/webhooks",
 	webhookHandler: handleWebhookRequest,
 })
 
