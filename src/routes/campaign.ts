@@ -23,11 +23,15 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		const giveawayId = Math.floor(Math.random() * 1000000000)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const store = await Shop.findOne({shop: session.shop})
-		console.log(new Date(`${data.startDate}T${data.startTime}:00`))
-		console.log(new Date(`${data.endDate}T${data.endTime}:00`))
+		
+		if(new Date(`${data.endDate}T${data.endTime}:00`) < new Date()){
+			return res.status(401).send("The end date of a giveaway cannot be in the past")
+		}
+
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
 		} else {
+			const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
 			await Shop.findOneAndUpdate(
 				{shop: session.shop},
 				{
@@ -35,6 +39,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 						campaigns: {
 							id: giveawayId,
 							name: data.name,
+							state: status ,
 							startDate: new Date(`${data.startDate}T${data.startTime}:00`),
 							endDate: new Date(`${data.endDate}T${data.endTime}:00`),
 							distributionType: data.distribution,

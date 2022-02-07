@@ -10,6 +10,7 @@ require('dotenv').config()
 const { DB_URL, API_SECRET_KEY } = process.env
 
 import checkAuth from './utils/middlewares/check-auth'
+import { setActiveCampaign } from './utils/campaign-worker'
 
 import auth from './routes/auth'
 import home from './routes/home'
@@ -25,6 +26,9 @@ import data from './api/data'
 import webhooks from './api/webhooks'
 
 const app = express()
+
+// Workers
+setActiveCampaign()
 
 // Special routes
 app.use('/auth', auth)

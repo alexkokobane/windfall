@@ -37,10 +37,11 @@ const ShopSchema = new mongoose.Schema({
 		endDate: Date,
 		toSuper: [String],
 		distributionType: String,
+		state: String,
 		entries: [{
-			id: Number,
-			reference: Number,
-			name: String,
+			reference: String,
+			firstName: String,
+			lastName: String,
 			email: String,
 			points: Number
 		}],
@@ -89,9 +90,9 @@ const ShopSchema = new mongoose.Schema({
 		}
 	}],
 	customerList: [{
-		customerId: Number,
 		email: String,
-		name: String,
+		firstName: String,
+		lastName: String,
 		totalCampaignsParticipated: Number,
 		totalPoints: Number,
 		autoindex: Number,

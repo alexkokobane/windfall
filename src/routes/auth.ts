@@ -65,28 +65,28 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				email: session.onlineAccessInfo.associated_user.email,
 			})
 			storeShop.save()
-
-			const delShop = await Shopify.Webhooks.Registry.register({
-				path: '/webhooks',
-				topic: 'APP_UNINSTALLED',
-				accessToken: session.accessToken,
-				shop: session.shop,
-			})
-			const ordersPaid = await Shopify.Webhooks.Registry.register({
-				path: '/webhooks',
-				topic: 'ORDERS_PAID',
-				accessToken: session.accessToken,
-				shop: session.shop
-			})
-			console.log(delShop)
-			if(!delShop['APP_UNINSTALLED'].success){
-				console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
-			}
-			if(!ordersPaid['ORDERS_PAID'].success){
-				console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
-			}
+		}
+		// Webhooks
+		const delShop = await Shopify.Webhooks.Registry.register({
+			path: '/webhooks',
+			topic: 'APP_UNINSTALLED',
+			accessToken: session.accessToken,
+			shop: session.shop,
+		})
+		const ordersPaid = await Shopify.Webhooks.Registry.register({
+			path: '/webhooks',
+			topic: 'ORDERS_PAID',
+			accessToken: session.accessToken,
+			shop: session.shop
+		})
+		if(!delShop['APP_UNINSTALLED'].success){
+			console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
+		}
+		if(!ordersPaid['ORDERS_PAID'].success){
+			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
 		}
 		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
+
 		return res.redirect(`/`)
 	} catch (error) {
 		console.error(error);
@@ -109,11 +109,16 @@ const handleAppUninstall = async (topic: string, shop: string, webhookRequestBod
 	}
 }
 
-const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: string) => {
+const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: any) => {
 	try{
 		console.log(topic+" was fired.")
 		console.log(`${shop} has an order that has been paid.`)
 		console.log(webhookRequestBody)
+
+		const firstName = webhookRequestBody.customer.first_name
+		const lastName = webhookRequestBody.customer.last_name
+		const email = webhookRequestBody.customer.email
+		const subtotal = webhookRequestBody.subtotal_price
 	} catch(err: any){
 		console.log(err)
 	}
