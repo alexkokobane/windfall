@@ -55,6 +55,9 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		])
 		const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
 		if(status === 'Active' && checkActive.length !== 0){
+			if(new Date(checkActive[0].campaigns.endDate) > new Date(`${data.startDate}T${data.startTime}:00`)){
+				return res.status(403).send(`The next giveaway can only start from ${new Date(checkActive[0].campaigns.endDate)}`)
+			}
 			return res.status(403).send("Choose another date, there can only be a single giveaway at a time")
 		}
 		if(status === 'Upcoming' && checkUpcoming.length !== 0){
