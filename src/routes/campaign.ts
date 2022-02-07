@@ -25,11 +25,14 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		const store = await Shop.findOne({shop: session.shop})
 		
 		if(new Date(`${data.endDate}T${data.endTime}:00`) < new Date()){
-			return res.status(401).send("The end date of a giveaway cannot be in the past")
+			return res.status(403).send("The end date of a giveaway cannot be in the past")
 		}
 
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
+		}
+		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
+			return res.status(403).send("You cannot hve more than 10 winners or a zero (0) winner")
 		}
 		const checkActive = await Shop.aggregate([
 			{'$match': {'shop': session.shop}},
@@ -52,10 +55,10 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		])
 		const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
 		if(status === 'Active' && checkActive.length !== 0){
-			return res.status(401).send("Choose another date, there can only be a single giveaway at a time")
+			return res.status(403).send("Choose another date, there can only be a single giveaway at a time")
 		}
 		if(status === 'Upcoming' && checkUpcoming.length !== 0){
-			return res.status(401).send("Giveaway scheduling conflict detected")
+			return res.status(403).send("Giveaway scheduling conflict detected")
 		}
 		await Shop.findOneAndUpdate(
 			{shop: session.shop},
@@ -81,7 +84,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		} else if (data.distribution === "Hierarchical"){
 			res.send(`/campaign/new/hierarchical?id=${giveawayId}&winners=${data.ofWinners}`)
 		} else {
-			res.status(401).send("Error, choose a distribution type")
+			res.status(403).send("Error, choose a distribution type")
 		}
 	} catch(err: any){
 		console.log(err)

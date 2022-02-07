@@ -27,6 +27,8 @@ import webhooks from './api/webhooks'
 
 const app = express()
 
+app.use(morgan('tiny'))
+
 // Workers
 setActiveCampaign()
 
@@ -34,7 +36,6 @@ setActiveCampaign()
 app.use('/auth', auth)
 app.use('/webhooks', webhooks)
 
-app.use(morgan('tiny'))
 app.use(express.static(path.resolve(__dirname, 'public')))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

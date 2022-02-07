@@ -260,6 +260,9 @@ $(document).ready(function(e){
 		let endTime = $("#EndTime").val()
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+		if(isNaN(parseInt(ofWinners)) === true){
+			return alert("The number of winners has to be a number")
+		}
 		if(name === "" || startDate === "" || startTime === "" || endDate === "" || endTime === "" || ofWinners === "" || distrubution === ""){
 			return alert("Please fill all fields")
 		}
