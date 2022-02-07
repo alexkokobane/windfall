@@ -30,26 +30,51 @@ campaign.post('/new', checkAuth, async (req, res) => {
 
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
-		} else {
-			const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
-			await Shop.findOneAndUpdate(
-				{shop: session.shop},
-				{
-					$push: {
-						campaigns: {
-							id: giveawayId,
-							name: data.name,
-							state: status ,
-							startDate: new Date(`${data.startDate}T${data.startTime}:00`),
-							endDate: new Date(`${data.endDate}T${data.endTime}:00`),
-							distributionType: data.distribution,
-							winnersTotal: parseInt(data.ofWinners)
-						}
-					}
-				},
-				{new: true}
-			)
 		}
+		const checkActive = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns'},
+			{'$match': {'campaigns.state': 'Active'}},
+			{'$project': {
+				'_id': 0,
+				'campaigns': 1
+			}}
+		])
+		const checkUpcoming = await Shop.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$unwind': '$campaigns'},
+			{'$match': {'campaigns.startDate': new Date(`${data.startDate}T${data.startTime}:00`) }},
+			{'$match': {'campaigns.endDate': new Date(`${data.endDate}T${data.endTime}:00`) }},
+			{'$project': {
+				'_id': 0,
+				'campaigns': 1
+			}}
+		])
+		const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
+		if(status === 'Active' && checkActive.length !== 0){
+			return res.status(401).send("Choose another date, there can only be a single giveaway at a time")
+		}
+		if(status === 'Upcoming' && checkUpcoming.length !== 0){
+			return res.status(401).send("Giveaway scheduling conflict detected")
+		}
+		await Shop.findOneAndUpdate(
+			{shop: session.shop},
+			{
+				$push: {
+					campaigns: {
+						id: giveawayId,
+						name: data.name,
+						state: status ,
+						startDate: new Date(`${data.startDate}T${data.startTime}:00`),
+						endDate: new Date(`${data.endDate}T${data.endTime}:00`),
+						distributionType: data.distribution,
+						winnersTotal: parseInt(data.ofWinners)
+					}
+				}
+			},
+			{new: true}
+		)
+		
 
 		if(data.distribution === "Equitable"){
 			res.send(`/campaign/new/equitable?id=${giveawayId}`)
