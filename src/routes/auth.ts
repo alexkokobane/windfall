@@ -119,6 +119,44 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 		const lastName = webhookRequestBody.customer.last_name
 		const email = webhookRequestBody.customer.email
 		const subtotal = webhookRequestBody.subtotal_price
+		const checkActive = await Shop.findOne({
+			'shop': shop,
+			'campaigns.state': 'Active'
+		})
+		if(checkActive !== null){
+			const participant = await Shop.findOne(
+				{'shop': shop}, 
+				{
+					'campaigns.$.entries' : {'$elemMatch' : {'email': email}}
+				}
+			)
+			if(participant === null) {
+				await Shop.aggregate([
+					{'$match': {'shop': shop}},
+					{'$unwind': '$campaigns'},
+					{'$match': {'campaigns.state': 'Active'}},
+					{'$addFields': {'$push': {
+						'campaigns.entries': {
+							'firstName': firstName,
+							'lastName': lastName,
+							'email': email,
+							'points': subtotal
+						}
+					}}}
+				])
+			} else {
+				await Shop.aggregate([
+					{'$match': {'shop': shop}},
+					{'$unwind': '$campaigns'},
+					{'$match': {'campaigns.state': 'Active'}},
+					{
+						'$addFields': {
+							'campaigns.entries.points': {'$sum': ['$campaigns.entries.points', subtotal]}
+						}
+					}
+				])
+			}
+		}
 	} catch(err: any){
 		console.log(err)
 	}

@@ -39,7 +39,6 @@ const ShopSchema = new mongoose.Schema({
 		distributionType: String,
 		state: String,
 		entries: [{
-			reference: String,
 			firstName: String,
 			lastName: String,
 			email: String,
