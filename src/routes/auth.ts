@@ -151,24 +151,30 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 				}
 			)
 			if(participant === null) {
-				await Shop.updateOne({
-					'campaigns.state': 'Active',
-					'shop': shop
-				},{
-					'$push': {
-						'campaigns.entries': {
-							'firstName': firstName,
-							'lastName': lastName,
-							'email': email,
-							'points': subtotal
+				let con = await Shop.aggregate([
+					{'$match': {'shop': shop}},
+					{'$unwind': '$campaigns'},
+					{'$match': {'campaigns.state': 'Active'}},
+					{
+						'$addFields': {
+							'campaigns.entries': {
+								'$concatArrays': ['$campaigns.entries', [{
+									'firstName': firstName,
+									'lastName': lastName,
+									'email': email,
+									'points': subtotal
+								}]]
+							}
 						}
 					}
-				})
+				])
+				console.log(con)
 			} else {
 				await Shop.aggregate([
 					{'$match': {'shop': shop}},
 					{'$unwind': '$campaigns'},
 					{'$match': {'campaigns.state': 'Active'}},
+					{'$match': {'campaigns.entries.email': email}},
 					{
 						'$addFields': {
 							'campaigns.entries.points': {'$sum': ['$campaigns.entries.points', subtotal]}
