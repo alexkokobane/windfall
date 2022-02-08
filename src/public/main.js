@@ -444,6 +444,22 @@ $(document).ready(function(e){
 						}
 					})
 				})
+				$("#DeleteGiveawayBtn").click(function(){
+					let consent = confirm("Are you sure?")
+					if(consent){
+						$.ajax({
+							url: `/campaign/${data.id}/delete`,
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								location.href=data
+							},
+							error: function(data){
+								alert(data.responseText)
+							}
+						})
+					}
+				})
 			},
 			error: function(data){
 				alert(data.responseText)

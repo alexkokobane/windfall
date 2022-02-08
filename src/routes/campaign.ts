@@ -61,6 +61,15 @@ campaign.post('/new', checkAuth, async (req, res) => {
 			return res.status(403).send("Choose another date, there can only be a single giveaway at a time")
 		}
 		if(status === 'Upcoming' && checkUpcoming.length !== 0){
+			let keyValue = []
+			
+			checkUpcoming.forEach((item) => {
+				const upStart = new Date(item.campaigns.startDate)
+				const upEnd = new Date(item.campaigns.endDate)
+				const givStart = new Date(`${data.startDate}T${data.startTime}:00`)
+				const givEnd = new Date(`${data.endDate}T${data.endTime}:00`)
+				keyValue.push(upStart)
+			})
 			return res.status(403).send("Giveaway scheduling conflict detected")
 		}
 		await Shop.findOneAndUpdate(
@@ -247,12 +256,38 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.put('/:id', checkAuth, async (req, res) => {
+campaign.post('/:id/edit', checkAuth, async (req, res) => {
 	res.send("The give away has been edited")
 })
 
-campaign.delete('/:id', checkAuth, async (req, res) => {
-	res.send("Ressource has been deleted")
+campaign.post('/:id/delete', checkAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const realObject = await Shop.findOne(
+			{'campaigns.id': giveawayId}, 
+			{
+				'shop': session.shop, 
+				campaigns : {'$elemMatch' : {'id': giveawayId}}
+			}
+		)
+		if(realObject === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+		await Shop.updateOne({
+			'campaigns.id': giveawayId
+		}, {
+			'$pull': {
+				'campaigns': {'id': giveawayId}
+			}
+		})
+		res.send("/campaign/giveaways")
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {

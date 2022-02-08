@@ -30,7 +30,7 @@ const app = express()
 app.use(morgan('tiny'))
 
 // Workers
-setActiveCampaign()
+//setActiveCampaign()
 
 // Special routes
 app.use('/auth', auth)
