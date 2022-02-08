@@ -113,37 +113,57 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 	try{
 		console.log(topic+" was fired.")
 		console.log(`${shop} has an order that has been paid.`)
-		console.log(webhookRequestBody)
 
-		const firstName = webhookRequestBody.customer.first_name
-		const lastName = webhookRequestBody.customer.last_name
-		const email = webhookRequestBody.customer.email
-		const subtotal = webhookRequestBody.subtotal_price
+		const obj = JSON.parse(webhookRequestBody)
+		console.log(` 
+			The body:
+
+			${webhookRequestBody}
+
+
+
+			The subtotal:
+
+			${obj.subtotal_price}
+
+
+
+			The customer
+
+			${obj.customer}
+
+
+			`)
+		
+		const firstName = obj.customer.first_name
+		const lastName = obj.customer.last_name
+		const email = obj.customer.email
+		const subtotal = obj.subtotal_price
 		const checkActive = await Shop.findOne({
 			'shop': shop,
 			'campaigns.state': 'Active'
 		})
 		if(checkActive !== null){
 			const participant = await Shop.findOne(
-				{'shop': shop}, 
 				{
-					'campaigns.$.entries' : {'$elemMatch' : {'email': email}}
+					'shop': shop, 
+					'campaigns.entries.email': email
 				}
 			)
 			if(participant === null) {
-				await Shop.aggregate([
-					{'$match': {'shop': shop}},
-					{'$unwind': '$campaigns'},
-					{'$match': {'campaigns.state': 'Active'}},
-					{'$addFields': {'$push': {
+				await Shop.updateOne({
+					'campaigns.state': 'Active',
+					'shop': shop
+				},{
+					'$push': {
 						'campaigns.entries': {
 							'firstName': firstName,
 							'lastName': lastName,
 							'email': email,
 							'points': subtotal
 						}
-					}}}
-				])
+					}
+				})
 			} else {
 				await Shop.aggregate([
 					{'$match': {'shop': shop}},
