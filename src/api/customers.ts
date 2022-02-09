@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import Shop from '../models/shop-model'
+import { Shop } from '../models/shop-model'
 
 const customers = express.Router()
 

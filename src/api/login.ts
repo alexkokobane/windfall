@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import cors from 'cors'
-import Shop from '../models/shop-model'
+import { Shop } from '../models/shop-model'
 import checkAuth from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 import { corsMiddleware } from '../utils/middlewares/experimental'

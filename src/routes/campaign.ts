@@ -1,6 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
-import Shop from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import checkAuth from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 

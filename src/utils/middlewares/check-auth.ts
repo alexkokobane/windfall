@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
-import Shop from '../../models/shop-model'
+import { Shop } from '../../models/shop-model'
 import getShop from '../get-shop'
 
 const checkAuth = async (req: Request, res: Response, next:NextFunction) => {

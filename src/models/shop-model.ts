@@ -134,5 +134,9 @@ const customerListSchema = new mongoose.Schema({
 
 
 const Shop = mongoose.model('Shop', ShopSchema)
+const Campaign = mongoose.model('Campaign', campaignSchema)
+const Super = mongoose.model('Super', superCampaignSchema)
+const Saved = mongoose.model('SavedCampaign', campaignTemplateSchema)
+const Customers = mongoose.model('Customers', customerListSchema)
 
-export { Shop }
+export { Shop, Campaign, Super, Saved, Customers }

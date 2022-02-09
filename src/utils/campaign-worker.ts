@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import axios from 'axios'
-import Shop from '../models/shop-model'
+import { Shop, Campaign } from '../models/shop-model'
 import getShop from './get-shop'
 
 export const setActiveCampaign = () => {

@@ -3,7 +3,7 @@ import Shopify, { ApiVersion, AuthQuery, SessionInterface } from '@shopify/shopi
 import cors from 'cors'
 import getShop from '../utils/get-shop'
 import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-session'
-import Shop from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import sessionContext from '../utils/middlewares/session-context'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 import checkAuth from '../utils/middlewares/check-auth'
