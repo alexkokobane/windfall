@@ -52,28 +52,26 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 			return res.status(404).send("Giveaway not found")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.findOne(
-			{'campaigns.id': giveawayId}, 
+		const giveaway = await Campaign.findOne(
 			{
-				'shop': session.shop, 
-				campaigns : {'$elemMatch' : {'id': giveawayId}}
+				'shop': session.shop,
+				'campaigns.id': giveawayId
 			}
 		)
-		console.log(rawGiveaway)
-		if(rawGiveaway === null){
+		console.log(giveaway)
+		if(giveaway === null){
 			return res.status(404).send("Giveaway not found")
 		}
-		const theOne: any = rawGiveaway.campaigns[0]
-		console.log(theOne)
+		
 		const filteredGiveaway = {
-			"id": theOne.id,
-			"title": theOne.name,
-			"startDate": theOne.startDate,
-			"type": theOne.distributionType,
-			"endDate": theOne.endDate,
-			"entriesTotal": theOne.entries.length,
-			"winnersTotal": theOne.winnersTotal,
-			"winners": theOne.winners
+			"id": giveaway.id,
+			"title": giveaway.name,
+			"startDate": giveaway.startDate,
+			"type": giveaway.distributionType,
+			"endDate": giveaway.endDate,
+			"entriesTotal": giveaway.entries.length,
+			"winnersTotal": giveaway.winnersTotal,
+			"winners": giveaway.winners
 		}
 		console.log(filteredGiveaway)
 		res.json(filteredGiveaway)
@@ -86,34 +84,13 @@ data.get('/campaigns/expired', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{
-				'$project': {
-					'campaigns': {
-						'$filter': {
-							'input': '$campaigns',
-							'as': 'campaign',
-							'cond': {
-								'$and': [
-									{'$lt': ['$$campaign.startDate', new Date(dateNow)]},
-									{'$lt': ['$$campaign.endDate', new Date(dateNow)]}
-								]
-							}
-						}
-					}
-				}
-			},
-			{'$unwind': '$campaigns' },
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)}
+		})
 		let expired: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			expired.push({
 				"id": obj.id,
@@ -136,34 +113,14 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{
-				'$project': {
-					'campaigns': {
-						'$filter': {
-							'input': '$campaigns',
-							'as': 'campaign',
-							'cond': {
-								'$and': [
-									{'$lte': ['$$campaign.startDate', new Date(dateNow)]},
-									{'$gte': ['$$campaign.endDate', new Date(dateNow)]}
-								]
-							}
-						}
-					}
-				}
-			},
-			{'$unwind': '$campaigns' },
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+			'startDate': {'$lte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		})
+
 		let active: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			active.push({
 				"id": obj.id,
@@ -186,34 +143,14 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{
-				'$project': {
-					'campaigns': {
-						'$filter': {
-							'input': '$campaigns',
-							'as': 'campaign',
-							'cond': {
-								'$and': [
-									{'$gte': ['$$campaign.startDate', new Date(dateNow)]},
-									{'$gte': ['$$campaign.endDate', new Date(dateNow)]}
-								]
-							}
-						}
-					}
-				}
-			},
-			{'$unwind': '$campaigns' },
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+			'startDate': {'$gte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		})
+
 		let upcoming: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			upcoming.push({
 				"id": obj.id,
@@ -236,19 +173,13 @@ data.get('/campaigns/hierarchical', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns' },
-			{'$match': {'campaigns.distributionType': 'Hierarchical'}},
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+			'distributionType': 'Hierarchical'
+		})
+
 		let hierarchy: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			hierarchy.push({
 				"id": obj.id,
@@ -271,19 +202,13 @@ data.get('/campaigns/equitable', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns' },
-			{'$match': {'campaigns.distributionType': 'Equitable'}},
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+			'distributionType': 'Equitable'
+		})
+
 		let equity: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			equity.push({
 				"id": obj.id,
@@ -306,18 +231,12 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns' },
-			{
-				'$project': {
-					'_id': 0,
-					'campaigns': 1
-				}
-			}
-		])
+		const giveaway = await Campaign.find({
+			'shop': session.shop,
+		})
+
 		let all: any = []
-		rawGiveaway.forEach((item) => {
+		giveaway.forEach((item) => {
 			const obj = item.campaigns
 			all.push({
 				"id": obj.id,
@@ -339,18 +258,12 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const rawGiveaway = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaignTemplate' },			
-			{
-				'$project': {
-					'_id': 0,
-					'campaignTemplate': 1
-				}
-			}
-		])
+		const template = await Saved.find({
+			'shop': session.shop,
+		})
+
 		let templates: any = []
-		rawGiveaway.forEach((item) => {
+		template.forEach((item) => {
 			let obj = item.campaignTemplate
 			templates.push({
 				"id": obj.id,
@@ -369,7 +282,14 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 data.get('/everything', checkAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const allData = await Shop.findOne({'shop': session.shop})
+		const shop = await Shop.findOne({'shop': session.shop})
+		const campaigns = await Campaign.find({'shop': session.shop})
+		const templates = await Saved.find({'shop': session.shop})
+		const allData = {
+			shop,
+			campaigns,
+			campaignTemplate: templates
+		}
 		res.json(allData)
 	} catch(err: any) {
 		console.log(err)
