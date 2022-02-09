@@ -22,7 +22,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		console.log(req.body.form)
 		const giveawayId = Math.floor(Math.random() * 1000000000)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const store = await Shop.findOne({shop: session.shop})
+		const store = await Shop.findOne({'shop': session.shop})
 		
 		if(new Date(`${data.endDate}T${data.endTime}:00`) < new Date()){
 			return res.status(403).send("The end date of a giveaway cannot be in the past")
@@ -34,24 +34,14 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot hve more than 10 winners or a zero (0) winner")
 		}
-		const checkActive = await Shop.aggregate([
+		const checkActive = await Campaign.aggregate([
 			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns'},
 			{'$match': {'campaigns.state': 'Active'}},
-			{'$project': {
-				'_id': 0,
-				'campaigns': 1
-			}}
 		])
-		const checkUpcoming = await Shop.aggregate([
+		const checkUpcoming = await Campaign.aggregate([
 			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns'},
 			{'$match': {'campaigns.startDate': new Date(`${data.startDate}T${data.startTime}:00`) }},
-			{'$match': {'campaigns.endDate': new Date(`${data.endDate}T${data.endTime}:00`) }},
-			{'$project': {
-				'_id': 0,
-				'campaigns': 1
-			}}
+			{'$match': {'campaigns.endDate': new Date(`${data.endDate}T${data.endTime}:00`) }}
 		])
 		const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
 		if(status === 'Active' && checkActive.length !== 0){
@@ -72,25 +62,20 @@ campaign.post('/new', checkAuth, async (req, res) => {
 			})
 			return res.status(403).send("Giveaway scheduling conflict detected")
 		}
-		await Shop.findOneAndUpdate(
-			{shop: session.shop},
+		new Campaign(
 			{
-				$push: {
-					campaigns: {
-						id: giveawayId,
-						name: data.name,
-						state: status ,
-						startDate: new Date(`${data.startDate}T${data.startTime}:00`),
-						endDate: new Date(`${data.endDate}T${data.endTime}:00`),
-						distributionType: data.distribution,
-						winnersTotal: parseInt(data.ofWinners)
-					}
-				}
-			},
-			{new: true}
-		)
+				shop: session.shop,
+				id: giveawayId,
+				name: data.name,
+				state: status ,
+				startDate: new Date(`${data.startDate}T${data.startTime}:00`),
+				endDate: new Date(`${data.endDate}T${data.endTime}:00`),
+				distributionType: data.distribution,
+				winnersTotal: parseInt(data.ofWinners)
+			}
+			
+		).save()
 		
-
 		if(data.distribution === "Equitable"){
 			res.send(`/campaign/new/equitable?id=${giveawayId}`)
 		} else if (data.distribution === "Hierarchical"){
@@ -114,11 +99,11 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveawayData = await Shop.findOne({
-			'shop': session.shop, 'campaigns.id': giveawayId
+		const giveaway = await Campaign.findOne({
+			'shop': session.shop, 'id': giveawayId
 		}) 
 		
-		if(giveawayData === null){
+		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
 		res.render('pages/equitable')
@@ -144,16 +129,15 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 		const giveawayId: number = parseInt(decoyId)
 		const giveawayWinners: number = parseInt(decoyWinners)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}) 
-		if(shop === null){
+		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId}) 
+		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
-		const giveawayData = shop.campaigns.find((item: any) => item.id === giveawayId )
-
-		if(giveawayData.winnersTotal !== giveawayWinners){
+		
+		if(giveaway.winnersTotal !== giveawayWinners){
 			res.status(404).render('pages/404')
 		}
-		res.render('pages/hierarchical', { data: giveawayData})
+		res.render('pages/hierarchical')
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -166,8 +150,8 @@ campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
 		console.log(amounts)
 		console.log(giveawayId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const shop = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
-		if(shop === null){
+		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
+		if(giveaway === null){
 			return res.status(404).send('Invalid giveaway')
 		}
 		let winnerInfo: any = []
@@ -179,9 +163,9 @@ campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
 		})
 		console.log(winnerInfo)
 		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
-		await Shop.findOneAndUpdate(
-			{'shop': session.shop, 'campaigns.id': giveawayId },
-			{ '$set': {'campaigns.$.winners' : winnerInfo}}
+		await Campaign.findOneAndUpdate(
+			{'shop': session.shop, 'id': giveawayId },
+			{ '$set': {'winners' : winnerInfo}}
 		)
 		res.send(`/campaign/${giveawayId}`)
 	} catch(err: any) {
@@ -196,11 +180,10 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 		console.log(amount)
 		console.log(giveawayId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Shop.findOne(
-			{'campaigns.id': giveawayId}, 
+		const giveaway = await Campaign.findOne(
 			{
 				'shop': session.shop, 
-				campaigns : {'$elemMatch' : {'id': giveawayId}}
+				'id': giveawayId
 			}
 		)
 		if(giveaway === null){
@@ -238,7 +221,7 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
@@ -267,22 +250,18 @@ campaign.post('/:id/delete', checkAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const realObject = await Shop.findOne(
-			{'campaigns.id': giveawayId}, 
+		const giveaway = await Campaign.findOne(
 			{
-				'shop': session.shop, 
-				campaigns : {'$elemMatch' : {'id': giveawayId}}
+				'shop': session.shop,
+				'id': giveawayId
 			}
 		)
-		if(realObject === null){
+		if(giveaway === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
-		await Shop.updateOne({
-			'campaigns.id': giveawayId
-		}, {
-			'$pull': {
-				'campaigns': {'id': giveawayId}
-			}
+		await Campaign.deleteOne({
+			'shop': session.shop,
+			'id': giveawayId
 		})
 		res.send("/campaign/giveaways")
 	} catch(err: any){
@@ -297,19 +276,14 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId})
+		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
-		const goodMeasure: any = await Shop.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns'},
-			{'$match': {'campaigns.id': giveawayId}},
-			{'$project': {
-				'_id': 0,
-				'campaigns': 1
-			}}
-		])
+		const goodMeasure: any = await Campaign.findOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
 		if(new Date(goodMeasure.endDate) > new Date()){
 			return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
 		}
@@ -317,14 +291,13 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 		for (let i = 0; i < goodMeasure.winnersTotal; i++){
 			iter.push(i)
 		}
-		const entries: any[] = await Shop.aggregate([
+		const entries: any[] = await Campaign.aggregate([
 			{'$match': {'shop': session.shop}},
-			{'$unwind': '$campaigns'},
 			{'$match': {'campaigns.id': giveawayId}},
-			{'$unwind': '$campaigns.entries'},
+			{'$unwind': '$entries'},
 			{'$project': {
 				'_id': 0,
-				'campaigns.entries': 1
+				'entries': 1
 			}}
 		])
 		if(entries.length === 0){
@@ -371,47 +344,33 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const realObject = await Shop.findOne(
+		const giveaway = await Shop.findOne(
 			{
-				'campaigns.id': giveawayId,
+				'id': giveawayId,
 				'shop': session.shop
-			}, 
-			{
-				'shop': session.shop, 
-				campaigns : {'$elemMatch' : {'id': giveawayId}}
 			}
 		)
-		if(realObject === null){
+		if(giveaway === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
-		const doesExist = await Shop.findOne(
+		const doesExist = await Saved.findOne(
 			{
-				'campaignTemplate.id': giveawayId,
+				'id': giveawayId,
 				'shop': session.shop
-			}, 
-			{
-				'shop': session.shop, 
-				campaignTemplate : {'$elemMatch' : {'id': giveawayId}}
 			}
 		)
 		if(doesExist !== null){
 			return res.status(403).send("This giveaway template already exist")
 		}
-		const data: any = realObject.campaigns[0]
-		await Shop.findOneAndUpdate(
-			{shop: session.shop},
+		new Saved(
 			{
-				$push: {
-					campaignTemplate: {
-						id: data.id,
-						name: data.name,
-						distributionType: data.distributionType,
-						winnersTotal: data.winnersTotal,
-						winners: data.winners
-					}
-				}
-			},
-			{new: true}
+				shop: session.shop,
+				id: giveaway.id,
+				name: giveaway.name,
+				distributionType: giveaway.distributionType,
+				winnersTotal: giveaway.winnersTotal,
+				winners: giveaway.winners
+			}
 		)
 		res.send("Successfully saved your giveaway")
 	} catch(err: any) {
