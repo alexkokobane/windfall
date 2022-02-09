@@ -150,13 +150,14 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 					'campaigns.entries.email': email
 				}
 			)
+			console.log(participant)
 			if(participant === null) {
-				let con = await Shop.aggregate([
+				let con: any = await Shop.aggregate([
 					{'$match': {'shop': shop}},
 					{'$unwind': '$campaigns'},
 					{'$match': {'campaigns.state': 'Active'}},
 					{
-						'$addFields': {
+						'$set': {
 							'campaigns.entries': {
 								'$concatArrays': ['$campaigns.entries', [{
 									'firstName': firstName,
@@ -168,9 +169,9 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 						}
 					}
 				])
-				console.log(con)
+				console.log(con[0].campaigns.entries)
 			} else {
-				await Shop.aggregate([
+				let peat = await Shop.aggregate([
 					{'$match': {'shop': shop}},
 					{'$unwind': '$campaigns'},
 					{'$match': {'campaigns.state': 'Active'}},
@@ -181,6 +182,7 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 						}
 					}
 				])
+				console.log(peat)
 			}
 		}
 	} catch(err: any){
