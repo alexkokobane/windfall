@@ -55,7 +55,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 		const giveaway = await Campaign.findOne(
 			{
 				'shop': session.shop,
-				'campaigns.id': giveawayId
+				'id': giveawayId
 			}
 		)
 		console.log(giveaway)
@@ -63,7 +63,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 			return res.status(404).send("Giveaway not found")
 		}
 		
-		const filteredGiveaway = {
+		const justOne = {
 			"id": giveaway.id,
 			"title": giveaway.name,
 			"startDate": giveaway.startDate,
@@ -73,8 +73,8 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 			"winnersTotal": giveaway.winnersTotal,
 			"winners": giveaway.winners
 		}
-		console.log(filteredGiveaway)
-		res.json(filteredGiveaway)
+		console.log(justOne)
+		res.json(justOne)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -91,15 +91,14 @@ data.get('/campaigns/expired', checkAuth, async (req, res) => {
 		})
 		let expired: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			expired.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(expired)
@@ -121,15 +120,14 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 
 		let active: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			active.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(active)
@@ -151,15 +149,14 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 
 		let upcoming: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			upcoming.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(upcoming)
@@ -180,15 +177,14 @@ data.get('/campaigns/hierarchical', checkAuth, async (req, res) => {
 
 		let hierarchy: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			hierarchy.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(hierarchy)
@@ -209,15 +205,14 @@ data.get('/campaigns/equitable', checkAuth, async (req, res) => {
 
 		let equity: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			equity.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(equity)
@@ -237,15 +232,14 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 
 		let all: any = []
 		giveaway.forEach((item) => {
-			const obj = item.campaigns
 			all.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"startDate": obj.startDate,
-				"endDate": obj.endDate,
-				"entriesTotal": obj.entries.length,
-				"winnersTotal": obj.winnersTotal 
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
 			})
 		})
 		console.log(all)
@@ -264,12 +258,11 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 
 		let templates: any = []
 		template.forEach((item) => {
-			let obj = item.campaignTemplate
 			templates.push({
-				"id": obj.id,
-				"name": obj.name,
-				"type": obj.distributionType,
-				"winnersTotal": obj.winnersTotal,
+				"id": item.id,
+				"name": item.name,
+				"type": item.distributionType,
+				"winnersTotal": item.winnersTotal,
 			})
 		})
 		console.log(templates)
