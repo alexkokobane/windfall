@@ -24,7 +24,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const store = await Shop.findOne({'shop': session.shop})
 		
-		if(new Date(`${data.endDate}T${data.endTime}:00`) < new Date()){
+		if(new Date(`${data.endDate}`) < new Date()){
 			return res.status(403).send("The end date of a giveaway cannot be in the past")
 		}
 
@@ -32,35 +32,42 @@ campaign.post('/new', checkAuth, async (req, res) => {
 			return res.status(404).send("Error, shop was not found")
 		}
 		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
-			return res.status(403).send("You cannot hve more than 10 winners or a zero (0) winner")
+			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
 		}
-		const checkActive = await Campaign.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$match': {'campaigns.state': 'Active'}},
-		])
-		const checkUpcoming = await Campaign.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$match': {'campaigns.startDate': new Date(`${data.startDate}`) }},
-			{'$match': {'campaigns.endDate': new Date(`${data.endDate}`) }}
-		])
-		const status: string = new Date(`${data.startDate}T${data.startTime}:00`) > new Date() ? 'Upcoming' : 'Active'
-		if(status === 'Active' && checkActive.length !== 0){
-			if(new Date(checkActive[0].campaigns.endDate) > new Date(`${data.startDate}`)){
-				return res.status(403).send(`The next giveaway can only start from ${new Date(checkActive[0].campaigns.endDate)}`)
+
+		const checkAll = await Campaign.find(
+			{
+				'shop': session.shop,
 			}
-			return res.status(403).send("Choose another date, there can only be a single giveaway at a time")
-		}
-		if(status === 'Upcoming' && checkUpcoming.length !== 0){
+		)
+		
+		if(checkAll.length !== 0){
 			let keyValue = []
 			
-			checkUpcoming.forEach((item) => {
-				const upStart = new Date(item.campaigns.startDate)
-				const upEnd = new Date(item.campaigns.endDate)
+			checkAll.forEach((item) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
 				const givStart = new Date(`${data.startDate}`)
 				const givEnd = new Date(`${data.endDate}`)
-				keyValue.push(upStart)
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
 			})
-			return res.status(403).send("Giveaway scheduling conflict detected")
+			if(keyValue.length !== 0) {
+				return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
+			}
 		}
 		new Campaign(
 			{
