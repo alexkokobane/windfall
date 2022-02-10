@@ -40,7 +40,6 @@ const campaignSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
-		unique: true
 	},
 	id: Number,
 	name: String,
@@ -74,7 +73,6 @@ const superCampaignSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
-		unique: true
 	},
 	id: Number,
 	name: String,
@@ -97,7 +95,6 @@ const campaignTemplateSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
-		unique: true
 	},
 	id: Number,
 	name: String,
@@ -116,7 +113,6 @@ const customerListSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
-		unique: true
 	},
 	email: String,
 	firstName: String,

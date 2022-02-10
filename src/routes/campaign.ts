@@ -69,6 +69,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 				return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
 			}
 		}
+		const status: string = new Date(`${data.startDate}`) > new Date() ? 'Upcoming' : 'Active'
 		new Campaign(
 			{
 				shop: session.shop,
@@ -370,7 +371,7 @@ campaign.post('/store', checkAuth, async (req, res) => {
 				winnersTotal: giveaway.winnersTotal,
 				winners: giveaway.winners
 			}
-		)
+		).save()
 		res.send("Successfully saved your giveaway")
 	} catch(err: any) {
 		console.log(err)

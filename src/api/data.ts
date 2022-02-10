@@ -279,9 +279,11 @@ data.get('/everything', checkAuth, async (req, res) => {
 		const campaigns = await Campaign.find({'shop': session.shop})
 		const templates = await Saved.find({'shop': session.shop})
 		const customers = await Customers.find({'shop': session.shop})
+		const superCampaigns = await Super.find({'shop': session.shop})
 		const allData = {
 			shop,
 			campaigns,
+			superCampaigns,
 			campaignTemplate: templates,
 			customers
 		}
