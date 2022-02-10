@@ -24,3 +24,4 @@ export const deleteIncompleteLogin = async (req: Request, res: Response, next: N
 		console.log(err)
 	}
 }
+

@@ -295,24 +295,24 @@ $(document).ready(function(e){
 				if(data.length === 0){
 					return (
 						$("#ValidBody").html(`
-							<p>Successful! No scheduling conflicts found.</p>
+							<p class="Polaris-TextStyle--variationStrong" style="color: green;">Successful! No scheduling conflicts found.</p>
 						`)
 					)
 				}
 				$("#ValidBody").html(`
 					<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 					<ul class="Polaris-List">
-						<span class="ValidDecoy"></span>
+						<span id="ValidDecoy"></span>
 					</ul>
 				`)
-				data.forEach(function(){
+				data.forEach(function(item){
 					$("#ValidDecoy").after(`
-						<li class="Polaris-List__Item" aria-label="${data.name}">
+						<li class="Polaris-List__Item" aria-label="${item.name}">
 							<span class="Polaris-TextStyle--variationStrong">
-								${data.name}
+								${item.name}
 							</span>, active from
-							<span class="Polaris-TextStyle--variationStrong">${data.startDate}</span> to 
-							<span class="Polaris-TextStyle--variationStrong">${data.endDate}</span>
+							<span class="Polaris-TextStyle--variationStrong">${new Date(item.startDate).toISOString().split('T')[0]}</span> to 
+							<span class="Polaris-TextStyle--variationStrong">${new Date(item.endDate).toISOString().split('T')[0]}</span>
 						</li>
 					`)
 				})

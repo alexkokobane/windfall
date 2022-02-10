@@ -4,6 +4,7 @@ import cors from 'cors'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import checkAuth from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
+//import querySanitizer from '../utils/query-sanitizer'
 
 const data = express.Router()
 
@@ -274,6 +275,24 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 
 data.get('/campaign-validator', checkAuth, async (req, res) => {
 	try{
+		let starter : string
+		let ender : string 
+
+		if (req.query.start && typeof req.query.start === 'string') {
+		  starter = req.query.start
+		} else {
+		  starter = 'undefined'
+		}
+
+		if (req.query.end && typeof req.query.end === 'string') {
+		  ender = req.query.end
+		} else {
+		  ender = 'undefined'
+		}
+
+		if(starter === 'undefined' || ender === 'undefined'){
+			return res.status(403).send("Please fill in both dates.")
+		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkAll = await Campaign.find(
 			{
@@ -285,8 +304,8 @@ data.get('/campaign-validator', checkAuth, async (req, res) => {
 			checkAll.forEach((item) => {
 				const itemStart = new Date(item.startDate)
 				const itemEnd = new Date(item.endDate)
-				const givStart = new Date(`${data.startDate}`)
-				const givEnd = new Date(`${data.endDate}`)
+				const givStart = new Date(starter)
+				const givEnd = new Date(ender)
 				
 				if(givStart >= itemStart && givEnd <= itemEnd){
 					keyValue.push({
@@ -303,6 +322,7 @@ data.get('/campaign-validator', checkAuth, async (req, res) => {
 					})
 				}
 			})
+			console.log(keyValue)
 			if(keyValue.length !== 0) {
 				return res.json(keyValue)
 			}
