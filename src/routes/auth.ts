@@ -182,7 +182,7 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 							}
 						}
 					)
-					console.log(con[0].campaigns.entries)
+					console.log(con.entries)
 				} else {
 					let peat = await Campaign.updateOne(
 						{
