@@ -255,23 +255,19 @@ $(document).ready(function(e){
 		console.log($("input[type='radio'][name='distribution']:checked").val())
 		let name = $("#GiveawayNameInput").val()
 		let startDate = $("#StartDate").val()
-		let startTime = $("#StartTime").val()
 		let endDate = $("#EndDate").val()
-		let endTime = $("#EndTime").val()
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
 		if(isNaN(parseInt(ofWinners)) === true){
 			return alert("The number of winners has to be a number")
 		}
-		if(name === "" || startDate === "" || startTime === "" || endDate === "" || endTime === "" || ofWinners === "" || distrubution === ""){
+		if(name === "" || startDate === "" || endDate === "" || ofWinners === "" || distrubution === ""){
 			return alert("Please fill all fields")
 		}
 		let form = {
 			"name": name,
 			"startDate": startDate,
-			"startTime": startTime,
 			"endDate": endDate,
-			"endTime": endTime,
 			"ofWinners": ofWinners,
 			"distribution": distrubution
 		}
