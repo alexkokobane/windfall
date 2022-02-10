@@ -102,6 +102,10 @@ ORDERS_PAID
 const handleAppUninstall = async (topic: string, shop: string, webhookRequestBody: string) => {
 	try{
 		await Shop.deleteOne({'shop': shop})
+		await Campaign.deleteMany({'shop': shop})
+		await Saved.deleteMany({'shop': shop})
+		await Super.deleteMany({'shop': shop})
+		await Customers.deleteMany({'shop': shop})
 		console.log(`${shop} has been deleted.`)
 		console.log(webhookRequestBody)
 	} catch(err: any){
@@ -139,50 +143,59 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 		const lastName = obj.customer.last_name
 		const email = obj.customer.email
 		const subtotal = obj.subtotal_price
-		const checkActive = await Shop.findOne({
-			'shop': shop,
-			'campaigns.state': 'Active'
+		const shopExist = await Shop.findOne({
+			'shop': shop
 		})
-		if(checkActive !== null){
-			const participant = await Shop.findOne(
-				{
-					'shop': shop, 
-					'campaigns.entries.email': email
-				}
-			)
-			console.log(participant)
-			if(participant === null) {
-				let con: any = await Shop.aggregate([
-					{'$match': {'shop': shop}},
-					{'$unwind': '$campaigns'},
-					{'$match': {'campaigns.state': 'Active'}},
+		if(shopExist !== null) {
+			const checkActive = await Campaign.find({
+				'shop': shop,
+				'state': 'Active'
+			})
+			if(checkActive !== null){
+				const participant = await Campaign.findOne(
 					{
-						'$set': {
-							'campaigns.entries': {
-								'$concatArrays': ['$campaigns.entries', [{
+						'shop': shop, 
+						'state': 'Active',
+						'entries.email': email
+					},
+					{
+						'entries': {
+							'$elemMatch': {'email': email}
+						}
+					}
+				)
+				console.log(participant)
+				if(participant === null) {
+					let con: any = await Campaign.updateOne(
+						{
+							'shop': shop, 
+							'state': 'Active',
+						},
+						{
+							'$push': { 
+									'entries' : {
 									'firstName': firstName,
 									'lastName': lastName,
 									'email': email,
 									'points': subtotal
-								}]]
+								}
 							}
 						}
-					}
-				])
-				console.log(con[0].campaigns.entries)
-			} else {
-				let peat = await Shop.aggregate([
-					{'$match': {'shop': shop}},
-					{'$unwind': '$campaigns'},
-					{'$match': {'campaigns.state': 'Active'}},
-					{'$match': {'campaigns.entries.email': email}},
-					{
-						'$addFields': {
-							'campaigns.entries.points': {'$sum': ['$campaigns.entries.points', subtotal]}
+					)
+					console.log(con[0].campaigns.entries)
+				} else {
+					let peat = await Campaign.updateOne(
+						{
+							'shop': shop, 
+							'state': 'Active',
+							'entries.email': email
+						},
+						{
+							'$inc': {'entries.$.points': subtotal}
 						}
-					}
-				])
-				console.log(peat)
+					)
+					console.log(peat)
+				}
 			}
 		}
 	} catch(err: any){
