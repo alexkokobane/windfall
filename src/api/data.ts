@@ -285,10 +285,12 @@ data.get('/everything', checkAuth, async (req, res) => {
 		const shop = await Shop.findOne({'shop': session.shop})
 		const campaigns = await Campaign.find({'shop': session.shop})
 		const templates = await Saved.find({'shop': session.shop})
+		const customers = await Customers.find({'shop': session.shop})
 		const allData = {
 			shop,
 			campaigns,
-			campaignTemplate: templates
+			campaignTemplate: templates,
+			customers
 		}
 		res.json(allData)
 	} catch(err: any) {

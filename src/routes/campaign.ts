@@ -162,8 +162,8 @@ campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
 			})
 		})
 		console.log(winnerInfo)
-		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
-		await Campaign.findOneAndUpdate(
+		
+		await Campaign.updateOne(
 			{'shop': session.shop, 'id': giveawayId },
 			{ '$set': {'winners' : winnerInfo}}
 		)
@@ -189,7 +189,7 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send('Invalid giveaway')
 		}
-		const ofWinners: number = giveaway.campaigns[0].winnersTotal
+		const ofWinners: number = giveaway.winnersTotal
 		const winnerArray: any = []  
 		for(let i = 0; i < ofWinners; i++){
 			winnerArray.push(i)
@@ -204,9 +204,9 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 		})
 		console.log(winnerInfo)
 		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
-		await Shop.findOneAndUpdate(
-			{'shop': session.shop, 'campaigns.id': giveawayId },
-			{ '$set': {'campaigns.$.winners' : winnerInfo}}
+		await Campaign.updateOne(
+			{'shop': session.shop, 'id': giveawayId },
+			{ '$set': {'winners' : winnerInfo}}
 		)
 		res.send(`/campaign/${giveawayId}`)
 	} catch(err: any) {
@@ -225,15 +225,7 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
-		const realObject = await Shop.findOne(
-			{'campaigns.id': giveawayId}, 
-			{
-				'shop': session.shop, 
-				campaigns : {'$elemMatch' : {'id': giveawayId}}
-			}
-		)
-		console.log(realObject)
-		res.render('pages/campaign', {data: realObject})
+		res.render('pages/campaign')
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -344,7 +336,7 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Shop.findOne(
+		const giveaway: any = Campaign.findOne(
 			{
 				'id': giveawayId,
 				'shop': session.shop
