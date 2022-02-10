@@ -344,12 +344,13 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway: any = Campaign.findOne(
+		const giveaway: any = await Campaign.findOne(
 			{
 				'id': giveawayId,
 				'shop': session.shop
 			}
 		)
+		console.log(giveaway)
 		if(giveaway === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
@@ -359,6 +360,7 @@ campaign.post('/store', checkAuth, async (req, res) => {
 				'shop': session.shop
 			}
 		)
+		console.log(doesExist)
 		if(doesExist !== null){
 			return res.status(403).send("This giveaway template already exist")
 		}

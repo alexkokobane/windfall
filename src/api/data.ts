@@ -272,6 +272,48 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	}
 })
 
+data.get('/campaign-validator', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkAll = await Campaign.find(
+			{
+				'shop': session.shop,
+			}
+		)
+		let keyValue: any = []
+		if(checkAll.length !== 0){
+			checkAll.forEach((item) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(`${data.startDate}`)
+				const givEnd = new Date(`${data.endDate}`)
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
+			})
+			if(keyValue.length !== 0) {
+				return res.json(keyValue)
+			}
+		}
+
+		res.json(keyValue)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/everything', checkAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
