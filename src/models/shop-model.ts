@@ -47,7 +47,7 @@ const campaignSchema = new mongoose.Schema({
 	endDate: Date,
 	toSuper: [String],
 	distributionType: String,
-	state: String,
+	winnersChosen: Boolean,
 	entries: [{
 		firstName: String,
 		lastName: String,

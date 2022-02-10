@@ -147,15 +147,19 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 			'shop': shop
 		})
 		if(shopExist !== null) {
+			const dateNow = new Date().toISOString()
 			const checkActive = await Campaign.find({
 				'shop': shop,
-				'state': 'Active'
+				'startDate': {'$lte': new Date(dateNow)},
+				'endDate': {'$gte': new Date(dateNow)}
 			})
 			if(checkActive !== null){
+				
 				const participant = await Campaign.findOne(
 					{
 						'shop': shop, 
-						'state': 'Active',
+						'startDate': {'$lte': new Date(dateNow)},
+						'endDate': {'$gte': new Date(dateNow)},
 						'entries.email': email
 					},
 					{
@@ -169,7 +173,8 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 					let con: any = await Campaign.updateOne(
 						{
 							'shop': shop, 
-							'state': 'Active',
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)}
 						},
 						{
 							'$push': { 
@@ -182,12 +187,13 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 							}
 						}
 					)
-					console.log(con.entries)
+					console.log(con)
 				} else {
 					let peat = await Campaign.updateOne(
 						{
 							'shop': shop, 
-							'state': 'Active',
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)},
 							'entries.email': email
 						},
 						{

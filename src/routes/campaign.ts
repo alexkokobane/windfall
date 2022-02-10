@@ -69,13 +69,13 @@ campaign.post('/new', checkAuth, async (req, res) => {
 				return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
 			}
 		}
-		const status: string = new Date(`${data.startDate}`) > new Date() ? 'Upcoming' : 'Active'
+		//const status: string = new Date(`${data.startDate}`) > new Date() ? 'Upcoming' : 'Active'
 		new Campaign(
 			{
 				shop: session.shop,
 				id: giveawayId,
 				name: data.name,
-				state: status ,
+				winnersChose: false,
 				startDate: new Date(`${data.startDate}`),
 				endDate: new Date(`${data.endDate}`),
 				distributionType: data.distribution,
@@ -293,7 +293,7 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 		}
 		const entries: any[] = await Campaign.aggregate([
 			{'$match': {'shop': session.shop}},
-			{'$match': {'campaigns.id': giveawayId}},
+			{'$match': {'id': giveawayId}},
 			{'$unwind': '$entries'},
 			{'$project': {
 				'_id': 0,
