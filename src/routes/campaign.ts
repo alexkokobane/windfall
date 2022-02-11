@@ -287,7 +287,7 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 		if(new Date(goodMeasure.endDate) > new Date()){
 			return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
 		}
-		let iter: any = []
+		let iter: any[] = []
 		for (let i = 0; i < goodMeasure.winnersTotal; i++){
 			iter.push(i)
 		}
@@ -300,6 +300,7 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 				'entries': 1
 			}}
 		])
+		console.log(entries[0])
 		if(entries.length === 0){
 			return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
 		}
@@ -308,22 +309,47 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 		}
 		let prizedWinners: any = []
 		let checker: any = []
+		let counter: number = 0
+		let allCombined: any[] = []
+
+		entries.forEach((person: any) => {
+			const obj = person.entries
+			for(let i = 0; i < obj.points; i++){
+				allCombined.push(obj)
+			}
+		})
+		//console.log(allCombined)
+
+		let shuffle = (entries: any[]): any[] => {
+			let currentIndex = entries.length
+			let randomIndex: number
+
+			while(currentIndex != 0){
+				randomIndex = Math.floor(Math.random() * currentIndex)
+				currentIndex--
+				[entries[currentIndex], entries[randomIndex]] = [entries[randomIndex], entries[currentIndex]]
+			}
+
+			return entries
+		}
+		let shuffledEntries = shuffle(allCombined)
+		console.log(shuffledEntries)
 		iter.forEach((head: any) => {
-			let winner = head++
-			let theOne = entries[Math.floor(Math.random() * entries.length)]
+			head++
+			let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
 			if(checker.includes(theOne) === true){
 				// To include a time out
 				while (checker.includes(theOne) === true){
-					theOne = entries[Math.floor(Math.random() * entries.length)]
+					theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
 				}
 			}
+			theOne.position = head
 			checker.push(theOne)
-			prizedWinners.push({winner: theOne})
+			prizedWinners.push(theOne)
 		})
 		if(prizedWinners.length !== goodMeasure.winnersTotal){
 			return res.status(403).send("Could choose a winner, try again!")
 		}
-		console.log(entries)
 		console.log(prizedWinners)
 		res.json(prizedWinners)
 	} catch(err: any) {
