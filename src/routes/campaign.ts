@@ -76,6 +76,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 				id: giveawayId,
 				name: data.name,
 				winnersChose: false,
+				winnersGifted: false,
 				startDate: new Date(`${data.startDate}`),
 				endDate: new Date(`${data.endDate}`),
 				distributionType: data.distribution,
@@ -269,89 +270,159 @@ campaign.post('/:id/delete', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
+campaign.get('/:id/choose-winners', checkAuth, async (req, res) => {
 	try{
+		const displayWinners: any = []
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){
-			return res.status(404).render('pages/404')
+			return res.status(404).send("Giveaway not found, cannot display winners.")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
-		if(giveaway === null){
-			return res.status(404).render('pages/404')
-		}
+				
 		const goodMeasure: any = await Campaign.findOne({
 			'shop': session.shop,
 			'id': giveawayId
 		})
-		if(new Date(goodMeasure.endDate) > new Date()){
-			return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
+		if(goodMeasure === null){
+			return res.status(404).send("Giveaway not found, cannot display winners.")		
 		}
-		let iter: any[] = []
-		for (let i = 0; i < goodMeasure.winnersTotal; i++){
-			iter.push(i)
+		if(goodMeasure.winnersChosen === false){
+			if(new Date(goodMeasure.endDate) > new Date()){
+				return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
+			}
+			let iter: any[] = []
+			for (let i = 0; i < goodMeasure.winnersTotal; i++){
+				iter.push(i)
+			}
+			const entries: any[] = await Campaign.aggregate([
+				{'$match': {'shop': session.shop}},
+				{'$match': {'id': giveawayId}},
+				{'$unwind': '$entries'},
+				{'$project': {
+					'_id': 0,
+					'entries': 1
+				}}
+			])
+			if(entries.length === 0){
+				return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
+			}
+			if(entries.length < goodMeasure.winnersTotal){
+				return res.status(403).send("Not enough entries to select a winners, the number of entries must be more than the total possible winners.")
+			}
+			let prizedWinners: any[] = []
+			let checker: any = []
+			let counter: number = 0
+			let allCombined: any[] = []
+
+			entries.forEach((person: any) => {
+				const obj = person.entries
+				for(let i = 0; i < obj.points; i++){
+					allCombined.push(obj)
+				}
+			})
+			//console.log(allCombined)
+
+			let shuffle = (entries: any[]): any[] => {
+				let currentIndex = entries.length
+				let randomIndex: number
+
+				while(currentIndex != 0){
+					randomIndex = Math.floor(Math.random() * currentIndex)
+					currentIndex--
+					[entries[currentIndex], entries[randomIndex]] = [entries[randomIndex], entries[currentIndex]]
+				}
+
+				return entries
+			}
+			let shuffledEntries = shuffle(allCombined)
+			//console.log(shuffledEntries)
+			iter.forEach((head: any) => {
+				head++
+				let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+				if(checker.includes(theOne) === true){
+					// To include a time out
+					while (checker.includes(theOne) === true){
+						theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+					}
+				}
+				theOne.position = head
+				checker.push(theOne)
+				prizedWinners.push(theOne)
+			})
+			if(prizedWinners.length !== goodMeasure.winnersTotal){
+				return res.status(403).send("Could not choose a winner, try again!")
+			}
+			prizedWinners.forEach(async (pusher: any) => {
+				const finder = await Campaign.findOne(
+					{
+						'shop': session.shop,
+						'id': giveawayId,
+					},
+					{
+						'_id': 0,
+						'winners': {
+							'$elemMatch': {'prizeId': pusher.position}
+						}
+					}
+				)
+				const exact = finder.winners[0]
+				//console.log(exact)
+				
+				await Campaign.updateOne(
+					{
+						'shop': session.shop,
+						'id': giveawayId,
+						'winners.prizeId': pusher.position
+					},
+					{
+						'$set': {
+							'winners.$.prizeId': exact.prizeId,
+							'winners.$.voucherPrize': exact.voucherPrize,
+							'winners.$.entrantName': `${pusher.firstName} ${pusher.lastName}`,
+							'winners.$.entrantEmail': pusher.email
+						}
+					}
+				)
+			})
+			const closer = await Campaign.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveawayId
+				},
+				{
+					'$set': {
+						'winnersChosen': true
+					}
+				}
+			)
+
+			if(closer.modifiedCount !== 1){
+				return res.status(403).send("Could not choose a winner, try again!")
+			}
 		}
-		const entries: any[] = await Campaign.aggregate([
-			{'$match': {'shop': session.shop}},
-			{'$match': {'id': giveawayId}},
-			{'$unwind': '$entries'},
-			{'$project': {
+		const anotherMeasure = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			},
+			{
 				'_id': 0,
-				'entries': 1
-			}}
-		])
-		console.log(entries[0])
-		if(entries.length === 0){
-			return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
-		}
-		if(entries.length < goodMeasure.winnersTotal){
-			return res.status(403).send("Not enough entries to select a winners")
-		}
-		let prizedWinners: any = []
-		let checker: any = []
-		let counter: number = 0
-		let allCombined: any[] = []
-
-		entries.forEach((person: any) => {
-			const obj = person.entries
-			for(let i = 0; i < obj.points; i++){
-				allCombined.push(obj)
-			}
-		})
-		//console.log(allCombined)
-
-		let shuffle = (entries: any[]): any[] => {
-			let currentIndex = entries.length
-			let randomIndex: number
-
-			while(currentIndex != 0){
-				randomIndex = Math.floor(Math.random() * currentIndex)
-				currentIndex--
-				[entries[currentIndex], entries[randomIndex]] = [entries[randomIndex], entries[currentIndex]]
-			}
-
-			return entries
-		}
-		let shuffledEntries = shuffle(allCombined)
-		console.log(shuffledEntries)
-		iter.forEach((head: any) => {
-			head++
-			let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
-			if(checker.includes(theOne) === true){
-				// To include a time out
-				while (checker.includes(theOne) === true){
-					theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+				'winners': {
+					'_id': 0,
+					'prizeId': 1,
+					'voucherPrize': 1,
+					'entrantName': 1,
+					'entrantEmail': 1
 				}
 			}
-			theOne.position = head
-			checker.push(theOne)
-			prizedWinners.push(theOne)
+		)
+
+		anotherMeasure.winners.forEach((what: any) => {
+			displayWinners.push(what)
 		})
-		if(prizedWinners.length !== goodMeasure.winnersTotal){
-			return res.status(403).send("Could choose a winner, try again!")
-		}
-		console.log(prizedWinners)
-		res.json(prizedWinners)
+
+		//console.log(prizedWinners)
+		res.json(displayWinners)
 	} catch(err: any) {
 		console.log(err)
 	}

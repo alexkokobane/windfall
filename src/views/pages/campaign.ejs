@@ -16,7 +16,7 @@
 			</div>
 			<div class="Polaris-Page-Header__RightAlign">
 				<div class="Polaris-Page-Header__PrimaryActionWrapper">
-					<button id="ChooseWinners" class="Polaris-Button Polaris-Button--disabled" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Choose Winners</span></span></button>
+					<button id="ChooseWinners" class="Polaris-Button Polaris-Button--disabled ChooseWinners" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Pick winners</span></span></button>
 				</div>
 			</div>
 		</div>
@@ -59,7 +59,7 @@
 					</div>
 					<div class="Polaris-Card__Section">
 						<div class="Polaris-Card__SectionHeader">
-							<h3 class="Polaris-Subheading">Winners</h3>
+							<h3 class="Polaris-Subheading">Prizes</h3>
 						</div>
 						<ul class="Polaris-List">
 							<span id="GiveawayWinnerListDecoy"></span>
@@ -71,13 +71,30 @@
 								</div>
 						</ul>
 					</div>
+					<div class="Polaris-CalloutCard__Container">
+						<div class="Polaris-Card__Section">
+							<div class="Polaris-CalloutCard">
+								<div class="Polaris-CalloutCard__Content">
+									<div class="Polaris-CalloutCard__Title">
+											<h2 id="WinnerHeading" class="Polaris-Heading">Winners</h2>
+									</div>
+									<div id="WinnerBody" class="Polaris-TextContainer">
+											<p>Press the pick winners button to run an automatic winner selection process.</p>
+									</div>
+									<div class="Polaris-CalloutCard__Buttons">
+										<button class="Polaris-Button Polaris-Button--disabled ChooseWinners" aria-label="Pick winners" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Pick winners</span></span></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="Polaris-Card__Footer">
 						<div class="Polaris-ButtonGroup">
 							<div class="Polaris-ButtonGroup__Item">
 								<button id="DeleteGiveawayBtn" class="Polaris-Button Polaris-Button--destructive"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Delete</span></span></button>
 							</div>
 							<div class="Polaris-ButtonGroup__Item">
-								<button id="EditGiveawayBtn" class="Polaris-Button Polaris-Button--primary"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Edit</span></span></button>
+								<button id="EditGiveawayBtn" class="Polaris-Button Polaris-Button--outline"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Edit</span></span></button>
 							</div>
 						</div>
 					</div>

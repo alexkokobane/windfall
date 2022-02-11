@@ -48,6 +48,7 @@ const campaignSchema = new mongoose.Schema({
 	toSuper: [String],
 	distributionType: String,
 	winnersChosen: Boolean,
+	winnersGifted: Boolean,
 	entries: [{
 		firstName: String,
 		lastName: String,
@@ -58,8 +59,6 @@ const campaignSchema = new mongoose.Schema({
 	winners: [{
 		prizeId: Number,
 		voucherPrize: Number,
-		entryReference: Number,
-		entrantId: Number,
 		entrantName: String,
 		entrantEmail: String
 	}],

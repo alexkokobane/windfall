@@ -257,13 +257,13 @@ $(document).ready(function(e){
 			<div>
 				<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
 					<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-	      				<path d="M15.542 1.487A21.507 21.507 0 00.5 22c0 11.874 9.626 21.5 21.5 21.5 9.847 0 18.364-6.675 20.809-16.072a1.5 1.5 0 00-2.904-.756C37.803 34.755 30.473 40.5 22 40.5 11.783 40.5 3.5 32.217 3.5 22c0-8.137 5.3-15.247 12.942-17.65a1.5 1.5 0 10-.9-2.863z"></path>
-	    			</svg>
-	    		</span>
-	    		<span role="status">
-	    			<span class="Polaris-VisuallyHidden">Spinner</span>
-	    		</span>
-    		</div>
+						<path d="M15.542 1.487A21.507 21.507 0 00.5 22c0 11.874 9.626 21.5 21.5 21.5 9.847 0 18.364-6.675 20.809-16.072a1.5 1.5 0 00-2.904-.756C37.803 34.755 30.473 40.5 22 40.5 11.783 40.5 3.5 32.217 3.5 22c0-8.137 5.3-15.247 12.942-17.65a1.5 1.5 0 10-.9-2.863z"></path>
+					</svg>
+				</span>
+				<span role="status">
+					<span class="Polaris-VisuallyHidden">Spinner</span>
+				</span>
+			</div>
 		`)
 		if(starts === "" || ends === ""){
 			return (
@@ -478,19 +478,78 @@ $(document).ready(function(e){
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				console.log(data)
 				if(new Date(data.endDate) < new Date()){
-					$("#ChooseWinners").removeClass("Polaris-Button--disabled")
-					$("#ChooseWinners").addClass("Polaris-Button--primary")
-					$("#ChooseWinners").click(function(e){
+					$(".ChooseWinners").removeClass("Polaris-Button--disabled")
+					$(".ChooseWinners").addClass("Polaris-Button--primary")
+					$(".ChooseWinners").click(function(e){
 						e.preventDefault()
+
+						$("#WinnerBody").html(`
+							<div>
+								<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
+									<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+										<path d="M15.542 1.487A21.507 21.507 0 00.5 22c0 11.874 9.626 21.5 21.5 21.5 9.847 0 18.364-6.675 20.809-16.072a1.5 1.5 0 00-2.904-.756C37.803 34.755 30.473 40.5 22 40.5 11.783 40.5 3.5 32.217 3.5 22c0-8.137 5.3-15.247 12.942-17.65a1.5 1.5 0 10-.9-2.863z"></path>
+									</svg>
+								</span>
+								<span role="status">
+									<span class="Polaris-VisuallyHidden">Spinner</span>
+								</span>
+							</div>
+						`)
 						$.ajax({
 							url: `/campaign/${data.id}/choose-winners`,
-							type: "POST",
+							type: "GET",
 							contentType: "application/json",
 							success: function(data){
-								alert("Successfully chosen the winners")
+								if(data.length === 0){
+									return (
+										$("#WinnerBody").html(`
+											<p class="Polaris-TextStyle--variationStrong" >No winners found!</p>
+										`)
+									)
+								}
+								$("#WinnerBody").html(`
+									<div class="Polaris-ResourceList__ResourceListWrapper">
+										<ul class="Polaris-ResourceList">
+											<span id="WinnerDecoy"></span>
+										</ul>
+									</div>
+								`)
+								data.reverse().forEach(function(winner){
+									const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${15 + 10 * Math.random()}%)`
+									$("#WinnerDecoy").after(`
+										<li class="Polaris-ResourceItem__ListItem">
+											<div class="Polaris-ResourceItem__ItemWrapper">
+												<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
+													<div class="Polaris-ResourceItem__Container" id="${winner.position}">
+														<div class="Polaris-ResourceItem__Owned">
+															<div class="Polaris-ResourceItem__Media">
+																<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+																	<div style="color: ${colour}; font-size: 5em; display: flex; flex-direction: row; align-items: center">${winner.position}</div>
+																</span>
+															</div>
+														</div>
+														<div class="Polaris-ResourceItem__Content">
+															<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+																<div class="Polaris-Stack__Item">
+																	<h3><span class="Polaris-TextStyle--variationStrong">${winner.firstName} ${winner.lastName}</span></h3>
+																	<div><span class="Polaris-TextStyle--variationStrong">Email :</span> ${winner.email}</div>
+																	<div><span class="Polaris-TextStyle--variationStrong">Estimated spent :</span> ${winner.points}</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</li>
+									`)
+								})
 							},
 							error: function(data){
 								alert(data.responseText)
+								$("#WinnerBody").html(`
+									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+									<p class="Polaris-InlineError">${data.responseText}</p>
+								`)
 							}
 						})
 					})
