@@ -75,7 +75,7 @@ campaign.post('/new', checkAuth, async (req, res) => {
 				shop: session.shop,
 				id: giveawayId,
 				name: data.name,
-				winnersChose: false,
+				winnersChosen: false,
 				winnersGifted: false,
 				startDate: new Date(`${data.startDate}`),
 				endDate: new Date(`${data.endDate}`),
@@ -270,7 +270,7 @@ campaign.post('/:id/delete', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/:id/choose-winners', checkAuth, async (req, res) => {
+campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 	try{
 		const displayWinners: any = []
 		const giveawayId = parseInt(req.params.id)

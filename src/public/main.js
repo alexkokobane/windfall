@@ -476,10 +476,76 @@ $(document).ready(function(e){
 				$("#WinnersSkeleton").remove()
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
+				$("#WinnerBody").html(`
+					<p>This is where your winners will display after the run of the giveaway.</p>
+				`)
 				console.log(data)
-				if(new Date(data.endDate) < new Date()){
+				if(data.winnersChosen === true){
+					$.ajax({
+						url: `/data/${data.id}/winners`,
+						type: "GET",
+						contentType: "application/json",
+						success: function(data){
+							if(data.length === 0){
+								return (
+									$("#WinnerBody").html(`
+										<p>Press the pick winners button to run an automatic winner selection process.</p>
+									`)
+								)
+							} else if(data.length !== 0){
+								$("#WinnerBody").html(`
+									<div class="Polaris-ResourceList__ResourceListWrapper">
+										<ul class="Polaris-ResourceList">
+											<span id="WinnerDecoy"></span>
+										</ul>
+									</div>
+								`)
+								data.reverse().forEach(function(winner){
+									const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${15 + 10 * Math.random()}%)`
+									$("#WinnerDecoy").after(`
+										<li class="Polaris-ResourceItem__ListItem">
+											<div class="Polaris-ResourceItem__ItemWrapper">
+												<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
+													<div class="Polaris-ResourceItem__Container" id="${winner.prizeId}">
+														<div class="Polaris-ResourceItem__Owned">
+															<div class="Polaris-ResourceItem__Media">
+																<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+																	<div style="color: ${colour}; font-size: 5em; display: flex; flex-direction: row; align-items: center">${winner.prizeId}</div>
+																</span>
+															</div>
+														</div>
+														<div class="Polaris-ResourceItem__Content">
+															<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+																<div class="Polaris-Stack__Item">
+																	<h3><span class="Polaris-TextStyle--variationStrong">${winner.entrantName}</span></h3>
+																	<div><span class="Polaris-TextStyle--variationStrong">Email:</span> ${winner.entrantEmail}</div>
+																	<div><span class="Polaris-TextStyle--variationStrong">Voucher amount:</span> ${winner.voucherPrize}</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</li>
+									`)
+								})
+							}
+						},
+						error: function(data){
+							alert(data.responseText)
+							$("#WinnerBody").html(`
+								<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+								<p class="Polaris-InlineError">${data.responseText}</p>
+							`)
+						}
+					})
+				}
+				if(new Date(data.endDate) < new Date() && data.winnersChosen === false){
 					$(".ChooseWinners").removeClass("Polaris-Button--disabled")
 					$(".ChooseWinners").addClass("Polaris-Button--primary")
+					$("#WinnerBody").html(`
+						<p>Press the pick winners button to run an automatic winner selection process.</p>
+					`)
 					$(".ChooseWinners").click(function(e){
 						e.preventDefault()
 
@@ -497,7 +563,7 @@ $(document).ready(function(e){
 						`)
 						$.ajax({
 							url: `/campaign/${data.id}/choose-winners`,
-							type: "GET",
+							type: "POST",
 							contentType: "application/json",
 							success: function(data){
 								if(data.length === 0){
@@ -520,20 +586,20 @@ $(document).ready(function(e){
 										<li class="Polaris-ResourceItem__ListItem">
 											<div class="Polaris-ResourceItem__ItemWrapper">
 												<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
-													<div class="Polaris-ResourceItem__Container" id="${winner.position}">
+													<div class="Polaris-ResourceItem__Container" id="${winner.prizeId}">
 														<div class="Polaris-ResourceItem__Owned">
 															<div class="Polaris-ResourceItem__Media">
 																<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-																	<div style="color: ${colour}; font-size: 5em; display: flex; flex-direction: row; align-items: center">${winner.position}</div>
+																	<div style="color: ${colour}; font-size: 5em; display: flex; flex-direction: row; align-items: center">${winner.prizeId}</div>
 																</span>
 															</div>
 														</div>
 														<div class="Polaris-ResourceItem__Content">
 															<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 																<div class="Polaris-Stack__Item">
-																	<h3><span class="Polaris-TextStyle--variationStrong">${winner.firstName} ${winner.lastName}</span></h3>
-																	<div><span class="Polaris-TextStyle--variationStrong">Email :</span> ${winner.email}</div>
-																	<div><span class="Polaris-TextStyle--variationStrong">Estimated spent :</span> ${winner.points}</div>
+																	<h3><span class="Polaris-TextStyle--variationStrong">${winner.entrantName}</span></h3>
+																	<div><span class="Polaris-TextStyle--variationStrong">Email:</span> ${winner.entrantEmail}</div>
+																	<div><span class="Polaris-TextStyle--variationStrong">Voucher amount:</span> ${winner.voucherPrize}</div>
 																</div>
 															</div>
 														</div>

@@ -68,6 +68,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 			"id": giveaway.id,
 			"title": giveaway.name,
 			"startDate": giveaway.startDate,
+			"winnersChosen": giveaway.winnersChosen,
 			"type": giveaway.distributionType,
 			"endDate": giveaway.endDate,
 			"entriesTotal": giveaway.entries.length,
@@ -329,6 +330,44 @@ data.get('/campaign-validator', checkAuth, async (req, res) => {
 		}
 
 		res.json(keyValue)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+data.get('/:id/winners', checkAuth, async (req, res) => {
+	try{
+		const displayWinners: any = []
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("Giveaway not found, cannot display winners.")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+				
+		const goodMeasure: any = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId,
+				'winnersChosen': true
+			},
+			{
+				'_id': 0,
+				'winners': {
+					'_id': 0,
+					'prizeId': 1,
+					'voucherPrize': 1,
+					'entrantName': 1,
+					'entrantEmail': 1
+				}
+			}
+		)
+
+		if(goodMeasure !== null){
+			goodMeasure.winners.forEach((what: any) => {
+				displayWinners.push(what)
+			})
+		}
+		res.json(displayWinners)
 	} catch(err: any){
 		console.log(err)
 	}
