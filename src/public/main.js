@@ -250,8 +250,8 @@ $(document).ready(function(e){
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#ValidateBtn").click(function(){
-		let starts = $("#StartDate").val()
-		let ends = $("#EndDate").val()
+		let starts = $("#StartDate").val()+"T"+$("#StartTime").val()
+		let ends = $("#EndDate").val()+"T"+$("#EndTime").val()
 		console.log(`${starts} and ${ends}`)
 		$("#ValidBody").html(`
 			<div>
@@ -265,7 +265,7 @@ $(document).ready(function(e){
 				</span>
 			</div>
 		`)
-		if(starts === "" || ends === ""){
+		if(starts.length !== 16 || ends.length !== 16){
 			return (
 				$("#ValidBody").html(`
 					<p>Both the date fields must be filled accordinlgy.</p>
@@ -306,13 +306,15 @@ $(document).ready(function(e){
 					</ul>
 				`)
 				data.forEach(function(item){
+					const begin = new Date(item.startDate).toISOString().split('T')
+					const finish = new Date(item.endDate).toISOString().split('T')
 					$("#ValidDecoy").after(`
 						<li class="Polaris-List__Item" aria-label="${item.name}">
 							<span class="Polaris-TextStyle--variationStrong">
 								${item.name}
 							</span>, active from
-							<span class="Polaris-TextStyle--variationStrong">${new Date(item.startDate).toISOString().split('T')[0]}</span> to 
-							<span class="Polaris-TextStyle--variationStrong">${new Date(item.endDate).toISOString().split('T')[0]}</span>
+							<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+							<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
 						</li>
 					`)
 				})
@@ -331,19 +333,21 @@ $(document).ready(function(e){
 		console.log($("input[type='radio'][name='distribution']:checked").val())
 		let name = $("#GiveawayNameInput").val()
 		let startDate = $("#StartDate").val()
+		let startTime = $("#StartTime").val()
 		let endDate = $("#EndDate").val()
+		let endTime = $("#EndTime").val()
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
 		if(isNaN(parseInt(ofWinners)) === true){
 			return alert("The number of winners has to be a number")
 		}
-		if(name === "" || startDate === "" || endDate === "" || ofWinners === "" || distrubution === ""){
+		if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
 			return alert("Please fill all fields")
 		}
 		let form = {
 			"name": name,
-			"startDate": startDate,
-			"endDate": endDate,
+			"startDate": startDate+"T"+startTime,
+			"endDate": endDate+"T"+endTime,
 			"ofWinners": ofWinners,
 			"distribution": distrubution
 		}
@@ -404,7 +408,8 @@ $(document).ready(function(e){
 								<div class="Polaris-Connected">
 									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
 										<div class="Polaris-TextField Polaris-TextField--hasValue">
-											<div class="Polaris-TextField__Prefix" id="VoucherInputFieldPrefix${val}">$</div><input id="VoucherInputField${val}" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputField${val} VoucherInputFieldPrefix${val}" aria-invalid="false" value="">
+											<div class="Polaris-TextField__Prefix" id="VoucherInputFieldPrefix${val}">$</div>
+											<input id="VoucherInputField${val}" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputField${val} VoucherInputFieldPrefix${val}" aria-invalid="false" value="">
 											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
 									</div>

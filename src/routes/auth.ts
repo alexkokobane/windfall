@@ -119,30 +119,11 @@ const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody:
 		console.log(`${shop} has an order that has been paid.`)
 
 		const obj = JSON.parse(webhookRequestBody)
-		console.log(` 
-			The body:
-
-			${webhookRequestBody}
-
-
-
-			The subtotal:
-
-			${obj.subtotal_price}
-
-
-
-			The customer
-
-			${obj.customer}
-
-
-			`)
 		
 		const firstName = obj.customer.first_name
 		const lastName = obj.customer.last_name
 		const email = obj.customer.email
-		const subtotal = obj.subtotal_price
+		const subtotal = Math.round(obj.subtotal_price)
 		const shopExist = await Shop.findOne({
 			'shop': shop
 		})

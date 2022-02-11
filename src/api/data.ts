@@ -352,13 +352,7 @@ data.get('/:id/winners', checkAuth, async (req, res) => {
 			},
 			{
 				'_id': 0,
-				'winners': {
-					'_id': 0,
-					'prizeId': 1,
-					'voucherPrize': 1,
-					'entrantName': 1,
-					'entrantEmail': 1
-				}
+				'winners': 1
 			}
 		)
 
