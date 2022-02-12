@@ -251,6 +251,34 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 	}
 })
 
+data.get('/awaiting', checkAuth, async (req, res) => {
+	try{
+		const dateNow = new Date().toISOString()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Campaign.find(
+			{
+				'shop': session.shop,
+				'endDate': {'$lt': new Date(dateNow)},
+				'winnersGifted': false,
+				'winnersChosen': false
+			}
+		)
+
+		const awaiting: any[] = []
+		giveaway.forEach((item) => {
+			awaiting.push({
+				"id": item.id,
+				"name": item.name,
+				"entriesTotal": item.entries.length,
+			})
+		})
+
+		res.json(awaiting)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)

@@ -422,6 +422,39 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/:id/gift', checkAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			}
+		)
+		if(giveaway === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+
+		await Campaign.updateOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			},
+			{
+				'$set': {'winnersGifted': true}
+			}
+		)
+
+		res.send("Successfully sent gifts")
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 campaign.post('/store', checkAuth, async (req, res) => {
 	try {
 		let decoyId: string
