@@ -59,6 +59,78 @@ $(document).ready(function(e){
 	})
 	if(window.location.pathname === "/"){
 		$.ajax({
+			url: "/data/awaiting",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.length === 0){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					return (
+						$("#HAwaiting").html(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No actions needed</p>
+												<div class="Polaris-EmptyState__Content">
+													<p>This action center for any outstanding actions required from expired giveaways.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="Polaris-EmptyState__ImageContainer">
+										<div style="width: 100%; background: ${colour};"></div>
+									</div>
+								</div>
+							</div>
+						`)
+					)
+				}
+
+				$("#HAwaiting").html(`
+					<ul class="Polaris-ResourceList">
+						<span id="HAwaitingDecoy"></span>
+					</ul>
+				`)
+				data.forEach(function(giv){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					$("#HAwaitingDecoy").after(`
+						<li class="Polaris-ResourceItem__ListItem">
+							<div class="Polaris-ResourceItem__ItemWrapper">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+										<div class="Polaris-ResourceItem__Owned">
+											<div class="Polaris-ResourceItem__Media">
+												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<div style="background: red;"></div>
+												</span>
+											</div>
+										</div>
+										<div class="Polaris-ResourceItem__Content">
+											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-TextStyle--variationStrong">${giv.name}</h3>
+													<div><span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> customers waiting for you to pick winners and send them a gift.</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					`)
+					$(`#${giv.id}`).click(function(){
+						location.href=`/campaign/${giv.id}`
+					})
+				})
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
+		})
+		$.ajax({
 			url: "/data/campaigns/active",
 			type: "GET",
 			contentType: "application/json",
