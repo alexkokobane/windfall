@@ -274,6 +274,36 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	}
 })
 
+data.get('/template/:id', checkAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("This template does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await Saved.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			},
+			{
+				'_id': 0,
+				'distributionType': 1,
+				'winnersTotal': 1,
+				'duration': 1,
+				'id': 1,
+				'name': 1,
+				'active': 1
+			}
+		)
+		if(template === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/campaign-validator', checkAuth, async (req, res) => {
 	try{
 		let starter : string

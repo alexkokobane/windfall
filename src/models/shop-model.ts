@@ -98,6 +98,7 @@ const campaignTemplateSchema = new mongoose.Schema({
 	id: Number,
 	name: String,
 	distributionType: String,
+	duration: Number,
 	winnersTotal: Number,
 	toSuper: [String],
 	winners: [Object],

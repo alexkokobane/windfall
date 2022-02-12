@@ -471,5 +471,53 @@ campaign.post('/store', checkAuth, async (req, res) => {
 	}
 })
 
+campaign.get('/template/:id', checkAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await Saved.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			}
+		)
+		if(template === null){
+			return res.status(404).render('pages/404')
+		}
+		res.render('/campaign-template')
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+campaign.post('/template/:id/delete', checkAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			}
+		)
+		if(template === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+		await Saved.deleteOne({
+			'shop': session.shop,
+			'id': templateId
+		})
+		res.send("/")
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 export default campaign
 
