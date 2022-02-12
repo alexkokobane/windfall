@@ -293,12 +293,14 @@ data.get('/template/:id', checkAuth, async (req, res) => {
 				'duration': 1,
 				'id': 1,
 				'name': 1,
-				'active': 1
+				'active': 1,
+				'winners': 1
 			}
 		)
 		if(template === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
+		res.json(template)
 	} catch(err: any){
 		console.log(err)
 	}

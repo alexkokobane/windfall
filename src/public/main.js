@@ -237,6 +237,10 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
+
+					$(`#${giv.id}`).click(function(){
+						location=href=`/campaign/template/${giv.id}`
+					})
 				})
 			},
 			error: function(data){
@@ -1129,6 +1133,31 @@ $(document).ready(function(e){
 					alert(data.responseText)
 				}
 			})
+		})
+	}
+
+	//url === /campaign/template/:id
+	const idForTemplate = parseInt(path.split("/")[3])
+	if(isNaN(idForTemplate) == false){
+		$.ajax({
+			url: `/campaign/template/${idForTemplate}`,
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".Polaris-SkeletonBodyText").remove()
+				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
+				$("#GTName").text(data.name)
+				$("#GTDuration").text(data.duration)
+				$("#GTForType").text(data.distrubutionType)
+				data.winners.reverse().forEach((item) => {
+					$("#GTWinnerListDecoy").after(`
+						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
+					`)
+				})
+			},
+			error: function(data){
+				alert(data.responseText)
+			}
 		})
 	}
 
