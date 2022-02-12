@@ -339,20 +339,22 @@ data.get('/campaign-validator', checkAuth, async (req, res) => {
 				const itemEnd = new Date(item.endDate)
 				const givStart = new Date(starter)
 				const givEnd = new Date(ender)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
 				
 				if(givStart >= itemStart && givEnd <= itemEnd){
-					keyValue.push({
-						'name': item.name,
-						'startDate': itemStart,
-						'endDate': itemEnd
-					})
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
 				}
 				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
-					keyValue.push({
-						'name': item.name,
-						'startDate': itemStart,
-						'endDate': itemEnd
-					})
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
 				}
 			})
 			console.log(keyValue)

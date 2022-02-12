@@ -455,17 +455,19 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		if(doesExist !== null){
 			return res.status(403).send("This giveaway template already exist")
 		}
+		const time: number = new Date(giveaway.endDate).getTime() - new Date(giveaway.startDate).getTime()
 		new Saved(
 			{
 				shop: session.shop,
 				id: giveaway.id,
 				name: giveaway.name,
+				duration: time,
 				distributionType: giveaway.distributionType,
 				winnersTotal: giveaway.winnersTotal,
 				winners: giveaway.winners
 			}
 		).save()
-		res.send("Successfully saved your giveaway")
+		res.send(`/campaign/template/${giveawayId}`)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -487,7 +489,7 @@ campaign.get('/template/:id', checkAuth, async (req, res) => {
 		if(template === null){
 			return res.status(404).render('pages/404')
 		}
-		res.render('/campaign-template')
+		res.render('pages/campaign-template')
 	} catch(err: any){
 		console.log(err)
 	}

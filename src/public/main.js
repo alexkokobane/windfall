@@ -643,7 +643,7 @@ $(document).ready(function(e){
 						url: `/campaign/store?id=${data.id}`,
 						type: "POST",
 						success: function(data){
-							alert(data)
+							location.href=data
 						},
 						error: function(data){
 							alert(data.responseText)
@@ -1140,15 +1140,16 @@ $(document).ready(function(e){
 	const idForTemplate = parseInt(path.split("/")[3])
 	if(isNaN(idForTemplate) == false){
 		$.ajax({
-			url: `/campaign/template/${idForTemplate}`,
+			url: `/data/template/${idForTemplate}`,
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				console.log(data.duration)
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				$("#GTName").text(data.name)
-				$("#GTDuration").text(data.duration)
-				$("#GTForType").text(data.distrubutionType)
+				$("#GTDuration").text(`${Math.round((data.duration/(1000*60*60))*10)/10} Hour(s)`)
+				$("#GTForType").text(data.distributionType)
 				data.winners.reverse().forEach((item) => {
 					$("#GTWinnerListDecoy").after(`
 						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
