@@ -133,7 +133,7 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 		if(req.query.winners && typeof req.query.winners === 'string') {
 			decoyWinners = req.query.winners
 		} else {
-			return null
+			return undefined
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const giveawayWinners: number = parseInt(decoyWinners)
@@ -218,6 +218,24 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 			{ '$set': {'winners' : winnerInfo}}
 		)
 		res.send(`/campaign/${giveawayId}`)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await Saved.findOne({'shop': session.shop, 'id': templateId})
+		if(template === null){
+			return res.status(404).send("This template was not found")
+		}
+		const newId = Math.floor(Math.random() * 1000000000)
+		const startDate =
 	} catch(err: any) {
 		console.log(err)
 	}
