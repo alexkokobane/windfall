@@ -239,6 +239,9 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
+					$(`#${giv.id}`).click(function(){
+						location.href=`/campaign/${giv.id}`
+					})
 				})
 			},
 			error: function(data){
@@ -1269,14 +1272,14 @@ $(document).ready(function(e){
 							},
 							error: function(data){
 								const decider = data instanceof Array
-								if(decider === true) {
+								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
 											<span id="ActivatorDecoy"></span>
 										</ul>
 									`)
-									data.forEach(function(item){
+									decider.forEach(function(item){
 										const begin = new Date(item.startDate).toISOString().split('T')
 										const finish = new Date(item.endDate).toISOString().split('T')
 										$("#ActivatorDecoy").after(`
@@ -1323,11 +1326,11 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
-								let decider = data instanceof Object
+								let decider = data.responseJSON
 								console.log(decider)
 								console.log(data)
-								if(decider === true) {
-									let arr = JSON.parse(data)
+								if(decider) {
+									let arr = data.responseJSON
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
@@ -1381,14 +1384,15 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
-								if(data instanceof Array) {
+								let decider = data.responseJSON
+								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
 											<span id="ActivatorDecoy"></span>
 										</ul>
 									`)
-									data.forEach(function(item){
+									decider.forEach(function(item){
 										const begin = new Date(item.startDate).toISOString().split('T')
 										const finish = new Date(item.endDate).toISOString().split('T')
 										$("#ActivatorDecoy").after(`
@@ -1435,14 +1439,15 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
-								if(data instanceof Array) {
+								let decider = data.responseJSON
+								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
 											<span id="ActivatorDecoy"></span>
 										</ul>
 									`)
-									data.forEach(function(item){
+									decider.forEach(function(item){
 										const begin = new Date(item.startDate).toISOString().split('T')
 										const finish = new Date(item.endDate).toISOString().split('T')
 										$("#ActivatorDecoy").after(`
@@ -1489,14 +1494,15 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
-								if(data instanceof Array) {
+								let decider = data.responseJSON
+								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
 											<span id="ActivatorDecoy"></span>
 										</ul>
 									`)
-									data.forEach(function(item){
+									decider.forEach(function(item){
 										const begin = new Date(item.startDate).toISOString().split('T')
 										const finish = new Date(item.endDate).toISOString().split('T')
 										$("#ActivatorDecoy").after(`
@@ -1543,14 +1549,15 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
-								if(data instanceof Array) {
+								let decider = data.responseJSON
+								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 										<ul class="Polaris-List">
 											<span id="ActivatorDecoy"></span>
 										</ul>
 									`)
-									data.forEach(function(item){
+									decider.forEach(function(item){
 										const begin = new Date(item.startDate).toISOString().split('T')
 										const finish = new Date(item.endDate).toISOString().split('T')
 										$("#ActivatorDecoy").after(`

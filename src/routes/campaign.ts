@@ -230,8 +230,12 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 			return res.status(404).send("Error, template does not exist.")
 		}
 		const starter: number = req.body.future
-		if(!starter){
+		console.log(starter)
+		if(typeof starter !== 'number'){
 			return res.status(403).send("Choose the an appropriate date in the future from the listed buttons")
+		}
+		if(starter > 30){
+			return res.status(403).send("The date you specified is currently not supported")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const doesExist = await Saved.findOne({'shop': session.shop, 'id': templateId, 'active': true})
@@ -239,6 +243,7 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 		if(doesExist !== null){
 			return res.status(403).send("This template is currently active")
 		}
+		// Check for active campaigns created from this template
 		const fromInUse = await Campaign.findOne(
 			{
 				'shop': session.shop,
@@ -246,7 +251,20 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 				'winnersGifted': false
 			}
 		)
+		console.log(fromInUse)
 		if(fromInUse !== null){
+			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
+		}
+		// Check active campaigns this template was created from
+		const forParent = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId,
+				'winnersGifted': false
+			}
+		)
+		console.log(forParent)
+		if(forParent !== null){
 			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
 		}
 		const template = await Saved.findOne({'shop': session.shop, 'id': templateId})
