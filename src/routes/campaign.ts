@@ -229,13 +229,70 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 		if(isNaN(templateId) === true){
 			return res.status(404).render('pages/404')
 		}
+		const starter: number = req.body.future
+		if(!starter){
+			return res.status(403).send("Choose the an appropriate date in the future from the listed buttons")
+		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const doesExist = await Saved.findOne({'shop': session.shop, 'id': templateId, 'active': true})
+		if(doesExist !== null){
+			return res.status(403).send("This template is currently active")
+		}
 		const template = await Saved.findOne({'shop': session.shop, 'id': templateId})
 		if(template === null){
 			return res.status(404).send("This template was not found")
 		}
+		const newWinners = []
 		const newId = Math.floor(Math.random() * 1000000000)
-		const startDate =
+		const dateNow = Date.now()
+		let newStart
+		let newEnd
+		switch(starter){
+			case 0:
+				newStart = new Date(dateNow);
+				newEnd = new Date(dateNow+template.duration);
+				break;
+			case 1:
+				newStart = new Date(dateNow+(1000*60*60*24));
+				newEnd = new Date((dateNow+(1000*60*60*24))+template.duration);
+				break;
+			case 3:
+				newStart = new Date(dateNow+(1000*60*60*24*3));
+				newEnd = new Date((dateNow+(1000*60*60*24*3))+template.duration);
+				break;
+			case 7:
+				newStart = new Date(dateNow+(1000*60*60*24*7));
+				newEnd = new Date((dateNow+(1000*60*60*24*7))+template.duration);
+				break;
+			case 14:
+				newStart = new Date(dateNow+(1000*60*60*24*7));
+				newEnd = new Date((dateNow+(1000*60*60*24*14))+template.duration);
+				break;
+			case 30:
+				newStart = new Date(dateNow+(1000*60*60*24*30));
+				newEnd = new Date((dateNow+(1000*60*60*24*30))+template.duration);
+				break;
+			default:
+				newStart = new Date(dateNow);
+				newEnd = new Date(dateNow+template.duration);
+				break;
+		}
+		
+		new Campaign(
+			{
+				shop: session.shop,
+				id: newId,
+				name: template.name,
+				winnersChosen: false,
+				winnersGifted: false,
+				startDate: newStart,
+				endDate: newEnd,
+				distributionType: template.distribution,
+				winnersTotal: parseInt(template.ofWinners)
+			}
+			
+		).save()
+		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newStart).toDateString()} to ${new Date(newEnd).toDateString().}`)
 	} catch(err: any) {
 		console.log(err)
 	}
