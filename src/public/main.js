@@ -1227,7 +1227,11 @@ $(document).ready(function(e){
 						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
 					`)
 				})
-
+				if(data.active === true){
+					$("#ActivatorBody").html(`
+						<p>This template currently has a giveaway that is either active, upcoming or awaiting the picking of winners.</p>
+					`)
+				}
 				if(data.active === false){
 					$("#ActivatorBody").html(`
 						<p>Press any of the buttons below to schedule your giveaway.</p>
@@ -1259,15 +1263,38 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 class="Polaris-TextStyle--variationStrong" style="color: green;">Success!</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								const decider = data instanceof Array
+								if(decider === true) {
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									data.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})
@@ -1291,15 +1318,41 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								let decider = data instanceof Object
+								console.log(decider)
+								console.log(data)
+								if(decider === true) {
+									let arr = JSON.parse(data)
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									arr.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})
@@ -1323,15 +1376,37 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								if(data instanceof Array) {
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									data.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})
@@ -1355,15 +1430,37 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								if(data instanceof Array) {
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									data.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})
@@ -1387,15 +1484,37 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								if(data instanceof Array) {
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									data.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})
@@ -1419,15 +1538,37 @@ $(document).ready(function(e){
 							contentType: "application/json",
 							success: function(data){
 								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong">Success</h3>
-									<p class="Polaris-InlineError">${data}</p>
+									<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+									<p>${data}</p>
 								`)
 							},
 							error: function(data){
-								$("#ActivatorBody").html(`
-									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
-									<p class="Polaris-InlineError">${data.responseText}</p>
-								`)
+								if(data instanceof Array) {
+									$("#ActivatorBody").html(`
+										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+										<ul class="Polaris-List">
+											<span id="ActivatorDecoy"></span>
+										</ul>
+									`)
+									data.forEach(function(item){
+										const begin = new Date(item.startDate).toISOString().split('T')
+										const finish = new Date(item.endDate).toISOString().split('T')
+										$("#ActivatorDecoy").after(`
+											<li class="Polaris-List__Item" aria-label="${item.name}">
+												<span class="Polaris-TextStyle--variationStrong">
+													${item.name}
+												</span>, active from
+												<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+												<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+											</li>
+										`)
+									})
+								} else {
+									$("#ActivatorBody").html(`
+										<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+										<p class="Polaris-InlineError">${data.responseText}</p>
+									`)
+								}
 							}
 						})
 					})

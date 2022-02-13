@@ -284,6 +284,7 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const template = await Saved.find({
 			'shop': session.shop,
+			'active': false
 		})
 
 		let templates: any = []
