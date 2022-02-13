@@ -288,11 +288,24 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 				startDate: newStart,
 				endDate: newEnd,
 				distributionType: template.distribution,
-				winnersTotal: parseInt(template.ofWinners)
+				winnersTotal: template.ofWinners,
+				winners: template.winners
 			}
 			
 		).save()
-		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newStart).toDateString()} to ${new Date(newEnd).toDateString().}`)
+
+		await Saved.updateOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			},
+			{
+				'$set': {
+					'active': true
+				}
+			}
+		)
+		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newStart).toDateString()} to ${new Date(newEnd).toDateString()}.`)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -553,6 +566,17 @@ campaign.post('/store', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
+		// check weather it already has a template from which it was made.
+		if(giveaway.templateId){
+			const checker = await Saved.findOne({
+				'shop': session.shop,
+				'id': giveaway.templateId
+			})
+			if(checker !== null){
+				return res.status(403).send("This giveaway template already exist")
+			}
+		}
+		// check whether it has a template made from an original copy
 		const doesExist = await Saved.findOne(
 			{
 				'id': giveawayId,
@@ -564,15 +588,23 @@ campaign.post('/store', checkAuth, async (req, res) => {
 			return res.status(403).send("This giveaway template already exist")
 		}
 		const time: number = new Date(giveaway.endDate).getTime() - new Date(giveaway.startDate).getTime()
+		let prizes: any[] = []
+		giveaway.winners.forEach((her: any) => {
+			prizes.push({
+				"prizeId": her.prizeId,
+				"voucherPrize": her.voucherPrize
+			})
+		})
 		new Saved(
 			{
 				shop: session.shop,
 				id: giveaway.id,
 				name: giveaway.name,
 				duration: time,
+				active: false,
 				distributionType: giveaway.distributionType,
 				winnersTotal: giveaway.winnersTotal,
-				winners: giveaway.winners
+				winners: prizes
 			}
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)

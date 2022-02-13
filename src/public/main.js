@@ -1227,7 +1227,18 @@ $(document).ready(function(e){
 						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
 					`)
 				})
+
 				if(data.active === false){
+					$("#ActivatorBody").html(`
+						<p>Press any of the buttons below to schedule your giveaway.</p>
+					`)
+					$("#GT0Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--primary")
+					$("#GT1Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GT3Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GT7Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GT14Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GT30Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+
 					$("#GT0Btn").click(function(){
 						$("#ActivatorBody").html(`
 							<div>

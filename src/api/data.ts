@@ -325,6 +325,7 @@ data.get('/template/:id', checkAuth, async (req, res) => {
 				'winners': 1
 			}
 		)
+		console.log(template)
 		if(template === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
