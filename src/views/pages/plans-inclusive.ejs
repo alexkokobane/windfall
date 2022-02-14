@@ -9,37 +9,9 @@
 					<div class="Polaris-Card__Header">
 						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Starter - $12 per month</h2>
+								<h2 class="Polaris-Heading">Standard - $29 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
-						</div>
-					</div>
-					<div class="Polaris-Card__Section">
-						<div class="Polaris-Stack Polaris-Stack--vertical">
-							<div class="Polaris-Stack__Item">
-								<div class="Polaris-TextContainer">
-									<p>Fully featured and packed with all the essentials you need to get started.</p>
-									<h3 class="Polaris-TextStyle--variationStrong">Features included :</h3>
-									<ul class="Polaris-List">
-										<li class="Polaris-List__Item">2 email templates</li>
-										<li class="Polaris-List__Item">Run 1 giveaway at a time</li>
-										<li class="Polaris-List__Item">Save up to 2 giveaway templates</li>
-										<li class="Polaris-List__Item">Build an email list of unlimited contacts</li>
-										<li class="Polaris-List__Item">Intergrate with MailChimp</li>
-										<li class="Polaris-List__Item">Smart export email list as JSON</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="Polaris-Card">
-					<div class="Polaris-Card__Header">
-						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
-							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Standard - $25 per month</h2>
-							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Standard" class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -66,9 +38,9 @@
 					<div class="Polaris-Card__Header">
 						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Ultimate - $59 per month</h2>
+								<h2 class="Polaris-Heading">Ultimate - $79 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Ultimate" class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -94,3 +66,23 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+			$("#Standard").click(function(){
+				$.ajax({
+					url: "/billing/plans",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({"plan": "Standard"}),
+				})
+			})
+			$("#Ultimate").click(function(){
+				$.ajax({
+					url: "/billing/plans",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({"plan": "Ultimate"}),
+				})
+			})
+	});
+</script>

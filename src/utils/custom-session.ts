@@ -16,7 +16,8 @@ export const storeCallback = async (session: SessionInterface): Promise<boolean>
 		} else {
 			const store = new ActiveShop({
 				id: session.id ,
-				session: JSON.stringify(session)
+				session: JSON.stringify(session),
+				shop: session.shop
 			})
 			await store.save()
 		 }

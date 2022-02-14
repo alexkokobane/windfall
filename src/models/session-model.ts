@@ -9,6 +9,7 @@ const Party = new mongoose.Schema({
     type: String,
     required: true,
   },
+  shop: String,
   createdAt: {
     type: Date,
     default: Date.now()
