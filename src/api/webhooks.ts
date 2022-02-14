@@ -1,9 +1,100 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop } from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 
 const webhooks = express.Router()
+
+export const handleAppUninstall = async (topic: string, shop: string, webhookRequestBody: string) => {
+	try{
+		await Shop.deleteOne({'shop': shop})
+		await Campaign.deleteMany({'shop': shop})
+		await Saved.deleteMany({'shop': shop})
+		await Super.deleteMany({'shop': shop})
+		await Customers.deleteMany({'shop': shop})
+		console.log(`${shop} has been deleted.`)
+		console.log(webhookRequestBody)
+	} catch(err: any){
+		console.log(err)
+	}
+}
+
+export const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: any) => {
+	try{
+		console.log(topic+" was fired.")
+		console.log(`${shop} has an order that has been paid.`)
+
+		const obj = JSON.parse(webhookRequestBody)
+		
+		const firstName = obj.customer.first_name
+		const lastName = obj.customer.last_name
+		const email = obj.customer.email
+		const subtotal = Math.round(obj.subtotal_price)
+		const shopExist = await Shop.findOne({
+			'shop': shop
+		})
+		if(shopExist !== null) {
+			const dateNow = new Date().toISOString()
+			const checkActive = await Campaign.find({
+				'shop': shop,
+				'startDate': {'$lte': new Date(dateNow)},
+				'endDate': {'$gte': new Date(dateNow)}
+			})
+			if(checkActive !== null){
+				
+				const participant = await Campaign.findOne(
+					{
+						'shop': shop, 
+						'startDate': {'$lte': new Date(dateNow)},
+						'endDate': {'$gte': new Date(dateNow)},
+						'entries.email': email
+					},
+					{
+						'entries': {
+							'$elemMatch': {'email': email}
+						}
+					}
+				)
+				console.log(participant)
+				if(participant === null) {
+					let con: any = await Campaign.updateOne(
+						{
+							'shop': shop, 
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)}
+						},
+						{
+							'$push': { 
+									'entries' : {
+									'firstName': firstName,
+									'lastName': lastName,
+									'email': email,
+									'points': subtotal
+								}
+							}
+						}
+					)
+					console.log(con)
+				} else {
+					let peat = await Campaign.updateOne(
+						{
+							'shop': shop, 
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)},
+							'entries.email': email
+						},
+						{
+							'$inc': {'entries.$.points': subtotal}
+						}
+					)
+					console.log(peat)
+				}
+			}
+		}
+	} catch(err: any){
+		console.log(err)
+	}
+}
 
 webhooks.post('/', async (req, res) => {
 	try{
