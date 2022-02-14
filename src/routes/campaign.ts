@@ -353,7 +353,7 @@ campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
 				winnersGifted: false,
 				startDate: newStart,
 				endDate: newEnd,
-				distributionType: template.distribution,
+				distributionType: template.distributionType,
 				winnersTotal: template.winnersTotal,
 				winners: template.winners
 			}

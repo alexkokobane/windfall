@@ -88,13 +88,18 @@ $(document).ready(function(e){
 					)
 				}
 
+				$("#HAwaitingHeader").html(`
+					<span>Awaiting</span>
+					<span style="color: green;">  (${data.length})</span>
+				`)
+
 				$("#HAwaiting").html(`
 					<ul class="Polaris-ResourceList">
 						<span id="HAwaitingDecoy"></span>
 					</ul>
 				`)
 				data.forEach(function(giv){
-					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${15 + 10 * Math.random()}%)`
 					$("#HAwaitingDecoy").after(`
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
@@ -104,14 +109,14 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<div style="background: red;"></div>
+													<div style="background: ${colour}; font-size: 5em; color: white; display: flex; flex-direction: row; align-items: center;">${giv.name.substring(0,1)}</div>
 												</span>
 											</div>
 										</div>
 										<div class="Polaris-ResourceItem__Content">
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 												<div class="Polaris-Stack__Item">
-													<h3 class="Polaris-TextStyle--variationStrong">${giv.name}</h3>
+													<h3 class="Polaris-TextStyle--variationStrong Polaris-Subheading" style="color: green;">${giv.name}</h3>
 													<div><span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> customers waiting for you to pick winners and send them a gift.</div>
 												</div>
 											</div>
@@ -300,8 +305,8 @@ $(document).ready(function(e){
 										</div>
 										<div class="Polaris-ResourceItem__Content">
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-												<div class="Polaris-Stack__Item Polaris-TextContainer">
-													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+												<div class="Polaris-Stack__Item">
+													<h3><span class="Polaris-TextStyle--variationStrong Polaris-Subheading">${giv.name}</span></h3>
 													<div><span class="Polaris-TextStyle--variationStrong">Prize distribution type :</span> ${giv.type}</div>
 													<div><span class="Polaris-TextStyle--variationStrong">Total winners :</span> ${giv.winnersTotal}</div>
 												</div>

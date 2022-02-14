@@ -122,6 +122,7 @@ const customerListSchema = new mongoose.Schema({
 	totalPoints: Number,
 	autoindex: Number,
 	lastIndex: Number,
+	totalCampaignsWon: Number,
 	createdAt: {
 		type: Date,
 		default: Date.now()
