@@ -259,8 +259,10 @@ data.get('/awaiting', checkAuth, async (req, res) => {
 			{
 				'shop': session.shop,
 				'endDate': {'$lt': new Date(dateNow)},
-				'winnersGifted': false,
-				'winnersChosen': false
+				'$or': [
+					{'winnersGifted': false},
+					{'winnersChosen': false}
+				]
 			}
 		)
 

@@ -573,6 +573,21 @@ $(document).ready(function(e){
 					<p>This is where your winners will display after the run of the giveaway.</p>
 				`)
 				console.log(data)
+				if(data.winnersGifted === false && data.winnersChosen === true){
+					$("#GiftBtn").click(function(){
+						$.ajax({
+							url: `/${data.id}/gift`,
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								alert(data)
+							},
+							error: function(data){
+								alert(data.responseText)
+							}
+						})
+					})
+				}
 				if(data.winnersChosen === true){
 					$.ajax({
 						url: `/data/${data.id}/winners`,
@@ -633,7 +648,7 @@ $(document).ready(function(e){
 						}
 					})
 				}
-				if(new Date(data.endDate) < new Date() && data.winnersChosen === false){
+				if(new Date(data.endDate) < new Date() && data.winnersChosen === false && data.winnersGifted === false){
 					$(".ChooseWinners").removeClass("Polaris-Button--disabled")
 					$(".ChooseWinners").addClass("Polaris-Button--primary")
 					$("#WinnerBody").html(`
