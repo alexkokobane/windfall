@@ -32,10 +32,19 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 	}
 })
 
-billing.post('/plans', checkAuth, async (req, res) => {
+billing.get('/plans/subscribe', checkAuth, async (req, res) => {
+	let plan: string
+	if (req.query.plan && typeof req.query.plan === 'string') {
+	  	plan = req.query.plan
+	} else {
+	  	return undefined
+	}
+	if(plan === undefined) {
+		return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
+	}
 	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 	const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
-	const plan = req.body.plan
+	//const plan = req.body.plan
 
 	let subscription: object
 
@@ -47,15 +56,15 @@ billing.post('/plans', checkAuth, async (req, res) => {
 				"test": true,
 				"lineItems": [
 				{
-						"plan": {
+					"plan": {
 						"appRecurringPricingDetails": {
-								"price": {
-								"amount": 29,
-								"currencyCode": "USD"
-								},
-								"interval": "EVERY_30_DAYS"
+							"price": {
+							"amount": 29,
+							"currencyCode": "USD"
+							},
+							"interval": "EVERY_30_DAYS"
 						}
-						}
+					}
 				}
 				]
 		}

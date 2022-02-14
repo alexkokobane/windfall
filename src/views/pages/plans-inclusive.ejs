@@ -69,20 +69,10 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 			$("#Standard").click(function(){
-				$.ajax({
-					url: "/billing/plans",
-					type: "POST",
-					contentType: "application/json",
-					data: JSON.stringify({"plan": "Standard"}),
-				})
+				location.href="/billing/plans/subscribe?plan=Standard"
 			})
 			$("#Ultimate").click(function(){
-				$.ajax({
-					url: "/billing/plans",
-					type: "POST",
-					contentType: "application/json",
-					data: JSON.stringify({"plan": "Ultimate"}),
-				})
+				location.href="/billing/plans/subscribe?plan=Ultimate"
 			})
 	});
 </script>

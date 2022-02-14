@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
+import ActiveShop from '../models/session-model'
 
 const webhooks = express.Router()
 
@@ -12,7 +13,11 @@ export const handleAppUninstall = async (topic: string, shop: string, webhookReq
 		await Saved.deleteMany({'shop': shop})
 		await Super.deleteMany({'shop': shop})
 		await Customers.deleteMany({'shop': shop})
-		console.log(`${shop} has been deleted.`)
+		const session = await ActiveShop.find({'shop': shop})
+		if(session.length !== 0){
+			await ActiveShop.deleteMany({'shop': shop})
+		}
+		console.log(`${shop} has been obliterated.`)
 		console.log(webhookRequestBody)
 	} catch(err: any){
 		console.log(err)
