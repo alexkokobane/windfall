@@ -600,18 +600,30 @@ campaign.post('/:id/gift', checkAuth, async (req, res) => {
 		const giveaway = await Campaign.findOne(
 			{
 				'shop': session.shop,
-				'id': giveawayId
+				'id': giveawayId,
+				'winnersChosen': true
 			}
 		)
 		if(giveaway === null){
-			return res.status(404).send("Giveaway does not exist")
+			return res.status(404).send("Choose winners first before you attempt to send them gifts")
 		}
-
+		
+		const checkDuplication = await Campaign.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId,
+				'winnersGifted': true
+			}
+		)
+		if(checkDuplication !== null){
+			return res.status(403).send("The gifts have already been sent.")
+		}
 		giveaway.entries.forEach(async (item: any) => {
 			let doesExist = await Customers.findOne({
 				'shop': session.shop,
 				'email': item.email
 			})
+			//console.log(item)
 			let ph: number 
 			giveaway.winners.forEach((gman: any) => {
 				gman.entrantEmail === item.email ? ph = 1 : ph = 0
@@ -625,7 +637,7 @@ campaign.post('/:id/gift', checkAuth, async (req, res) => {
 					'totalCampaignsParticipated': 1,
 					'totalPoints': item.points,
 					'totalCampaignsWon': ph
-				})
+				}).save()
 			} else {
 				await Customers.findOne(
 					{

@@ -574,9 +574,10 @@ $(document).ready(function(e){
 				`)
 				console.log(data)
 				if(data.winnersGifted === false && data.winnersChosen === true){
+					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
 						$.ajax({
-							url: `/${data.id}/gift`,
+							url: `/campaign/${data.id}/gift`,
 							type: "POST",
 							contentType: "application/json",
 							success: function(data){
@@ -649,6 +650,22 @@ $(document).ready(function(e){
 					})
 				}
 				if(new Date(data.endDate) < new Date() && data.winnersChosen === false && data.winnersGifted === false){
+					// Gift winners
+					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GiftBtn").click(function(){
+						$.ajax({
+							url: `/campaign/${data.id}/gift`,
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								alert(data)
+							},
+							error: function(data){
+								alert(data.responseText)
+							}
+						})
+					})
+					// Choose cutomers
 					$(".ChooseWinners").removeClass("Polaris-Button--disabled")
 					$(".ChooseWinners").addClass("Polaris-Button--primary")
 					$("#WinnerBody").html(`

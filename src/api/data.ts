@@ -69,6 +69,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 			"title": giveaway.name,
 			"startDate": giveaway.startDate,
 			"winnersChosen": giveaway.winnersChosen,
+			"winnersGifted": giveaway.winnersGifted,
 			"type": giveaway.distributionType,
 			"endDate": giveaway.endDate,
 			"entriesTotal": giveaway.entries.length,
