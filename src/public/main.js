@@ -230,15 +230,16 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<div style="background: ${colour};"></div>
+													<div class="dp" style="background: ${colour}; color: black;">${giv.name.substring(0,1)}</div>
 												</span>
 											</div>
 										</div>
 										<div class="Polaris-ResourceItem__Content">
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-												<div class="Polaris-Stack__Item Polaris-TextContainer">
+												<div class="Polaris-Stack__Item">
 													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
 													<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> ${new Date(giv.startDate).toDateString()}</div>
+													<div><span class="Polaris-TextStyle--variationStrong">At</span> ${new Date(giv.startDate).toLocaleTimeString()}</div>
 												</div>
 											</div>
 										</div>
@@ -302,7 +303,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<div style="background: ${colour};"></div>
+													<div class="dp" style="background: ${colour}; color: black;">${giv.name.substring(0,1)}</div>
 												</span>
 											</div>
 										</div>

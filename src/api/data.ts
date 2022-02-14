@@ -292,6 +292,7 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 			templates.push({
 				"id": item.id,
 				"name": item.name,
+				"active": item.active,
 				"type": item.distributionType,
 				"winnersTotal": item.winnersTotal,
 			})

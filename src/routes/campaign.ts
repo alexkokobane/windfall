@@ -620,7 +620,7 @@ campaign.post('/:id/gift', checkAuth, async (req, res) => {
 			await Saved.findOne(
 				{
 					'shop': session.shop,
-					id: giveaway.templateId
+					'id': giveaway.templateId
 				},
 				{
 					'$set': {'active': false}
