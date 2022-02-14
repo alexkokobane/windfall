@@ -607,6 +607,42 @@ campaign.post('/:id/gift', checkAuth, async (req, res) => {
 			return res.status(404).send("Giveaway does not exist")
 		}
 
+		giveaway.entries.forEach(async (item: any) => {
+			let doesExist = await Customers.findOne({
+				'shop': session.shop,
+				'email': item.email
+			})
+			let ph: number 
+			giveaway.winners.forEach((gman: any) => {
+				gman.entrantEmail === item.email ? ph = 1 : ph = 0
+			})
+			if(doesExist === null){
+				new Customers({
+					'shop': session.shop,
+					'email': item.email,
+					'lastName': item.lastName,
+					'firstName': item.firstName,
+					'totalCampaignsParticipated': 1,
+					'totalPoints': item.points,
+					'totalCampaignsWon': ph
+				})
+			} else {
+				await Customers.findOne(
+					{
+						'shop': session.shop,
+						'email': item.email
+					},
+					{
+						'$inc': {
+							'totalPoints': item.points,
+							'totalCampaignsParticipated': 1,
+							'totalCampaignsWon': ph
+						}
+					}
+				)
+			}
+		})
+
 		await Campaign.updateOne(
 			{
 				'shop': session.shop,
