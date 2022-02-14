@@ -414,10 +414,24 @@ campaign.post('/:id/delete', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
+		if(giveaway.templateId && giveaway.winnersGifted === false){
+			await Saved.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveaway.templateId
+				},
+				{
+					'$set': {
+						'active': false
+					}
+				}
+			)
+		}
 		await Campaign.deleteOne({
 			'shop': session.shop,
 			'id': giveawayId
 		})
+
 		res.send("/campaign/giveaways")
 	} catch(err: any){
 		console.log(err)

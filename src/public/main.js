@@ -176,6 +176,9 @@ $(document).ready(function(e){
 				$("#HAGStarted").text(new Date(obj.startDate).toDateString())
 				$("#HAGEnds").text(new Date(obj.endDate).toDateString())
 				$("#HAGEntries").text(obj.entriesTotal)
+				$("#HAGViewBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").click(function(){
+					location.href=`/campaign/${obj.id}`
+				})
 			},
 			error: function(data){
 				alert(data.responseText)
