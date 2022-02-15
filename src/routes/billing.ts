@@ -39,17 +39,34 @@ billing.get('/details', checkAuth, async (req, res) => {
 		console.log(err)
 	}
 })
+
+billing.get('/delete', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const data = await client.query(
+			{
+				data: `mutation{
+					appSubscriptionCancel(id: "gid://shopify/AppSubscription/24355012795"){
+						appSubscription{
+							name
+						},
+						userErrors{
+							field
+						}
+					}
+				}`
+			}
+		)
+
+		res.json(data)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 billing.get('/redirect', checkAuth, async (req, res) => {
 	try {
-		let id: string
-		if (req.query.charge_id && typeof req.query.charge_id === 'string') {
-				id = req.query.charge_id
-		} else {
-				return id = undefined
-		}
-		if(id === undefined) {
-			return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
-		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({'shop': session.shop})
 		if(checkShop === null){
@@ -72,8 +89,32 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 				}`
 			}
 		)
-
-		const matchId: string = appDetails.body.data.app.installation.activeSubscription.id
+		console.log(appDetails.body.data.app.installation.activeSubscriptions)
+		const theOne: any[] = appDetails.body.data.app.installation.activeSubscriptions
+		let switcher: any[] = []
+		theOne.forEach(async (item: any) => {
+			if(item.id === checkShop.chargeDetails.id){
+				switcher.push(item.id)
+			}
+		})
+		console.log(switcher)
+		if(switcher.length > 0){
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'pricePlan': checkShop.chargeDetails.plan,
+						'chargeDetails.confirmed': true,
+						'chargeDetails.confirmedAt': Date.now()
+					}
+				}
+			)
+			return res.redirect('/')
+		}
+		/*
+		const matchId: string = appDetails.body.data.app.installation.activeSubscriptions.id
 		if(!matchId){
 			console.log('You have not installed this app')
 			return res.status(403).render('pages/404')
@@ -96,7 +137,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			} else {
 				return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
 			}
-		}
+		}*/
 		res.status(404).render('pages/404', {layout: 'layouts/minimal'})
 	} catch(err: any){
 		console.log(err)
@@ -168,7 +209,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 						'chargeDetails': {
 							'plan': 'Standard',
 							'confirmed': false,
-							'id': returned.appSubscription.id
+							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
 				}
@@ -223,11 +264,11 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					'shop': session.shop
 				},
 				{
-					'$push': {
+					'$set': {
 						'chargeDetails': {
 							'plan': 'Ultimate',
 							'confirmed': false,
-							'id': returned.appSubscription.id
+							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
 				}
