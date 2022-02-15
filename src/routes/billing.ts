@@ -49,87 +49,91 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 	let subscription: object
 
 	if(plan === "Standard"){
-		subscription = {
-				"name": "Super Duper Recurring Plan",
-				"returnUrl": `https://${process.env.HOST}/`,
-				"trialDays": 7,
-				"test": true,
-				"lineItems": [
-				{
-					"plan": {
-						"appRecurringPricingDetails": {
-							"price": {
-							"amount": 29,
-							"currencyCode": "USD"
-							},
-							"interval": "EVERY_30_DAYS"
+		const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
 						}
-					}
-				}
-				]
-		}
+					}`,
+					"variables": {
+						"name": "Robosale Premium Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 29.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+			console.log(selected)
+			console.log(selected.body.data.appSubscriptionCreate)
+			return res.redirect(selected.body.data.appSubscriptionCreate.confirmationUrl)
 	}
 
 	if(plan === "Ultimate"){
-		subscription = {
-				"name": "Super Duper Recurring Plan",
-				"returnUrl": `https://${process.env.HOST}/`,
-				"trialDays": 7,
-				"test": true,
-				"lineItems": [
-					{
-						"plan": {
-							"appRecurringPricingDetails": {
-								"price": {
-								"amount": 79,
-								"currencyCode": "USD"
-								},
-								"interval": "EVERY_30_DAYS"
+		const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
 							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
 						}
-					}
-				]
-		}
+					}`,
+					"variables": {
+						"name": "Robosale Premium Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 69.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+			console.log(selected)
+			console.log(selected.body.data.appSubscriptionCreate)
+			return res.redirect(selected.body.data.appSubscriptionCreate.confirmationUrl)
 	}
 
-	const selected: any = await client.query({
-	data: {
-			"query": `mutation{
-				appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test, trialDays: $trialDays) {
-					userErrors {
-						field
-						message
-					}
-					appSubscription {
-						id
-					}
-					confirmationUrl
-				}
-			}`,
-			"variables": {
-				"name": "Super Duper Recurring Plan",
-				"returnUrl": `https://${process.env.HOST}/`,
-				"trialDays": 7,
-				"test": true,
-				"lineItems": [
-					{
-						"plan": {
-							"appRecurringPricingDetails": {
-								"price": {
-								"amount": 79,
-								"currencyCode": "USD"
-								},
-								"interval": "EVERY_30_DAYS"
-							}
-						}
-					}
-				]
-			}
-		},
-	})
-	console.log(selected)
+	
+	//console.log(selected)
 
-	res.redirect(selected.confirmationUrl)
+	res.send("Error buddy")
 })
 
 billing.post('/change', checkAuth, async (req, res) => {
