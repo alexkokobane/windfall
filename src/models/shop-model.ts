@@ -8,6 +8,16 @@ const ShopSchema = new mongoose.Schema({
 		unique: true
 	},
 	pricePlan: String,
+	chargeDetails: {
+		plan: String,
+		confirmed: Boolean,
+		id: String,
+		confirmedAt: Date,
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
+	},
 	scope: [String],
 	email: String,
 	entryNotificationTemplates: [{

@@ -60,14 +60,16 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		const checkShop = await Shop.findOne({shop: session.shop})
 
 		if(checkShop == null){
-			return res.redirect("/billing/plans")
-			/*
 			const storeShop = new Shop({
 				shop: session.shop,
 				scope: [session.scope],
 				email: session.onlineAccessInfo.associated_user.email,
 			})
-			storeShop.save()*/
+			storeShop.save()
+			return res.redirect("/billing/plans")
+		}
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard"){
+			return res.redirect("/billing/plans")
 		}
 		// Webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({

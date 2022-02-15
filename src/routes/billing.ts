@@ -14,42 +14,111 @@ billing.get('/plans', checkAuth, async (req, res) => {
 	res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
 })
 
+billing.get('/details', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const data = await client.query(
+			{
+				data: `{
+					app(id: "gid://shopify/App/6311347"){
+						title,
+						pricingDetails,
+						installation{
+							activeSubscriptions{
+								id
+							}
+						}
+					}
+				}`
+			}
+		)
+
+		res.json(data)
+	} catch(err: any){
+		console.log(err)
+	}
+})
 billing.get('/redirect', checkAuth, async (req, res) => {
 	try {
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop === null){
-			const storeShop = new Shop({
-				shop: session.shop,
-				scope: [session.scope],
-				email: session.onlineAccessInfo.associated_user.email,
-			})
-			storeShop.save()
+		let id: string
+		if (req.query.charge_id && typeof req.query.charge_id === 'string') {
+				id = req.query.charge_id
+		} else {
+				return id = undefined
 		}
-		res.redirect("/")
+		if(id === undefined) {
+			return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({'shop': session.shop})
+		if(checkShop === null){
+			return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
+		}
+
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const appDetails: any = await client.query(
+			{
+				data: `{
+					app(id: "gid://shopify/App/6311347"){
+						title,
+						pricingDetails,
+						installation{
+							activeSubscriptions{
+								id
+							}
+						}
+					}
+				}`
+			}
+		)
+
+		const matchId: string = appDetails.body.data.app.installation.activeSubscription.id
+		if(!matchId){
+			console.log('You have not installed this app')
+			return res.status(403).render('pages/404')
+		}
+		if(checkShop.chargeDetails){
+			if(checkShop.chargeDetails.id === matchId){
+				await Shop.updateOne(
+					{
+						'shop': session.shop
+					},
+					{
+						'$set': {
+							'pricePlan': checkShop.chargeDetails.plan,
+							'chargeDetails.confirmed': true,
+							'chargeDetails.confirmedAt': Date.now()
+						}
+					}
+				)
+				res.redirect('/')
+			} else {
+				return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
+			}
+		}
+		res.status(404).render('pages/404', {layout: 'layouts/minimal'})
 	} catch(err: any){
 		console.log(err)
 	}
 })
 
 billing.get('/plans/subscribe', checkAuth, async (req, res) => {
-	let plan: string
-	if (req.query.plan && typeof req.query.plan === 'string') {
-	  	plan = req.query.plan
-	} else {
-	  	return undefined
-	}
-	if(plan === undefined) {
-		return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
-	}
-	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-	const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
-	//const plan = req.body.plan
+	try {
+		let plan: string
+		if (req.query.plan && typeof req.query.plan === 'string') {
+				plan = req.query.plan
+		} else {
+				return plan = undefined
+		}
+		if(plan === undefined) {
+			return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 
-	let subscription: object
-
-	if(plan === "Standard"){
-		const selected: any =  await client.query({
+		if(plan === "Standard"){
+			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
 						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
@@ -65,7 +134,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					}`,
 					"variables": {
 						"name": "Robosale Premium Recurring Plan",
-						"returnUrl": "https://"+process.env.HOST+"/",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
 						"trialDays": 7,
 						"lineItems": [
@@ -84,13 +153,31 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					},
 				},
 			})
-			console.log(selected)
-			console.log(selected.body.data.appSubscriptionCreate)
-			return res.redirect(selected.body.data.appSubscriptionCreate.confirmationUrl)
-	}
 
-	if(plan === "Ultimate"){
-		const selected: any =  await client.query({
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'chargeDetails': {
+							'plan': 'Standard',
+							'confirmed': false,
+							'id': returned.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+
+		if(plan === "Ultimate"){
+			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
 						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
@@ -106,7 +193,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					}`,
 					"variables": {
 						"name": "Robosale Premium Recurring Plan",
-						"returnUrl": "https://"+process.env.HOST+"/",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
 						"trialDays": 7,
 						"lineItems": [
@@ -125,15 +212,32 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					},
 				},
 			})
-			console.log(selected)
+
 			console.log(selected.body.data.appSubscriptionCreate)
-			return res.redirect(selected.body.data.appSubscriptionCreate.confirmationUrl)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$push': {
+						'chargeDetails': {
+							'plan': 'Ultimate',
+							'confirmed': false,
+							'id': returned.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+		res.status(404).render('pages/404')
+	} catch(err: any){
+		console.log(err)
 	}
-
-	
-	//console.log(selected)
-
-	res.send("Error buddy")
 })
 
 billing.post('/change', checkAuth, async (req, res) => {
