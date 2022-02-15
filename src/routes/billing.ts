@@ -106,7 +106,25 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					confirmationUrl
 				}
 			}`,
-			"variables": subscription
+			"variables": {
+				"name": "Super Duper Recurring Plan",
+				"returnUrl": `https://${process.env.HOST}/`,
+				"trialDays": 7,
+				"test": true,
+				"lineItems": [
+					{
+						"plan": {
+							"appRecurringPricingDetails": {
+								"price": {
+								"amount": 79,
+								"currencyCode": "USD"
+								},
+								"interval": "EVERY_30_DAYS"
+							}
+						}
+					}
+				]
+			}
 		},
 	})
 	console.log(selected)

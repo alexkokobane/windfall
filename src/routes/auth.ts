@@ -60,7 +60,43 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		const checkShop = await Shop.findOne({shop: session.shop})
 
 		if(checkShop == null){
-			return res.redirect("/billing/plans")
+			const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+			const selected: any = await client.query({
+				data: {
+					"query": `mutation{
+						appSubscriptionCreate(
+						name: "Ultimate plan", 
+						returnUrl: "https://${process.env.HOST}/", 
+						lineItems: [
+							{
+								plan: {
+									appRecurringPricingDetails: {
+										price: {
+										amount: 79,
+										currencyCode: USD
+										},
+										interval: "EVERY_30_DAYS"
+									}
+								}
+							}
+						], 
+						test: true, 
+						trialDays: 7) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`
+				},
+			})
+			console.log(selected.body.errors)
+			console.log(selected.confirmationUrl)
+			return res.send("Smile")
 			/*
 			const storeShop = new Shop({
 				shop: session.shop,
