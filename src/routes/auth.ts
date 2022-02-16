@@ -68,7 +68,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			storeShop.save()
 			return res.redirect("/billing/plans")
 		}
-		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard"){
+		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Starter"){
 			return res.redirect("/billing/plans")
 		}
 		// Webhooks

@@ -113,31 +113,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			)
 			return res.redirect('/')
 		}
-		/*
-		const matchId: string = appDetails.body.data.app.installation.activeSubscriptions.id
-		if(!matchId){
-			console.log('You have not installed this app')
-			return res.status(403).render('pages/404')
-		}
-		if(checkShop.chargeDetails){
-			if(checkShop.chargeDetails.id === matchId){
-				await Shop.updateOne(
-					{
-						'shop': session.shop
-					},
-					{
-						'$set': {
-							'pricePlan': checkShop.chargeDetails.plan,
-							'chargeDetails.confirmed': true,
-							'chargeDetails.confirmedAt': Date.now()
-						}
-					}
-				)
-				res.redirect('/')
-			} else {
-				return res.status(404).render('pages/404', {layout: 'layouts/minimal'})
-			}
-		}*/
+		
 		res.status(404).render('pages/404', {layout: 'layouts/minimal'})
 	} catch(err: any){
 		console.log(err)
@@ -158,6 +134,65 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 
+		if(plan === "Starter"){
+			const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`,
+					"variables": {
+						"name": "Robosale Starter Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 19.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'chargeDetails': {
+							'plan': 'Standard',
+							'confirmed': false,
+							'id': returned.appSubscriptionCreate.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+
 		if(plan === "Standard"){
 			const selected: any =  await client.query({
 				data: {
@@ -174,7 +209,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 						}
 					}`,
 					"variables": {
-						"name": "Robosale Premium Recurring Plan",
+						"name": "Robosale Standard Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
 						"trialDays": 7,
@@ -183,7 +218,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 								"plan": {
 									"appRecurringPricingDetails": {
 										"price": {
-											"amount": 29.0,
+											"amount": 39.0,
 											"currencyCode": "USD"
 										},
 										"interval": "EVERY_30_DAYS"
@@ -233,7 +268,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 						}
 					}`,
 					"variables": {
-						"name": "Robosale Premium Recurring Plan",
+						"name": "Robosale Ultimate Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
 						"trialDays": 7,
