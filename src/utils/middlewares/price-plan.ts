@@ -5,13 +5,13 @@ import getShop from '../get-shop'
 
 const forCommon = async (req: Request, res: Response, next: NextFunction) => {
 	try{
-		const shop = getShop(req)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Starter"){
-			return res.redirect("/billing/plans")
+		console.log(checkShop.pricePlan)
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+			return next()
 		}
-		next()
+		res.redirect("/billing/plans")
 	} catch (err: any){
 		console.log(err)
 	}
@@ -19,7 +19,6 @@ const forCommon = async (req: Request, res: Response, next: NextFunction) => {
 
 const forStarter = async (req: Request, res: Response, next: NextFunction) => {
 	try{
-		const shop = getShop(req)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Starter"){
@@ -33,7 +32,6 @@ const forStarter = async (req: Request, res: Response, next: NextFunction) => {
 
 const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 	try{
-		const shop = getShop(req)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Standard"){
@@ -47,7 +45,6 @@ const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 
 const forUltimate = async (req: Request, res: Response, next: NextFunction) => {
 	try{
-		const shop = getShop(req)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Ultimate"){

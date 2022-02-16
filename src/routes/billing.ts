@@ -13,7 +13,16 @@ billing.get('/', checkAuth, async (req, res) => {
 })
 
 billing.get('/plans', checkAuth, async (req, res) => {
-	res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+			return res.redirect("/billing/change")
+		}
+		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 billing.get('/details', checkAuth, async (req, res) => {
@@ -322,14 +331,14 @@ billing.get('/change', checkAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Ultimate"){
-			return res.render('pages/ultimate/plans-ultimate', {layout: 'layouts/minimal'})
+		if(checkShop.pricePlan === "Ultimate"){
+			return res.render('pages/ultimate/plans-ultimate')
 		}
-		if(checkShop.pricePlan !== "Standard"){
-			return res.render('pages/ultimate/plans-standard', {layout: 'layouts/minimal'})
+		if(checkShop.pricePlan === "Standard"){
+			return res.render('pages/standard/plans-standard')
 		}
-		if(checkShop.pricePlan !== "Starter"){
-			return res.render('pages/ultimate/plans-starter', {layout: 'layouts/minimal'})
+		if(checkShop.pricePlan === "Starter"){
+			return res.render('pages/starter/plans-starter')
 		}
 		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
 	} catch(err: any){

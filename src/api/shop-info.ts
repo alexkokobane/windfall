@@ -11,18 +11,11 @@ shopInfo.get('/', checkAuth, async (req, res) => {
 		const shop = await Shop.findOne({shop: session.shop})
 
 		res.json({
-			shop: shop.shop, 
-			user: session.onlineAccessInfo.associated_user.first_name
+			'shop': shop.shop, 
+			'user': session.onlineAccessInfo.associated_user.first_name,
+			'plan': shop.pricePlan
 		})
 	} catch(err: any){
-		console.log(err)
-	}
-})
-
-shopInfo.post('/try', async (req, res) => {
-	try{
-		res.status(200).send("A-OK")
-	} catch(err: any) {
 		console.log(err)
 	}
 })

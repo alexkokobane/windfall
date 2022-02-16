@@ -47,6 +47,15 @@ $(document).ready(function(e){
 			$("#ToShopifyBtn").click(function(){
 				location.href="https://"+data.shop+"/admin"
 			})
+			if(data.plan === "Starter"){
+				$("#PlanDetails").html("<p>You are currently on the Starter plan for 19 USD per month.</p>")
+			}
+			if(data.plan === "Standard"){
+				$("#PlanDetails").html("<p>You are currently on the Standard plan for 39 USD per month.</p>")
+			}
+			if(data.plan === "Ultimate"){
+				$("#PlanDetails").html("<p>You are currently on the Ultimate plan for 79 USD per month.</p>")
+			}
 		}
 	})
 
@@ -1626,6 +1635,13 @@ $(document).ready(function(e){
 			error: function(data){
 				alert(data.responseText)
 			}
+		})
+	}
+
+	//url === /billing
+	if(window.location.pathname === "/billing"){
+		$("#ChangePlan").click(function(){
+			location.href="/billing/change"
 		})
 	}
 
