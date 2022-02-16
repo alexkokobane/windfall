@@ -79,7 +79,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
 		}
 		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
-		
+
 		// Check bills and db saved shops
 		if(checkShop == null){
 			const storeShop = new Shop({
@@ -88,13 +88,16 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				email: session.onlineAccessInfo.associated_user.email,
 			})
 			storeShop.save()
+			console.log("check point 1")
 			return res.redirect("/billing/plans")
 		}
-		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Starter"){
-			return res.redirect("/billing/plans")
+		
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+			console.log("check point 2")
+			return res.redirect(`/`)
 		}
 
-		return res.redirect(`/`)
+		res.redirect("/billing/plans")		
 	} catch (error) {
 		console.error(error);
 		console.log("THE ERROR IS ON auth/callback")

@@ -11,7 +11,21 @@ const forCommon = async (req: Request, res: Response, next: NextFunction) => {
 		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
 			return next()
 		}
-		res.redirect("/billing/plans")
+		res.status(403).redirect("/billing/plans")
+	} catch (err: any){
+		console.log(err)
+	}
+}
+
+const forCommonApi = async (req: Request, res: Response, next: NextFunction) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		console.log(checkShop.pricePlan)
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+			return next()
+		}
+		res.status(403).send("Forbidden")
 	} catch (err: any){
 		console.log(err)
 	}
@@ -22,7 +36,20 @@ const forStarter = async (req: Request, res: Response, next: NextFunction) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Starter"){
-			return res.redirect("/billing/plans")
+			return res.status(403).redirect("/billing/plans")
+		}
+		next()
+	} catch (err: any){
+		console.log(err)
+	}
+}
+
+const forStarterApi = async (req: Request, res: Response, next: NextFunction) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan !== "Starter"){
+			return res.status(403).send("Forbidden")
 		}
 		next()
 	} catch (err: any){
@@ -35,7 +62,20 @@ const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Standard"){
-			return res.redirect("/billing/plans")
+			return res.status(403).redirect("/billing/plans")
+		}
+		next()
+	} catch (err: any){
+		console.log(err)
+	}
+}
+
+const forStandardApi = async (req: Request, res: Response, next: NextFunction) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan !== "Standard"){
+			return res.status(403).send("Forbidden")
 		}
 		next()
 	} catch (err: any){
@@ -48,7 +88,20 @@ const forUltimate = async (req: Request, res: Response, next: NextFunction) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan !== "Ultimate"){
-			return res.redirect("/billing/plans")
+			return res.status(403).redirect("/billing/plans")
+		}
+		next()
+	} catch (err: any){
+		console.log(err)
+	}
+}
+
+const forUltimateApi = async (req: Request, res: Response, next: NextFunction) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan !== "Ultimate"){
+			return res.status(403).send("Forbidden")
 		}
 		next()
 	} catch (err: any){

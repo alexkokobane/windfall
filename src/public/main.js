@@ -148,6 +148,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -200,6 +202,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -276,6 +280,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				}	else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -353,6 +359,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -436,6 +444,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				$("#ValidBody").html(`
 					<p>Press the validator button to check for scheduling conflicts with existing giveaways.</p>
@@ -479,6 +489,11 @@ $(document).ready(function(e){
 				return location.href=data
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
 				console.log(data.responseText)
 				return alert(data.responseText)
 			}
@@ -559,6 +574,8 @@ $(document).ready(function(e){
 				error: function(data){
 					if(data.responseText === "Unauthorized"){
 						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
 					}
 					alert(data.responseText)
 				}
@@ -584,6 +601,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -621,6 +640,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								alert(data.responseText)
 							}
@@ -681,6 +702,8 @@ $(document).ready(function(e){
 						error: function(data){
 							if(data.responseText === "Unauthorized"){
 								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
 							}
 							//alert(data.responseText)
 							$("#WinnerBody").html(`
@@ -730,6 +753,8 @@ $(document).ready(function(e){
 										error: function(data){
 											if(data.responseText === "Unauthorized"){
 												return location.href="/"
+											} else if(data.responseText === "Forbidden"){
+												return location.href="/billing/plans"
 											}
 											alert(data.responseText)
 										}
@@ -781,6 +806,11 @@ $(document).ready(function(e){
 								})
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
+								}
 								//alert(data.responseText)
 								$("#WinnerBody").html(`
 									<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
@@ -809,6 +839,8 @@ $(document).ready(function(e){
 						error: function(data){
 							if(data.responseText === "Unauthorized"){
 								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
 							}
 							alert(data.responseText)
 						}
@@ -827,6 +859,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								alert(data.responseText)
 							}
@@ -837,6 +871,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -937,6 +973,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
@@ -1061,6 +1099,8 @@ $(document).ready(function(e){
 				error: function(data){
 					if(data.responseText === "Unauthorized"){
 						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
 					}
 					alert(data.responseText)
 				}
@@ -1186,6 +1226,8 @@ $(document).ready(function(e){
 				error: function(data){
 					if(data.responseText === "Unauthorized"){
 						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
 					}
 					alert(data.responseText)
 				}
@@ -1311,6 +1353,8 @@ $(document).ready(function(e){
 				error: function(data){
 					if(data.responseText === "Unauthorized"){
 						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
 					}
 					alert(data.responseText)
 				}
@@ -1380,6 +1424,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								const decider = data instanceof Array
 								if(decider) {
@@ -1438,6 +1484,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								let decider = data.responseJSON
 								console.log(decider)
@@ -1499,6 +1547,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								let decider = data.responseJSON
 								if(decider) {
@@ -1557,6 +1607,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								let decider = data.responseJSON
 								if(decider) {
@@ -1615,6 +1667,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								let decider = data.responseJSON
 								if(decider) {
@@ -1673,6 +1727,8 @@ $(document).ready(function(e){
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
 									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
 								}
 								let decider = data.responseJSON
 								if(decider) {
@@ -1709,6 +1765,8 @@ $(document).ready(function(e){
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
 					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
 				}
 				alert(data.responseText)
 			}
