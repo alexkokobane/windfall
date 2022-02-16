@@ -58,19 +58,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
-
-		if(checkShop == null){
-			const storeShop = new Shop({
-				shop: session.shop,
-				scope: [session.scope],
-				email: session.onlineAccessInfo.associated_user.email,
-			})
-			storeShop.save()
-			return res.redirect("/billing/plans")
-		}
-		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Starter"){
-			return res.redirect("/billing/plans")
-		}
+		
 		// Webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks',
@@ -91,6 +79,20 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
 		}
 		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
+		
+		// Check bills and db saved shops
+		if(checkShop == null){
+			const storeShop = new Shop({
+				shop: session.shop,
+				scope: [session.scope],
+				email: session.onlineAccessInfo.associated_user.email,
+			})
+			storeShop.save()
+			return res.redirect("/billing/plans")
+		}
+		if(checkShop.pricePlan !== "Ultimate" || checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Starter"){
+			return res.redirect("/billing/plans")
+		}
 
 		return res.redirect(`/`)
 	} catch (error) {

@@ -3,7 +3,7 @@ import Shopify from '@shopify/shopify-api'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import checkAuth from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
-
+import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 
 const campaign = express.Router()
 
