@@ -144,6 +144,259 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+			const deleteCurrentPlan: any = await client.query(
+				{
+					data: `mutation{
+						appSubscriptionCancel(id: "${checkShop.chargeDetails.id}"){
+							appSubscription{
+								name
+							},
+							userErrors{
+								field
+							}
+						}
+					}`
+				}
+			)
+			console.log(deleteCurrentPlan.body.data)
+			if(!deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription.name){
+				console.log(deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription)
+				console.log("failed to delete subscription")
+				return res.redirect('/billing')
+			}
+		}
+		console.log(plan)
+		if(plan === "Starter"){
+			const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`,
+					"variables": {
+						"name": "Robosale Starter Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 19.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'chargeDetails': {
+							'plan': 'Starter',
+							'confirmed': false,
+							'id': returned.appSubscriptionCreate.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+
+		if(plan === "Standard"){
+			const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`,
+					"variables": {
+						"name": "Robosale Standard Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 39.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'chargeDetails': {
+							'plan': 'Standard',
+							'confirmed': false,
+							'id': returned.appSubscriptionCreate.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+
+		if(plan === "Ultimate"){
+			const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`,
+					"variables": {
+						"name": "Robosale Ultimate Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+						"test": true,
+						"trialDays": 7,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 69.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'chargeDetails': {
+							'plan': 'Ultimate',
+							'confirmed': false,
+							'id': returned.appSubscriptionCreate.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+		res.status(404).render('pages/404')
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+billing.get('/change', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan === "Ultimate"){
+			return res.render('pages/ultimate/plans-ultimate')
+		}
+		if(checkShop.pricePlan === "Standard"){
+			return res.render('pages/standard/plans-standard')
+		}
+		if(checkShop.pricePlan === "Starter"){
+			return res.render('pages/starter/plans-starter')
+		}
+		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
+	} catch(err: any){
+		console.log(err)
+	}	
+})
+
+billing.get('/change/subscription', checkAuth, forCommon, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})		
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		console.log(checkShop.chargeDetails.id)
+		const deleteCurrentPlan: any = await client.query(
+			{
+				data: `mutation{
+					appSubscriptionCancel(id: "${checkShop.chargeDetails.id}"){
+						appSubscription{
+							name
+						},
+						userErrors{
+							field
+						}
+					}
+				}`
+			}
+		)
+		console.log(deleteCurrentPlan.body.data)
+		if(!deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription.name){
+			console.log(deleteCurrentPlan.body.data.appSubscription)
+			console.log("failed to delete subscription")
+			return res.redirect('/billing')
+		}
+
+		const plan = checkShop.pricePlan
 
 		if(plan === "Starter"){
 			const selected: any =  await client.query({
@@ -322,25 +575,6 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
 		}
 		res.status(404).render('pages/404')
-	} catch(err: any){
-		console.log(err)
-	}
-})
-
-billing.get('/change', checkAuth, async (req, res) => {
-	try{
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Ultimate"){
-			return res.render('pages/ultimate/plans-ultimate')
-		}
-		if(checkShop.pricePlan === "Standard"){
-			return res.render('pages/standard/plans-standard')
-		}
-		if(checkShop.pricePlan === "Starter"){
-			return res.render('pages/starter/plans-starter')
-		}
-		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
 	} catch(err: any){
 		console.log(err)
 	}	
