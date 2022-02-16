@@ -139,7 +139,23 @@ const customerListSchema = new mongoose.Schema({
 	}
 })
 
-
+const quotaSchema = new mongoose.Schema({
+	shop: {
+		type: String,
+		required: true,
+	},
+	plan: {
+		type: String,
+		required: true
+	},
+	campaignTemplates: Number,
+	eventCampaigns: {
+		count: Number,
+		days: Number
+	},
+	standaloneCampaigns: Number,
+	grandCampaigns: Number,
+})
 
 const Shop = mongoose.model('Shop', ShopSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)

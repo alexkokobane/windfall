@@ -435,6 +435,14 @@ data.get('/:id/winners', checkApiAuth, async (req, res) => {
 	}
 })
 
+data.get('/quota-watch', checkApiAuth, async (req, res) => {
+	try{
+
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
