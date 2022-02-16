@@ -1,11 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
-import checkAuth from '../utils/middlewares/check-auth'
+import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { Shop } from '../models/shop-model'
 
 const shopInfo = express.Router()
 
-shopInfo.get('/', checkAuth, async (req, res) => {
+shopInfo.get('/', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({shop: session.shop})

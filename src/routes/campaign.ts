@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
-import checkAuth from '../utils/middlewares/check-auth'
+import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 
@@ -16,7 +16,7 @@ campaign.get('/new', checkAuth, async (req, res) => {
 	res.render('pages/campaign-create')
 })
 
-campaign.post('/new', checkAuth, async (req, res) => {
+campaign.post('/new', checkApiAuth, async (req, res) => {
 	try {
 		const data = req.body.form
 		console.log(req.body.form)
@@ -152,7 +152,7 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
+campaign.post('/new/hierarchical/create', checkApiAuth, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
 		const giveawayId = req.body.id
@@ -182,7 +182,7 @@ campaign.post('/new/hierarchical/create', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
+campaign.post('/new/equitable/create', checkApiAuth, async (req, res) => {
 	try {
 		const amount = req.body.amounts
 		const giveawayId = req.body.id
@@ -223,7 +223,7 @@ campaign.post('/new/equitable/create', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/template/:id/activate', checkAuth, async (req, res) => {
+campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -394,11 +394,11 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/:id/edit', checkAuth, async (req, res) => {
+campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
 	res.send("The give away has been edited")
 })
 
-campaign.post('/:id/delete', checkAuth, async (req, res) => {
+campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){
@@ -438,7 +438,7 @@ campaign.post('/:id/delete', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
+campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 	try{
 		const displayWinners: any = []
 		const giveawayId = parseInt(req.params.id)
@@ -590,7 +590,7 @@ campaign.post('/:id/choose-winners', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/:id/gift', checkAuth, async (req, res) => {
+campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){
@@ -682,7 +682,7 @@ campaign.post('/:id/gift', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/store', checkAuth, async (req, res) => {
+campaign.post('/store', checkApiAuth, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -776,7 +776,7 @@ campaign.get('/template/:id', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/template/:id/delete', checkAuth, async (req, res) => {
+campaign.post('/template/:id/delete', checkApiAuth, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -803,4 +803,3 @@ campaign.post('/template/:id/delete', checkAuth, async (req, res) => {
 })
 
 export default campaign
-

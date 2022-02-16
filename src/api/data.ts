@@ -2,21 +2,21 @@ import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import cors from 'cors'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
-import checkAuth from '../utils/middlewares/check-auth'
+import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 //import querySanitizer from '../utils/query-sanitizer'
 
 const data = express.Router()
 
-data.get('/email-list', checkAuth, async (rey, res) => {
+data.get('/email-list', checkApiAuth, async (rey, res) => {
 	res.send("This is the email list")
 })
 
-data.get('/total-revenue', checkAuth, async (req, res) => {
+data.get('/total-revenue', checkApiAuth, async (req, res) => {
 	res.send("Revenue counter")
 })
 
-data.get('/products', checkAuth, async (req, res) => {
+data.get('/products', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
@@ -45,7 +45,7 @@ data.get('/products', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaign/:id',  checkAuth, async (req, res) => {
+data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
 		console.log(giveawayId)
@@ -83,7 +83,7 @@ data.get('/campaign/:id',  checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/expired', checkAuth, async (req, res) => {
+data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -111,7 +111,7 @@ data.get('/campaigns/expired', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/active', checkAuth, async (req, res) => {
+data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -140,7 +140,7 @@ data.get('/campaigns/active', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
+data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -169,7 +169,7 @@ data.get('/campaigns/upcoming', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/hierarchical', checkAuth, async (req, res) => {
+data.get('/campaigns/hierarchical', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -197,7 +197,7 @@ data.get('/campaigns/hierarchical', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/equitable', checkAuth, async (req, res) => {
+data.get('/campaigns/equitable', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -225,7 +225,7 @@ data.get('/campaigns/equitable', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaigns/all', checkAuth, async (req, res) => {
+data.get('/campaigns/all', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -252,7 +252,7 @@ data.get('/campaigns/all', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/awaiting', checkAuth, async (req, res) => {
+data.get('/awaiting', checkApiAuth, async (req, res) => {
 	try{
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -282,7 +282,7 @@ data.get('/awaiting', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/giveaway-templates', checkAuth, async (req, res) => {
+data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const template = await Saved.find({
@@ -307,7 +307,7 @@ data.get('/giveaway-templates', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/template/:id', checkAuth, async (req, res) => {
+data.get('/template/:id', checkApiAuth, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -340,7 +340,7 @@ data.get('/template/:id', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaign-validator', checkAuth, async (req, res) => {
+data.get('/campaign-validator', checkApiAuth, async (req, res) => {
 	try{
 		let starter : string
 		let ender : string 
@@ -403,7 +403,7 @@ data.get('/campaign-validator', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/:id/winners', checkAuth, async (req, res) => {
+data.get('/:id/winners', checkApiAuth, async (req, res) => {
 	try{
 		const displayWinners: any = []
 		const giveawayId = parseInt(req.params.id)
@@ -435,7 +435,7 @@ data.get('/:id/winners', checkAuth, async (req, res) => {
 	}
 })
 
-data.get('/everything', checkAuth, async (req, res) => {
+data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})

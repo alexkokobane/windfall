@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
-import checkAuth from '../utils/middlewares/check-auth'
+import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { Shop } from '../models/shop-model'
 
 const customers = express.Router()
@@ -32,7 +32,7 @@ customers.get('/', checkAuth, async(req, res) => {
 	}
 })
 
-customers.post('/', checkAuth, async(req, res) => {
+customers.post('/', checkApiAuth, async(req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)

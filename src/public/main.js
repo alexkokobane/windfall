@@ -56,6 +56,11 @@ $(document).ready(function(e){
 			if(data.plan === "Ultimate"){
 				$("#PlanDetails").html("<p>You are currently on the Ultimate plan for 79 USD per month.</p>")
 			}
+		},
+		error: function(data){
+			if(data.responseText === "Unauthorized"){
+				return location.href="/"
+			}
 		}
 	})
 
@@ -141,6 +146,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -190,6 +198,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -263,6 +274,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -337,6 +351,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -417,6 +434,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				$("#ValidBody").html(`
 					<p>Press the validator button to check for scheduling conflicts with existing giveaways.</p>
 				`)
@@ -537,6 +557,9 @@ $(document).ready(function(e){
 					location.href=data
 				},
 				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					}
 					alert(data.responseText)
 				}
 			})
@@ -559,6 +582,9 @@ $(document).ready(function(e){
 				location.href=data
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -593,6 +619,9 @@ $(document).ready(function(e){
 								alert(data)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								alert(data.responseText)
 							}
 						})
@@ -650,7 +679,10 @@ $(document).ready(function(e){
 							}
 						},
 						error: function(data){
-							alert(data.responseText)
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							}
+							//alert(data.responseText)
 							$("#WinnerBody").html(`
 								<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
 								<p class="Polaris-InlineError">${data.responseText}</p>
@@ -696,6 +728,9 @@ $(document).ready(function(e){
 											alert(data)
 										},
 										error: function(data){
+											if(data.responseText === "Unauthorized"){
+												return location.href="/"
+											}
 											alert(data.responseText)
 										}
 									})
@@ -772,6 +807,9 @@ $(document).ready(function(e){
 							location.href=data
 						},
 						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							}
 							alert(data.responseText)
 						}
 					})
@@ -787,6 +825,9 @@ $(document).ready(function(e){
 								location.href=data
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								alert(data.responseText)
 							}
 						})
@@ -794,6 +835,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -891,6 +935,9 @@ $(document).ready(function(e){
 				})
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})
@@ -1012,6 +1059,9 @@ $(document).ready(function(e){
 					})
 				},
 				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					}
 					alert(data.responseText)
 				}
 			})
@@ -1134,6 +1184,9 @@ $(document).ready(function(e){
 					})
 				},
 				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					}
 					alert(data.responseText)
 				}
 			})
@@ -1256,6 +1309,9 @@ $(document).ready(function(e){
 					})
 				},
 				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					}
 					alert(data.responseText)
 				}
 			})
@@ -1322,6 +1378,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								const decider = data instanceof Array
 								if(decider) {
 									$("#ActivatorBody").html(`
@@ -1377,6 +1436,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								let decider = data.responseJSON
 								console.log(decider)
 								console.log(data)
@@ -1435,6 +1497,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								let decider = data.responseJSON
 								if(decider) {
 									$("#ActivatorBody").html(`
@@ -1490,6 +1555,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								let decider = data.responseJSON
 								if(decider) {
 									$("#ActivatorBody").html(`
@@ -1545,6 +1613,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								let decider = data.responseJSON
 								if(decider) {
 									$("#ActivatorBody").html(`
@@ -1600,6 +1671,9 @@ $(document).ready(function(e){
 								`)
 							},
 							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								}
 								let decider = data.responseJSON
 								if(decider) {
 									$("#ActivatorBody").html(`
@@ -1633,6 +1707,9 @@ $(document).ready(function(e){
 				}
 			},
 			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				}
 				alert(data.responseText)
 			}
 		})

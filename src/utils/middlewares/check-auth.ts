@@ -23,7 +23,7 @@ const checkAuth = async (req: Request, res: Response, next:NextFunction) => {
 	}
 }
 
-const checkApiAuth = async (req: Request, res: Response, next:NextFunction) => {
+export const checkApiAuth = async (req: Request, res: Response, next:NextFunction) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		if (!session) {
