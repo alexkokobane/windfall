@@ -4,6 +4,7 @@ import checkAuth from '../utils/middlewares/check-auth'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
+import getShop from '../utils/get-shop'
 
 const billing = express.Router()
 
@@ -317,8 +318,23 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 	}
 })
 
-billing.post('/change', checkAuth, async (req, res) => {
-	res.render('pages/plans-starter', {layout: 'layouts/minimal'})
+billing.get('/change', checkAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan !== "Ultimate"){
+			return res.render('pages/ultimate/plans-ultimate', {layout: 'layouts/minimal'})
+		}
+		if(checkShop.pricePlan !== "Standard"){
+			return res.render('pages/ultimate/plans-standard', {layout: 'layouts/minimal'})
+		}
+		if(checkShop.pricePlan !== "Starter"){
+			return res.render('pages/ultimate/plans-starter', {layout: 'layouts/minimal'})
+		}
+		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
+	} catch(err: any){
+		console.log(err)
+	}	
 })
 
 export default billing

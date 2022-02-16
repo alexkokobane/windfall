@@ -1,6 +1,6 @@
 <div class="Polaris-Page Polaris-Page--fullWidth">
 	<div class="Polaris-Page__Header">
-		<h1 class="Polaris-Heading">Pricing plans</h1>
+		<h1 class="Polaris-Heading">Change plans</h1>
 	</div>
 	<div class="Polaris-Page__Content">
 		<div class="Polaris-Layout"><a id="SkipToContentTarget" tabindex="-1"></a>
@@ -9,9 +9,8 @@
 					<div class="Polaris-Card__Header">
 						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Ultimate - your current plan</h2>
+								<h2 class="Polaris-Heading">Starter - your current plan</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary Polaris-Button--disabled" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -20,12 +19,12 @@
 								<div class="Polaris-TextContainer">
 									<h3 class="Polaris-TextStyle--variationStrong">Features included :</h3>
 									<ul class="Polaris-List">
-										<li class="Polaris-List__Item">Everything from the standard</li>
-										<li class="Polaris-List__Item">15 email templates</li>
-										<li class="Polaris-List__Item">Run unlimited giveaways at a time</li>
-										<li class="Polaris-List__Item">Save unlimited giveaway templates</li>
-										<li class="Polaris-List__Item">Smart campaign analytics</li>
-										<li class="Polaris-List__Item">Run unlimited super giveaways</li>
+										<li class="Polaris-List__Item">2 email templates</li>
+										<li class="Polaris-List__Item">Run 1 giveaway at a time</li>
+										<li class="Polaris-List__Item">Save up to 2 giveaway templates</li>
+										<li class="Polaris-List__Item">Build an email list of unlimited contacts</li>
+										<li class="Polaris-List__Item">Intergrate with MailChimp</li>
+										<li class="Polaris-List__Item">Smart export email list as JSON</li>
 									</ul>
 								</div>
 							</div>
@@ -36,9 +35,9 @@
 					<div class="Polaris-Card__Header">
 						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Standard - $25 per month</h2>
+								<h2 class="Polaris-Heading">Standard - $39 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Standard" class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Upgrade</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -65,24 +64,24 @@
 					<div class="Polaris-Card__Header">
 						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Starter - $12 per month</h2>
+								<h2 class="Polaris-Heading">Ultimate - $79 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Ultimate" class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Upgrade</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
 						<div class="Polaris-Stack Polaris-Stack--vertical">
 							<div class="Polaris-Stack__Item">
 								<div class="Polaris-TextContainer">
-									<p>Fully featured and packed with all the essentials you need to get started.</p>
+									<p>Smart tools for growth intelligence & the sky is the limit.</p>
 									<h3 class="Polaris-TextStyle--variationStrong">Features included :</h3>
 									<ul class="Polaris-List">
-										<li class="Polaris-List__Item">2 email templates</li>
-										<li class="Polaris-List__Item">Run 1 giveaway at a time</li>
-										<li class="Polaris-List__Item">Save up to 2 giveaway templates</li>
-										<li class="Polaris-List__Item">Build an email list of unlimited contacts</li>
-										<li class="Polaris-List__Item">Intergrate with MailChimp</li>
-										<li class="Polaris-List__Item">Smart export email list as JSON</li>
+										<li class="Polaris-List__Item">Everything from the standard</li>
+										<li class="Polaris-List__Item">15 email templates</li>
+										<li class="Polaris-List__Item">Run unlimited giveaways at a time</li>
+										<li class="Polaris-List__Item">Save unlimited giveaway templates</li>
+										<li class="Polaris-List__Item">Smart campaign analytics</li>
+										<li class="Polaris-List__Item">Run unlimited super giveaways</li>
 									</ul>
 								</div>
 							</div>
@@ -93,3 +92,13 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#Standard").click(function(){
+			location.href="/billing/plans/subscribe?plan=Standard"
+		})
+		$("#Ultimate").click(function(){
+			location.href="/billing/plans/subscribe?plan=Ultimate"
+		})
+	});
+</script>

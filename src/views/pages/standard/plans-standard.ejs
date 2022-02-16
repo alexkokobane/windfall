@@ -11,7 +11,6 @@
 							<div class="Polaris-Stack__Item">
 								<h2 class="Polaris-Heading">Standard - your current plan</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary Polaris-Button--disabled" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Get</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -39,7 +38,7 @@
 							<div class="Polaris-Stack__Item">
 								<h2 class="Polaris-Heading">Ultimate - $59 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Upgrade</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Ultimate" class="Polaris-Button Polaris-Button--primary" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Upgrade</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -67,7 +66,7 @@
 							<div class="Polaris-Stack__Item">
 								<h2 class="Polaris-Heading">Starter - $12 per month</h2>
 							</div>
-							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--outline" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
+							<div class="Polaris-Stack__Item"><button id="Starter" class="Polaris-Button Polaris-Button--outline" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -93,3 +92,13 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#Starter").click(function(){
+			location.href="/billing/plans/subscribe?plan=Starter"
+		})
+		$("#Ultimate").click(function(){
+			location.href="/billing/plans/subscribe?plan=Ultimate"
+		})
+	});
+</script>
