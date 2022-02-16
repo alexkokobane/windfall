@@ -23,4 +23,16 @@ const checkAuth = async (req: Request, res: Response, next:NextFunction) => {
 	}
 }
 
+const checkApiAuth = async (req: Request, res: Response, next:NextFunction) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		if (!session) {
+			return res.status(401).send("Unauthorized")
+		}
+		next()
+	} catch(err: any) {
+		console.log(err)
+	}
+}
+
 export default checkAuth
