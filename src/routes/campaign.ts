@@ -1,8 +1,9 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
-import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
+import { templateGate } from '../utils/quotas'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 
@@ -798,6 +799,8 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
+		// check for the quota
+		templateGate(req, res, session.shop)
 		// check weather it already has a template from which it was made.
 		if(giveaway.templateId){
 			const checker = await Saved.findOne({

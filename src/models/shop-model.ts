@@ -162,5 +162,6 @@ const Campaign = mongoose.model('Campaign', campaignSchema)
 const Super = mongoose.model('Super', superCampaignSchema)
 const Saved = mongoose.model('SavedCampaign', campaignTemplateSchema)
 const Customers = mongoose.model('Customers', customerListSchema)
+const Quota = mongoose.model('Quota', quotaSchema)
 
-export { Shop, Campaign, Super, Saved, Customers }
+export { Shop, Campaign, Super, Saved, Customers, Quota }

@@ -41,27 +41,21 @@ $(document).ready(function(e){
 	$("#GiveawaysBtn").click(function(){
 		location.href="/campaign/giveaways"
 	})
-	$.ajax({
-		url: '/shop',
-		success: function(data){
-			$("#ToShopifyBtn").click(function(){
+	$("#ToShopifyLinkBtn").click(function(){
+		$.ajax({
+			url: '/shop',
+			success: function(data){
+				console.log(data)
 				location.href="https://"+data.shop+"/admin"
-			})
-			if(data.plan === "Starter"){
-				$("#PlanDetails").html("<p>You are currently on the Starter plan for 19 USD per month.</p>")
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
 			}
-			if(data.plan === "Standard"){
-				$("#PlanDetails").html("<p>You are currently on the Standard plan for 39 USD per month.</p>")
-			}
-			if(data.plan === "Ultimate"){
-				$("#PlanDetails").html("<p>You are currently on the Ultimate plan for 79 USD per month.</p>")
-			}
-		},
-		error: function(data){
-			if(data.responseText === "Unauthorized"){
-				return location.href="/"
-			}
-		}
+		})		
 	})
 
 	//url == /
@@ -368,7 +362,7 @@ $(document).ready(function(e){
 	}
 	//url == /campaign/new
 	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-	console.log(new Date().toISOString().split('T')[1].substring(0,5))
+	console.log(new Date().toTimeString().substring(0,5))
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#ValidateBtn").click(function(){
@@ -1777,6 +1771,27 @@ $(document).ready(function(e){
 	if(window.location.pathname === "/settings"){
 		$("#ChangePlan").click(function(){
 			location.href="/billing/change"
+		})
+		$.ajax({
+			url: '/shop',
+			success: function(data){
+				if(data.plan === "Starter"){
+					$("#PlanDetails").html("<p>You are currently on the Starter plan for 19 USD per month.</p>")
+				}
+				if(data.plan === "Standard"){
+					$("#PlanDetails").html("<p>You are currently on the Standard plan for 39 USD per month.</p>")
+				}
+				if(data.plan === "Ultimate"){
+					$("#PlanDetails").html("<p>You are currently on the Ultimate plan for 79 USD per month.</p>")
+				}
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
 		})
 	}
 

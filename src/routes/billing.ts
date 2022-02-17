@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { divide, renderFor } from '../utils/render-divider'
@@ -123,6 +123,26 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 					}
 				}
 			)
+
+			const checkQuota = await Quota.findOne({'shop': session.shop})
+			console.log(checkQuota)
+			if(checkQuota === null){
+				new Quota({
+					shop: session.shop,
+					plan: checkShop.chargeDetails.plan
+				}).save()
+			} else {
+				await Quota.updateOne(
+					{
+						'shop': session.shop
+					},
+					{
+						'$set': {
+							'plan': checkShop.chargeDetails.plan
+						}
+					}
+				)
+			}
 			return res.redirect('/')
 		}
 		

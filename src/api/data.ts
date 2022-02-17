@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import cors from 'cors'
-import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
+import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 //import querySanitizer from '../utils/query-sanitizer'
@@ -447,12 +447,14 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
+		const usage = await Quota.findOne({'shop': session.shop})
 		const campaigns = await Campaign.find({'shop': session.shop})
 		const templates = await Saved.find({'shop': session.shop})
 		const customers = await Customers.find({'shop': session.shop})
 		const superCampaigns = await Super.find({'shop': session.shop})
 		const allData = {
 			shop,
+			usage,
 			campaigns,
 			superCampaigns,
 			campaignTemplate: templates,
