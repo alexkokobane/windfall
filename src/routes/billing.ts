@@ -4,6 +4,7 @@ import checkAuth from '../utils/middlewares/check-auth'
 import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
+import { divide, renderFor } from '../utils/render-divider'
 import getShop from '../utils/get-shop'
 
 const billing = express.Router()
@@ -352,6 +353,22 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 
 billing.get('/change', checkAuth, async (req, res) => {
 	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/ultimate/plans-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/standard/plans-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/starter/plans-starter"
+			}
+		]
+		divide(req, res, render)
+		/*
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan === "Ultimate"){
@@ -363,7 +380,8 @@ billing.get('/change', checkAuth, async (req, res) => {
 		if(checkShop.pricePlan === "Starter"){
 			return res.render('pages/starter/plans-starter')
 		}
-		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
+
+		res.status(403).redirect('/billing/plans')*/
 	} catch(err: any){
 		console.log(err)
 	}	

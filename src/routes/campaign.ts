@@ -8,7 +8,22 @@ import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middle
 const campaign = express.Router()
 
 campaign.get('/giveaways', checkAuth, async (req, res) => {
-	res.render('pages/campaigns')
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const checkShop = await Shop.findOne({shop: session.shop})
+		if(checkShop.pricePlan === "Ultimate"){
+			return res.render('pages/campaigns', {layout: 'layouts/main-ultimate'})
+		}
+		if(checkShop.pricePlan === "Standard"){
+			return res.render('pages/campaigns', {layout: 'layouts/main-standard'})
+		}
+		if(checkShop.pricePlan === "Starter"){
+			return res.render('pages/campaigns', {layout: 'layouts/main-starter'})
+		}
+		res.status(403).redirect('/billing/plans')
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 campaign.get('/new', checkAuth, async (req, res) => {

@@ -101,7 +101,8 @@ auth.get('/callback', async (req: Request, res: Response) => {
 	} catch (error) {
 		console.error(error);
 		console.log("THE ERROR IS ON auth/callback")
-		res.status(501).render('pages/501')  }
+		res.status(501).render('pages/501')  
+	}
 })
 /*
 Other webhook topics to subscribe to
