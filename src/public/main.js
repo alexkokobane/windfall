@@ -1773,8 +1773,8 @@ $(document).ready(function(e){
 		})
 	}
 
-	//url === /billing
-	if(window.location.pathname === "/billing"){
+	//url === /settings
+	if(window.location.pathname === "/settings"){
 		$("#ChangePlan").click(function(){
 			location.href="/billing/change"
 		})

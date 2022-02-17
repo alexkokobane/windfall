@@ -4,7 +4,8 @@ import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 
 interface render {
 	plan: string,
-	page: string
+	page: string,
+	layer?: string
 }
 
 export interface renderFor extends Array<render>{}
@@ -14,7 +15,11 @@ export const divide = async (req: Request, res: Response, plans: renderFor) => {
 	if(plans){
 		plans.forEach((plan) => {
 			if(checkShop.pricePlan === plan.plan){
-				return res.render(plan.page)
+				if(plan.layer){
+					return res.render(plan.page, {layout: plan.layer})
+				} else {
+					return res.render(plan.page)
+				}
 			}
 		})
 	} else {

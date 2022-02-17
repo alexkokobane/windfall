@@ -4,31 +4,58 @@ import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { divide, renderFor } from '../utils/render-divider'
 
 const campaign = express.Router()
 
 campaign.get('/giveaways', checkAuth, async (req, res) => {
 	try{
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Ultimate"){
-			return res.render('pages/campaigns', {layout: 'layouts/main-ultimate'})
-		}
-		if(checkShop.pricePlan === "Standard"){
-			return res.render('pages/campaigns', {layout: 'layouts/main-standard'})
-		}
-		if(checkShop.pricePlan === "Starter"){
-			return res.render('pages/campaigns', {layout: 'layouts/main-starter'})
-		}
-		res.status(403).redirect('/billing/plans')
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaigns",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaigns",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaigns",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any){
 		console.log(err)
 	}
 })
 
 campaign.get('/new', checkAuth, async (req, res) => {
-	
-	res.render('pages/campaign-create')
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaign-create",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaign-create",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaign-create",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 campaign.post('/new', checkApiAuth, async (req, res) => {
@@ -113,7 +140,7 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/new/equitable', checkAuth, async (req, res) => {
+campaign.get('/new/equitable', checkAuth, forCommon, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -130,13 +157,30 @@ campaign.get('/new/equitable', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
-		res.render('pages/equitable')
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/equitable",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/equitable",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/equitable",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
 	}
 })
 
-campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
+campaign.get('/new/hierarchical', checkAuth, forCommon, async (req, res) => {
 	try {
 		let decoyId: string
 		let decoyWinners: string
@@ -161,7 +205,24 @@ campaign.get('/new/hierarchical', checkAuth, async (req, res) => {
 		if(giveaway.winnersTotal !== giveawayWinners){
 			res.status(404).render('pages/404')
 		}
-		res.render('pages/hierarchical')
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/hierarchical",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/hierarchical",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/hierarchical",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -403,7 +464,24 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
-		res.render('pages/campaign')
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaign",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaign",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaign",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -767,7 +845,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/template/:id', checkAuth, async (req, res) => {
+campaign.get('/template/:id', checkAuth, forCommon, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -784,8 +862,24 @@ campaign.get('/template/:id', checkAuth, async (req, res) => {
 			return res.status(404).render('pages/404')
 		}
 
-		console.log(template instanceof Array)
-		res.render('pages/campaign-template')
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaign-template",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaign-template",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaign-template",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any){
 		console.log(err)
 	}

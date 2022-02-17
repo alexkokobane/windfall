@@ -356,32 +356,21 @@ billing.get('/change', checkAuth, async (req, res) => {
 		const render: renderFor = [
 			{
 				"plan": "Ultimate",
-				"page": "pages/ultimate/plans-ultimate"
+				"page": "pages/ultimate/plans-ultimate",
+				"layer": "layouts/main-ultimate"
 			},
 			{
 				"plan": "Standard",
-				"page": "pages/standard/plans-standard"
+				"page": "pages/standard/plans-standard",
+				"layer": "layouts/main-standard"
 			},
 			{
 				"plan": "Starter",
-				"page": "pages/starter/plans-starter"
+				"page": "pages/starter/plans-starter",
+				"layer": "layouts/main-starter"
 			}
 		]
 		divide(req, res, render)
-		/*
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Ultimate"){
-			return res.render('pages/ultimate/plans-ultimate')
-		}
-		if(checkShop.pricePlan === "Standard"){
-			return res.render('pages/standard/plans-standard')
-		}
-		if(checkShop.pricePlan === "Starter"){
-			return res.render('pages/starter/plans-starter')
-		}
-
-		res.status(403).redirect('/billing/plans')*/
 	} catch(err: any){
 		console.log(err)
 	}	
