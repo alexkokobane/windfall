@@ -1358,7 +1358,7 @@ $(document).ready(function(e){
 
 	//url === /campaign/template/:id
 	const idForTemplate = parseInt(path.split("/")[3])
-	if(isNaN(idForTemplate) == false){
+	if(isNaN(idForTemplate) === false){
 		$.ajax({
 			url: `/data/template/${idForTemplate}`,
 			type: "GET",
@@ -1370,6 +1370,24 @@ $(document).ready(function(e){
 				$("#GTName").text(data.name)
 				$("#GTDuration").text(`${Math.round((data.duration/(1000*60*60))*10)/10} Hour(s)`)
 				$("#GTForType").text(data.distributionType)
+				$("#DeleteGTBtn").click(function(){
+					$.ajax({
+						url: `/campaign/template/${data.id}/delete`,
+						type: "POST",
+						contentType: "application/json",
+						success: function(data){
+							location.href=data
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+							alert(data.responseText)
+						}
+					})
+				})
 				data.winners.reverse().forEach((item) => {
 					$("#GTWinnerListDecoy").after(`
 						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
