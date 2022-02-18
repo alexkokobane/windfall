@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import cors from 'cors'
-import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 //import querySanitizer from '../utils/query-sanitizer'
@@ -53,7 +53,7 @@ data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 			return res.status(404).send("Giveaway not found")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne(
+		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId
@@ -87,13 +87,13 @@ data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 			'startDate': {'$lt': new Date(dateNow)},
 			'endDate': {'$lt': new Date(dateNow)}
 		})
 		let expired: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			expired.push({
 				"id": item.id,
 				"name": item.name,
@@ -115,14 +115,14 @@ data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 			'startDate': {'$lte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
 		})
 
 		let active: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			active.push({
 				"id": item.id,
 				"name": item.name,
@@ -144,14 +144,14 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
 		})
 
 		let upcoming: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			upcoming.push({
 				"id": item.id,
 				"name": item.name,
@@ -173,13 +173,13 @@ data.get('/campaigns/hierarchical', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 			'distributionType': 'Hierarchical'
 		})
 
 		let hierarchy: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			hierarchy.push({
 				"id": item.id,
 				"name": item.name,
@@ -201,13 +201,13 @@ data.get('/campaigns/equitable', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 			'distributionType': 'Equitable'
 		})
 
 		let equity: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			equity.push({
 				"id": item.id,
 				"name": item.name,
@@ -229,12 +229,12 @@ data.get('/campaigns/all', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find({
+		const giveaway = await Long.find({
 			'shop': session.shop,
 		})
 
 		let all: any = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			all.push({
 				"id": item.id,
 				"name": item.name,
@@ -256,7 +256,7 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 	try{
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.find(
+		const giveaway = await Long.find(
 			{
 				'shop': session.shop,
 				'endDate': {'$lt': new Date(dateNow)},
@@ -268,7 +268,7 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 		)
 
 		const awaiting: any[] = []
-		giveaway.forEach((item) => {
+		giveaway.forEach((item: any) => {
 			awaiting.push({
 				"id": item.id,
 				"name": item.name,
@@ -285,13 +285,13 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const template = await Saved.find({
+		const template = await SavedLong.find({
 			'shop': session.shop,
 			'active': false
 		})
 
 		let templates: any = []
-		template.forEach((item) => {
+		template.forEach((item: any) => {
 			templates.push({
 				"id": item.id,
 				"name": item.name,
@@ -314,7 +314,7 @@ data.get('/template/:id', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This template does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const template = await Saved.findOne(
+		const template = await SavedLong.findOne(
 			{
 				'shop': session.shop,
 				'id': templateId
@@ -361,14 +361,14 @@ data.get('/campaign-validator', checkApiAuth, async (req, res) => {
 			return res.status(403).send("Please fill in both dates.")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkAll = await Campaign.find(
+		const checkAll = await Long.find(
 			{
 				'shop': session.shop,
 			}
 		)
 		let keyValue: any = []
 		if(checkAll.length !== 0){
-			checkAll.forEach((item) => {
+			checkAll.forEach((item: any) => {
 				const itemStart = new Date(item.startDate)
 				const itemEnd = new Date(item.endDate)
 				const givStart = new Date(starter)
@@ -412,7 +412,7 @@ data.get('/:id/winners', checkApiAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 				
-		const goodMeasure: any = await Campaign.findOne(
+		const goodMeasure: any = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId,
@@ -448,10 +448,10 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
 		const usage = await Quota.findOne({'shop': session.shop})
-		const campaigns = await Campaign.find({'shop': session.shop})
-		const templates = await Saved.find({'shop': session.shop})
+		const campaigns = await Long.find({'shop': session.shop})
+		const templates = await SavedLong.find({'shop': session.shop})
 		const customers = await Customers.find({'shop': session.shop})
-		const superCampaigns = await Super.find({'shop': session.shop})
+		const superCampaigns = await Grand.find({'shop': session.shop})
 		const allData = {
 			shop,
 			usage,

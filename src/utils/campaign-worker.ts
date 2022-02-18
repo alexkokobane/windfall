@@ -1,14 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import axios from 'axios'
-import { Shop, Campaign } from '../models/shop-model'
+import { Shop, Long } from '../models/shop-model'
 import getShop from './get-shop'
 
 export const setActiveCampaign = () => {
 	setInterval(async () => {
 		try {
 			const dateNow = new Date().toISOString()
-			const active = await Shop.aggregate([
+			const active = await Long.aggregate([
 				{
 					'$project': {
 						'campaigns': {
@@ -40,7 +40,7 @@ export const setExpiredCampaign = () => {
 	setInterval(async () => {
 		try {
 			const dateNow = new Date().toISOString()
-			const active = await Shop.aggregate([
+			const active = await Long.aggregate([
 				{
 					'$project': {
 						'campaigns': {

@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify, { ApiVersion, AuthQuery, SessionInterface } from '@shopify/shopify-api'
-import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 
 const templateGate = async (req: Request, res: Response, shop: string) => {		
-		const templates: any = await Saved.find({'shop': shop})
+		const templates: any = await SavedLong.find({'shop': shop})
 		const shopper: any = await Shop.findOne({'shop': shop})
 		let count = templates.length
 		let plan = shopper.pricePlan

@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop, Saved, Super, Campaign, Customers } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import ActiveShop from '../models/session-model'
 
 const webhooks = express.Router()
@@ -9,9 +9,9 @@ const webhooks = express.Router()
 export const handleAppUninstall = async (topic: string, shop: string, webhookRequestBody: string) => {
 	try{
 		await Shop.deleteOne({'shop': shop})
-		await Campaign.deleteMany({'shop': shop})
-		await Saved.deleteMany({'shop': shop})
-		await Super.deleteMany({'shop': shop})
+		await Long.deleteMany({'shop': shop})
+		await SavedLong.deleteMany({'shop': shop})
+		await Grand.deleteMany({'shop': shop})
 		await Customers.deleteMany({'shop': shop})
 		const session = await ActiveShop.find({'shop': shop})
 		if(session.length !== 0){
@@ -40,14 +40,14 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 		})
 		if(shopExist !== null) {
 			const dateNow = new Date().toISOString()
-			const checkActive = await Campaign.find({
+			const checkActive = await Long.find({
 				'shop': shop,
 				'startDate': {'$lte': new Date(dateNow)},
 				'endDate': {'$gte': new Date(dateNow)}
 			})
 			if(checkActive !== null){
 				
-				const participant = await Campaign.findOne(
+				const participant = await Long.findOne(
 					{
 						'shop': shop, 
 						'startDate': {'$lte': new Date(dateNow)},
@@ -62,7 +62,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 				)
 				console.log(participant)
 				if(participant === null) {
-					let con: any = await Campaign.updateOne(
+					let con: any = await Long.updateOne(
 						{
 							'shop': shop, 
 							'startDate': {'$lte': new Date(dateNow)},
@@ -81,7 +81,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					)
 					console.log(con)
 				} else {
-					let peat = await Campaign.updateOne(
+					let peat = await Long.updateOne(
 						{
 							'shop': shop, 
 							'startDate': {'$lte': new Date(dateNow)},

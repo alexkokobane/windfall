@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { divide, renderFor } from '../utils/render-divider'

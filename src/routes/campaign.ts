@@ -1,6 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
-import { Shop, Saved, Super, Campaign, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
@@ -99,7 +99,7 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
 		}
-		const longEvents: any = await Campaign.find({'shop': session.shop})
+		const longEvents: any = await Long.find({'shop': session.shop})
 		let count = longEvents.length
 		let plan = store.pricePlan
 		console.log("It runs and the count is "+count+" on a "+plan+" plan")
@@ -114,17 +114,11 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
 		}
-
-		const checkAll = await Campaign.find(
-			{
-				'shop': session.shop,
-			}
-		)
 		
-		if(checkAll.length !== 0){
+		if(longEvents.length !== 0){
 			let keyValue = []
 			
-			checkAll.forEach((item) => {
+			longEvents.forEach((item: any) => {
 				const itemStart = new Date(item.startDate)
 				const itemEnd = new Date(item.endDate)
 				const givStart = new Date(`${data.startDate}`)
@@ -150,7 +144,7 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 			}
 		}
 		//const status: string = new Date(`${data.startDate}`) > new Date() ? 'Upcoming' : 'Active'
-		new Campaign(
+		new Long(
 			{
 				shop: session.shop,
 				id: giveawayId,
@@ -188,7 +182,7 @@ campaign.get('/new/equitable', checkAuth, forCommon, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne({
+		const giveaway = await Long.findOne({
 			'shop': session.shop, 'id': giveawayId
 		}) 
 		
@@ -235,7 +229,7 @@ campaign.get('/new/hierarchical', checkAuth, forCommon, async (req, res) => {
 		const giveawayId: number = parseInt(decoyId)
 		const giveawayWinners: number = parseInt(decoyWinners)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId}) 
+		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId}) 
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
@@ -273,7 +267,7 @@ campaign.post('/new/hierarchical/create', checkApiAuth, async (req, res) => {
 		console.log(amounts)
 		console.log(giveawayId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
+		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
 		if(giveaway === null){
 			return res.status(404).send('Invalid giveaway')
 		}
@@ -286,7 +280,7 @@ campaign.post('/new/hierarchical/create', checkApiAuth, async (req, res) => {
 		})
 		console.log(winnerInfo)
 		
-		await Campaign.updateOne(
+		await Long.updateOne(
 			{'shop': session.shop, 'id': giveawayId },
 			{ '$set': {'winners' : winnerInfo}}
 		)
@@ -303,7 +297,7 @@ campaign.post('/new/equitable/create', checkApiAuth, async (req, res) => {
 		console.log(amount)
 		console.log(giveawayId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne(
+		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop, 
 				'id': giveawayId
@@ -327,7 +321,7 @@ campaign.post('/new/equitable/create', checkApiAuth, async (req, res) => {
 		})
 		console.log(winnerInfo)
 		//console.log(await Shop.findOne({'shop': session.shop, 'campaigns.id': giveawayId}))
-		await Campaign.updateOne(
+		await Long.updateOne(
 			{'shop': session.shop, 'id': giveawayId },
 			{ '$set': {'winners' : winnerInfo}}
 		)
@@ -352,13 +346,13 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 			return res.status(403).send("The date you specified is currently not supported")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const doesExist = await Saved.findOne({'shop': session.shop, 'id': templateId, 'active': true})
+		const doesExist = await SavedLong.findOne({'shop': session.shop, 'id': templateId, 'active': true})
 		//console.log(`Logging doesExist: ${doesExist}`)
 		if(doesExist !== null){
 			return res.status(403).send("This template is currently active")
 		}
 		// Check for active campaigns created from this template
-		const fromInUse = await Campaign.findOne(
+		const fromInUse = await Long.findOne(
 			{
 				'shop': session.shop,
 				'templateId': templateId,
@@ -366,11 +360,11 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 			}
 		)
 		console.log(fromInUse)
-		if(fromInUse !== null){
+		if(fromInUse !== null){Long
 			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
 		}
 		// Check active campaigns this template was created from
-		const forParent = await Campaign.findOne(
+		const forParent = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': templateId,
@@ -381,7 +375,7 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 		if(forParent !== null){
 			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
 		}
-		const template = await Saved.findOne({'shop': session.shop, 'id': templateId})
+		const template = await SavedLong.findOne({'shop': session.shop, 'id': templateId})
 		if(template === null){
 			return res.status(404).send("This template was not found")
 		}
@@ -421,7 +415,7 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 				break;
 		}
 		// Check for scheduling conflict
-		const checkAll = await Campaign.find(
+		const checkAll = await Long.find(
 			{
 				'shop': session.shop,
 			}
@@ -457,7 +451,7 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 			}
 		}
 		
-		new Campaign(
+		new Long(
 			{
 				shop: session.shop,
 				id: newId,
@@ -474,7 +468,7 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 			
 		).save()
 
-		await Saved.updateOne(
+		await SavedLong.updateOne(
 			{
 				'shop': session.shop,
 				'id': templateId
@@ -498,7 +492,7 @@ campaign.get('/:id', checkAuth, async (req, res) => {
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne({'shop': session.shop, 'id': giveawayId})
+		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
 		if(giveaway === null){
 			return res.status(404).render('pages/404')
 		}
@@ -536,7 +530,7 @@ campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne(
+		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId
@@ -546,7 +540,7 @@ campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 			return res.status(404).send("Giveaway does not exist")
 		}
 		if(giveaway.templateId && giveaway.winnersGifted === false){
-			await Saved.updateOne(
+			await SavedLong.updateOne(
 				{
 					'shop': session.shop,
 					'id': giveaway.templateId
@@ -558,7 +552,7 @@ campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 				}
 			)
 		}
-		await Campaign.deleteOne({
+		await Long.deleteOne({
 			'shop': session.shop,
 			'id': giveawayId
 		})
@@ -578,7 +572,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 				
-		const goodMeasure: any = await Campaign.findOne({
+		const goodMeasure: any = await Long.findOne({
 			'shop': session.shop,
 			'id': giveawayId
 		})
@@ -593,7 +587,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 			for (let i = 0; i < goodMeasure.winnersTotal; i++){
 				iter.push(i)
 			}
-			const entries: any[] = await Campaign.aggregate([
+			const entries: any[] = await Long.aggregate([
 				{'$match': {'shop': session.shop}},
 				{'$match': {'id': giveawayId}},
 				{'$unwind': '$entries'},
@@ -652,7 +646,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 				return res.status(403).send("Could not choose a winner, try again!")
 			}
 			prizedWinners.forEach(async (pusher: any) => {
-				const finder = await Campaign.findOne(
+				const finder = await Long.findOne(
 					{
 						'shop': session.shop,
 						'id': giveawayId,
@@ -667,7 +661,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 				const exact = finder.winners[0]
 				//console.log(exact)
 				
-				await Campaign.updateOne(
+				await Long.updateOne(
 					{
 						'shop': session.shop,
 						'id': giveawayId,
@@ -683,7 +677,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 					}
 				)
 			})
-			const closer = await Campaign.updateOne(
+			const closer = await Long.updateOne(
 				{
 					'shop': session.shop,
 					'id': giveawayId
@@ -699,7 +693,7 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 				return res.status(403).send("Could not choose a winner, try again!")
 			}
 		}
-		const anotherMeasure = await Campaign.findOne(
+		const anotherMeasure = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId
@@ -728,7 +722,7 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Campaign.findOne(
+		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId,
@@ -739,7 +733,7 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(404).send("Choose winners first before you attempt to send them gifts")
 		}
 		
-		const checkDuplication = await Campaign.findOne(
+		const checkDuplication = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId,
@@ -786,7 +780,7 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 			}
 		})
 
-		await Campaign.updateOne(
+		await Long.updateOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId
@@ -796,7 +790,7 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 			}
 		)
 		if(giveaway.templateId){
-			await Saved.findOne(
+			await SavedLong.findOne(
 				{
 					'shop': session.shop,
 					'id': giveaway.templateId
@@ -826,7 +820,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway: any = await Campaign.findOne(
+		const giveaway: any = await Long.findOne(
 			{
 				'id': giveawayId,
 				'shop': session.shop
@@ -838,7 +832,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 		}
 		// check for the quota
 		//templateGate(req, res, session.shop)
-		const templates: any = await Saved.find({'shop': session.shop})
+		const templates: any = await SavedLong.find({'shop': session.shop})
 		const shopper: any = await Shop.findOne({'shop': session.shop})
 		let count = templates.length
 		let plan = shopper.pricePlan
@@ -853,7 +847,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 		}
 		// check weather it already has a template from which it was made.
 		if(giveaway.templateId){
-			const checker = await Saved.findOne({
+			const checker = await SavedLong.findOne({
 				'shop': session.shop,
 				'id': giveaway.templateId
 			})
@@ -862,7 +856,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 			}
 		}
 		// check whether it has a template made from an original copy
-		const doesExist = await Saved.findOne(
+		const doesExist = await SavedLong.findOne(
 			{
 				'id': giveawayId,
 				'shop': session.shop
@@ -880,7 +874,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 				"voucherPrize": her.voucherPrize
 			})
 		})
-		new Saved(
+		new SavedLong(
 			{
 				shop: session.shop,
 				id: giveaway.id,
@@ -905,7 +899,7 @@ campaign.get('/template/:id', checkAuth, forCommon, async (req, res) => {
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const template = await Saved.findOne(
+		const template = await SavedLong.findOne(
 			{
 				'shop': session.shop,
 				'id': templateId
@@ -945,7 +939,7 @@ campaign.post('/template/:id/delete', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const template = await Campaign.findOne(
+		const template = await Long.findOne(
 			{
 				'shop': session.shop,
 				'id': templateId
@@ -954,7 +948,7 @@ campaign.post('/template/:id/delete', checkApiAuth, async (req, res) => {
 		if(template === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
-		await Saved.deleteOne({
+		await SavedLong.deleteOne({
 			'shop': session.shop,
 			'id': templateId
 		})

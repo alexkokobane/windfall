@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify, { ApiVersion, AuthQuery, SessionInterface } from '@shopify/shopify-api'
-import { Shop, Saved, Super, Campaign, Customers } from '../../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../../models/shop-model'
 import getShop from '../get-shop'
 
 const forCommon = async (req: Request, res: Response, next: NextFunction) => {
