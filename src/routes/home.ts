@@ -22,7 +22,7 @@ home.get('/', checkAuth, async (req, res) => {
 			},
 			{
 				"plan": "Starter",
-				"page": "pages/home",
+				"page": "pages/starter/home-starter",
 				"layer": "layouts/main-starter"
 			}
 		]

@@ -74,6 +74,18 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 		if(store === null){
 			return res.status(404).send("Error, shop was not found")
 		}
+		const longEvents: any = await Campaign.find({'shop': session.shop})
+		let count = longEvents.length
+		let plan = store.pricePlan
+		console.log("It runs and the count is "+count+" on a "+plan+" plan")
+		if(plan === "Starter" && count > 0) {
+			console.log("It passes here")
+			return res.status(403).send("Sorry, you have reached your quota")
+		} else if(plan === "Standard" && count > 5){
+			return res.status(403).send("Sorry, you have reached your quota")
+		} else if(plan ==="Ultimate" && count > 1000){
+			return res.status(403).send("Sorry, you have reached your quota")
+		}
 		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
 		}
