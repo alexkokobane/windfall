@@ -1,5 +1,30 @@
 $(document).ready(function(e){
 	//theme
+	function scheduler(num){
+		const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+		const dateNow = Date.now()
+		const theDate = new Date(dateNow+(1000*60*60*24*num))
+		if(!num){
+			return {
+				"day": days[new Date(dateNow).getDay()],
+				"month": months[new Date(dateNow).getMonth()],
+				"year": new Date(dateNow).getFullYear(),
+				"raw": new Date(dateNow),
+				"which": 1
+			}
+		} else {
+			return {
+				"day": days[theDate.getDay()],
+				"month": months[theDate.getMonth()],
+				"year": theDate.getFullYear(),
+				"raw": new Date(theDate.toLocaleDateString()),
+				"which": 2
+			}
+		}
+	}
+	console.log(scheduler())
+	console.log(scheduler(15))
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
 		$("#AppFrameNavBackdrop").toggle()
@@ -59,8 +84,11 @@ $(document).ready(function(e){
 	})
 
 	//url == /
-	$(".CreateGiveaway").click(function(){
-		location.href="/campaign/new"
+	$(".CreateLong").click(function(){
+		location.href="/campaign/long/new"
+	})
+	$(".CreateRapid").click(function(){
+		location.href="/campaign/rapid/new"
 	})
 	$(".ToGiveawayTemplates").click(function(){
 		location.href="/campaign/giveaways"
@@ -369,6 +397,7 @@ $(document).ready(function(e){
 		let starts = $("#StartDate").val()+"T"+$("#StartTime").val()
 		let ends = $("#EndDate").val()+"T"+$("#EndTime").val()
 		console.log(`${starts} and ${ends}`)
+		console.log(`${new Date(starts)} and ${new Date(ends)}`)
 		$("#ValidBody").html(`
 			<div>
 				<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">

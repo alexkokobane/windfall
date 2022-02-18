@@ -46,7 +46,7 @@ const ShopSchema = new mongoose.Schema({
 	}
 })
 
-const campaignSchema = new mongoose.Schema({
+const longEventSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
@@ -79,7 +79,7 @@ const campaignSchema = new mongoose.Schema({
 	},
 })
 
-const superCampaignSchema = new mongoose.Schema({
+const grandEventSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
@@ -101,7 +101,7 @@ const superCampaignSchema = new mongoose.Schema({
 	}
 })
 
-const campaignTemplateSchema = new mongoose.Schema({
+const longEventTemplateSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
@@ -158,10 +158,10 @@ const quotaSchema = new mongoose.Schema({
 })
 
 const Shop = mongoose.model('Shop', ShopSchema)
-const Campaign = mongoose.model('Campaign', campaignSchema)
-const Super = mongoose.model('Super', superCampaignSchema)
-const Saved = mongoose.model('SavedCampaign', campaignTemplateSchema)
+const Long = mongoose.model('Campaign', longEventSchema)
+const Grand = mongoose.model('Super', grandEventSchema)
+const SavedLong = mongoose.model('SavedCampaign', longEventTemplateSchema)
 const Customers = mongoose.model('Customers', customerListSchema)
 const Quota = mongoose.model('Quota', quotaSchema)
 
-export { Shop, Campaign, Super, Saved, Customers, Quota }
+export { Shop, Long, Grand, SavedLong, Customers, Quota }

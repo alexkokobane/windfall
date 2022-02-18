@@ -34,22 +34,47 @@ campaign.get('/giveaways', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/new', checkAuth, async (req, res) => {
+campaign.get('/rapid/new', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
 				"plan": "Ultimate",
-				"page": "pages/campaign-create",
+				"page": "pages/rapidevent-create",
 				"layer": "layouts/main-ultimate"
 			},
 			{
 				"plan": "Standard",
-				"page": "pages/campaign-create",
+				"page": "pages/rapidevent-create",
 				"layer": "layouts/main-standard"
 			},
 			{
 				"plan": "Starter",
-				"page": "pages/campaign-create",
+				"page": "pages/rapidevent-create",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+campaign.get('/long/new', checkAuth, async (req, res) => {
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/longevent-create",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/longevent-create",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/longevent-create",
 				"layer": "layouts/main-starter"
 			}
 		]
