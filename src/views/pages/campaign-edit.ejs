@@ -1,0 +1,44 @@
+<h2>Testtes</h2>
+<div id="body"></div>
+<button id="prev">Prev month</button>
+<button id="next">Next month</button>
+<script type="text/javascript">
+	function scheduler(num){
+		const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+		const dateNow = Date.now()
+		const theDate = new Date(dateNow+(1000*60*60*24*num))
+
+		return {
+			"day": days[theDate.getDay()],
+			"month": months[theDate.getMonth()],
+			"year": theDate.getFullYear(),
+			"raw": new Date(theDate.toLocaleDateString()),
+			"which": 2
+		}
+	}
+	function calendar(num){
+		const today = scheduler(num)
+		//console.log(today)
+		let daySoFar = today.raw.getDate()-1
+		let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+		//console.log(daySoFar)
+		//console.log(firstDay)
+		let aMonth = []
+		for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+			aMonth.push({
+				"day": firstDay.getDay(),
+				"date": firstDay.toLocaleDateString()
+			})
+			daySoFar = today.raw.getDate()-i
+
+			//console.log(daySoFar)
+			firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			//console.log(firstDay.raw)
+		}
+		console.log(aMonth)
+ 	}
+ 	calendar(-100)
+ 	calendar(15)
+ 	calendar(365)
+</script>

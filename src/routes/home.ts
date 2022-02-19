@@ -32,4 +32,8 @@ home.get('/', checkAuth, async (req, res) => {
 	}
 })
 
+home.get('/test',  async (req, res) => {
+	res.render('pages/campaign-edit', {layout: 'layouts/minimal'})
+})
+
 export default home

@@ -23,8 +23,6 @@ $(document).ready(function(e){
 			}
 		}
 	}
-	console.log(scheduler())
-	console.log(scheduler(15))
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
 		$("#AppFrameNavBackdrop").toggle()
@@ -1842,4 +1840,10 @@ $(document).ready(function(e){
 		})
 	}
 
+	//url === /campaign/rapid/new
+	if(window.location.pathname === "/campaign/rapid/new"){
+		$("#DailyBtn").click(function(){
+			//
+		})
+	}
 })
