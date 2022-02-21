@@ -1,4 +1,4 @@
-<div style="display: block;">
+<div>
 	<h2>Testtes</h2>
 	<div id="body">
 		<table>
@@ -8,8 +8,8 @@
 			</tbody>
 		</table>
 	</div>
-	<button type="button" id="prev">Prev month</button>
-	<button type="button" id="next">Next month</button>
+	<button type="button" id="prev" style="padding: 10px">Prev</button>
+	<button type="button" id="next" style="padding: 10px">Next</button>
 	<div>
 		<div class="Polaris-DatePicker">
 			<div class="Polaris-DatePicker__Header">
@@ -87,98 +87,119 @@
 	</div>
 </div>
 <script type="text/javascript">
-	function scheduler(num){
-		const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-		const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-		let dateNow = Date.now()
-		let theDate = new Date(dateNow+(1000*60*60*24*num))
+	$(document).ready(function(){
+		function scheduler(num){
+			
+			
+			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			let dateNow = Date.now()
+			let theDate = new Date(dateNow+(1000*60*60*24*num))
 
-		return {
-			"day": days[theDate.getDay()],
-			"month": months[theDate.getMonth()],
-			"year": theDate.getFullYear(),
-			"raw": new Date(theDate.toLocaleDateString()),
-			"which": 2
+			return {
+				"day": days[theDate.getDay()],
+				"month": months[theDate.getMonth()],
+				"year": theDate.getFullYear(),
+				"raw": new Date(theDate.toLocaleDateString()),
+				"which": 2
+			}
 		}
-	}
-	function calendar(num){
-		let today = scheduler(num)
-		let daySoFar = today.raw.getDate()-1
-		let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
-		let aMonth = []
-		for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
-			aMonth.push({
-				"day": firstDay.getDay(),
-				"date": firstDay.toLocaleDateString()
+		function calendar(num){
+			let today = scheduler(num)
+			let daySoFar = today.raw.getDate()-1
+			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			let aMonth = []
+			for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+				aMonth.push({
+					"day": firstDay.getDay(),
+					"date": firstDay.toLocaleDateString()
+				})
+				daySoFar = today.raw.getDate()-i
+				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			}
+			return aMonth
+		}
+		function renderMonth(num){
+			let fullMonth = calendar(num)
+			console.log("num is "+num)
+			function allocateWeeks() {
+				let week1 = []
+				let week2 = []
+				let week3 = []
+				let week4 = []
+				let week5 = []
+				let week6 = []
+				const firstDay = fullMonth[0].day
+				let fromWeekend = 7 - firstDay
+				week1 = fullMonth.slice(0,fromWeekend)
+				week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
+				week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
+				week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
+				week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
+				week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
+				return[week1, week2, week3, week4, week5, week6]
+			}
+			const weeks = allocateWeeks()
+			//console.log(weeks[0].length)
+			let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
+			
+			for(let i = 0; weeks[0].length + i !== 7; i++){
+				one = one.concat("<td></td>")
+			}
+			weeks[0].forEach(function(item){
+				one = one.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
 			})
-			daySoFar = today.raw.getDate()-i
-			firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			weeks[1].forEach(function(item){
+				two = two.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+			})
+			weeks[2].forEach(function(item){
+				three = three.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+			})
+			weeks[3].forEach(function(item){
+				four = four.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+			})
+			weeks[4].forEach(function(item){
+				five = five.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+			})
+			weeks[5].forEach(function(item){
+				six = six.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+			})
+			let tableRowOne = "<tr>"+one+"</tr>"
+			let tableRowTwo = "<tr>"+two+"</tr>"
+			let tableRowThree = "<tr>"+three+"</tr>"
+			let tableRowFour = "<tr>"+four+"</tr>"
+			let tableRowFive = "<tr>"+five+"</tr>"
+			let tableRowSix = "<tr>"+six+"</tr>"
+			let body = document.getElementById("tbody")
+			document.getElementById("month").innerHTML = scheduler(num).month+" "+scheduler(num).year
+			//console.log(tableRowOne)
+			//console.log(one)
+			
+			body.innerHTML = tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix)
 		}
-		return aMonth
-	}
-	function renderMonth(num){
-		let fullMonth = calendar(num)
-		
-		function allocateWeeks() {
-			let week1 = []
-			let week2 = []
-			let week3 = []
-			let week4 = []
-			let week5 = []
-			let week6 = []
-			const firstDay = fullMonth[0].day
-			let fromWeekend = 7 - firstDay
-			week1 = fullMonth.slice(0,fromWeekend)
-			week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
-			week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
-			week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
-			week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
-			week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
-			return[week1, week2, week3, week4, week5, week6]
-		}
-		const weeks = allocateWeeks()
-		//console.log(weeks[0].length)
-		let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
-		
-		for(let i = 0; weeks[0].length + i !== 7; i++){
-			one = one.concat("<td></td>")
-		}
-		weeks[0].forEach(function(item){
-			one = one.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+		let counter = []
+
+		$("#prev").click(function(total){
+			counter.push(-30.5)
+			//console.log(counter)
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+			
+			console.log(total)
+			return renderMonth(total)
 		})
-		weeks[1].forEach(function(item){
-			two = two.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+		$("#next").click(function(){
+			counter.push(30.5)
+			//console.log(counter)
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+
+			console.log(total)
+			return renderMonth(total)
 		})
-		weeks[2].forEach(function(item){
-			three = three.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
-		})
-		weeks[3].forEach(function(item){
-			four = four.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
-		})
-		weeks[4].forEach(function(item){
-			five = five.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
-		})
-		weeks[5].forEach(function(item){
-			six = six.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
-		})
-		let tableRowOne = "<tr>"+one+"</tr>"
-		let tableRowTwo = "<tr>"+two+"</tr>"
-		let tableRowThree = "<tr>"+three+"</tr>"
-		let tableRowFour = "<tr>"+four+"</tr>"
-		let tableRowFive = "<tr>"+five+"</tr>"
-		let tableRowSix = "<tr>"+six+"</tr>"
-		let body = document.getElementById("tbody")
-		document.getElementById("month").innerHTML = scheduler(num).month+" "+scheduler(num).year
-		console.log(tableRowOne)
-		console.log(one)
-		
-		body.innerHTML = tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix)
-	}
-	
-	document.getElementById("next").click(function(d){
-		console.log("next")
-		renderMonth(32)
+		console.log(300/12)
+		renderMonth(0)
 	})
-	document.getElementById("prev").click = renderMonth(-32)
-	renderMonth(0)
 </script>
