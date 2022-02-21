@@ -1,15 +1,32 @@
-<div>
-	<h2>Testtes</h2>
-	<div id="body">
-		<table>
-			<caption id="month"></caption>
-			<tbody id="tbody">
-				
-			</tbody>
-		</table>
+<div class="Polaris-DatePicker">
+	<div class="Polaris-DatePicker__Header">
+		<button class="Polaris-Button Polaris-Button--plain Polaris-Button--iconOnly calendarPrev" aria-label="Show previous month, January 2018" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true"><path d="M17 9H5.414l3.293-3.293a.999.999 0 1 0-1.414-1.414l-5 5a.999.999 0 0 0 0 1.414l5 5a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414L5.414 11H17a1 1 0 1 0 0-2z"></path></svg></span></span></span></button>
+		<button class="Polaris-Button Polaris-Button--plain Polaris-Button--iconOnly calendarNext" aria-label="Show next month, March 2018" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true"><path d="m17.707 9.293-5-5a.999.999 0 1 0-1.414 1.414L14.586 9H3a1 1 0 1 0 0 2h11.586l-3.293 3.293a.999.999 0 1 0 1.414 1.414l5-5a.999.999 0 0 0 0-1.414z"></path></svg></span></span></span></button>
 	</div>
-	<button type="button" id="prev" style="padding: 10px">Prev</button>
-	<button type="button" id="next" style="padding: 10px">Next</button>
+	<div class="Polaris-DatePicker__MonthLayout">
+		<div class="Polaris-DatePicker__MonthContainer">
+			<table role="grid" class="Polaris-DatePicker__Month">
+				<caption class="calendarCaption Polaris-DatePicker__Title"></caption>
+				<thead>
+					<tr>
+						<th aria-label="Sunday" scope="col" class="Polaris-DatePicker__Weekday">Su</th>
+						<th aria-label="Monday" scope="col" class="Polaris-DatePicker__Weekday">Mo</th>
+						<th aria-label="Tuesday" scope="col" class="Polaris-DatePicker__Weekday">Tu</th>
+						<th aria-label="Wednesday" scope="col" class="Polaris-DatePicker__Weekday">We</th>
+						<th aria-label="Thursday" scope="col" class="Polaris-DatePicker__Weekday">Th</th>
+						<th aria-label="Friday" scope="col" class="Polaris-DatePicker__Weekday">Fr</th>
+						<th aria-label="Saturday" scope="col" class="Polaris-DatePicker__Weekday">Sa</th>
+					</tr>
+				</thead>
+				<tbody class="calendarBody">
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div>
 	<div>
 		<div class="Polaris-DatePicker">
 			<div class="Polaris-DatePicker__Header">
@@ -89,8 +106,6 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		function scheduler(num){
-			
-			
 			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 			let dateNow = Date.now()
@@ -144,42 +159,39 @@
 			let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
 			
 			for(let i = 0; weeks[0].length + i !== 7; i++){
-				one = one.concat("<td></td>")
+				one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 			}
 			weeks[0].forEach(function(item){
-				one = one.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				one = one.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
 			weeks[1].forEach(function(item){
-				two = two.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				two = two.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
 			weeks[2].forEach(function(item){
-				three = three.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				three = three.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
 			weeks[3].forEach(function(item){
-				four = four.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				four = four.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
 			weeks[4].forEach(function(item){
-				five = five.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				five = five.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
 			weeks[5].forEach(function(item){
-				six = six.concat("<td><button>"+new Date(item.date).getDate()+"</button></td>")
+				six = six.concat(`<td class="Polaris-DatePicker__DayCell"><button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
 			})
-			let tableRowOne = "<tr>"+one+"</tr>"
-			let tableRowTwo = "<tr>"+two+"</tr>"
-			let tableRowThree = "<tr>"+three+"</tr>"
-			let tableRowFour = "<tr>"+four+"</tr>"
-			let tableRowFive = "<tr>"+five+"</tr>"
-			let tableRowSix = "<tr>"+six+"</tr>"
+			let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
+			let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+			let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+			let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+			let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+			let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
 			let body = document.getElementById("tbody")
-			document.getElementById("month").innerHTML = scheduler(num).month+" "+scheduler(num).year
-			//console.log(tableRowOne)
-			//console.log(one)
-			
-			body.innerHTML = tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix)
+			$(".calendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+			$(".calendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
 		}
 		let counter = []
 
-		$("#prev").click(function(total){
+		$(".calendarPrev").click(function(total){
 			counter.push(-30.5)
 			//console.log(counter)
 			total = counter.reduce(function(sum, num){
@@ -189,7 +201,7 @@
 			console.log(total)
 			return renderMonth(total)
 		})
-		$("#next").click(function(){
+		$(".calendarNext").click(function(){
 			counter.push(30.5)
 			//console.log(counter)
 			total = counter.reduce(function(sum, num){
