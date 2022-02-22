@@ -3,26 +3,160 @@ $(document).ready(function(e){
 	function scheduler(num){
 		const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 		const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-		const dateNow = Date.now()
-		const theDate = new Date(dateNow+(1000*60*60*24*num))
-		if(!num){
-			return {
-				"day": days[new Date(dateNow).getDay()],
-				"month": months[new Date(dateNow).getMonth()],
-				"year": new Date(dateNow).getFullYear(),
-				"raw": new Date(dateNow),
-				"which": 1
-			}
-		} else {
-			return {
-				"day": days[theDate.getDay()],
-				"month": months[theDate.getMonth()],
-				"year": theDate.getFullYear(),
-				"raw": new Date(theDate.toLocaleDateString()),
-				"which": 2
-			}
+		let dateNow = Date.now()
+		let theDate = new Date(dateNow+(1000*60*60*24*num))
+
+		return {
+			"day": days[theDate.getDay()],
+			"month": months[theDate.getMonth()],
+			"year": theDate.getFullYear(),
+			"raw": new Date(theDate.toLocaleDateString()),
+			"which": 2
 		}
 	}
+	function calendar(num){
+		let today = scheduler(num)
+		let daySoFar = today.raw.getDate()-1
+		let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+		let aMonth = []
+		for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+			aMonth.push({
+				"day": firstDay.getDay(),
+				"date": firstDay.toLocaleDateString()
+			})
+			daySoFar = today.raw.getDate()-i
+			firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+		}
+		return aMonth
+	}
+	function renderMonth(num){
+		let fullMonth = calendar(num)
+		//console.log("num is "+num)
+		function allocateWeeks() {
+			const firstDay = fullMonth[0].day
+			let fromWeekend = 7 - firstDay
+			let week1 = fullMonth.slice(0,fromWeekend)
+			let week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
+			let week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
+			let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
+			let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
+			let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
+			console.log(week6)
+			return[week1, week2, week3, week4, week5, week6]
+		}
+		const weeks = allocateWeeks()
+		//console.log(weeks[0].length)
+
+		let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
+		
+		for(let i = 0; weeks[0].length + i !== 7; i++){
+			one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
+		}
+
+		function eachDay(item){
+			one = one.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+			$(`#${new Date(item.date).toISOString().split("T")[0]}`).click(function(){
+				const isChosen = $(this).hasClass("calendarDayChosen")
+				const isInUse = $(this).hasClass("calendarDayInUse")
+				if(isInUse){
+					alert("This date is already in use, try another date")
+				} else if(isChosen){
+					$(this).removeClass("calendarDayInUse")
+					const index = chosenDays.indexOf(item.date)
+					if(index > -1){
+						chosenDays.splice(index, 1)
+					}
+					console.log(chosenDays)
+				} else if(!isChosen){
+					$(this).addClass("calendarDayInUse")
+					chosenDays.push(item.date)
+					console.log(chosenDays)
+				}
+			})
+		}
+		
+		weeks[0].forEach(function(item){
+			one = one.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		weeks[1].forEach(function(item){
+			const eyedee = new Date(item.date).toISOString().split("T")[0]
+			two = two.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		weeks[2].forEach(function(item){
+			three = three.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		weeks[3].forEach(function(item){
+			four = four.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		weeks[4].forEach(function(item){
+			five = five.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		weeks[5].forEach(function(item){
+			six = six.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
+		})
+		let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
+		let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+		let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+		let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+		let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+		let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
+		let body = document.getElementById("tbody")
+		$(".calendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+		$(".calendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+		//console.log("This day is "+$("#2022-02-19").text())
+		calendar(num).forEach(function(item){
+			const eyedee = new Date(item.date).toISOString().split("T")[0]
+			console.log($("#"+eyedee).text())
+			$("#"+eyedee).click(function(){
+				const isChosen = $(this).hasClass("calendarDayChosen")
+				const isInUse = $(this).hasClass("calendarDayInUse")
+				console.log(`${item.date} was clicked`)
+				if(isInUse){
+					alert("This date is already in use, try another date")
+				} else if(isChosen){
+					$(this).removeClass("calendarDayChosen")
+					const index = chosenDays.indexOf(item.date)
+					if(index > -1){
+						chosenDays.splice(index, 1)
+					}
+					console.log(chosenDays)
+				} else if(!isChosen){
+					$(this).addClass("calendarDayChosen")
+					chosenDays.push(item.date)
+					console.log(chosenDays)
+				}
+			})
+		})
+		//return [chosenDays]
+	}
+	let chosenDays = []
+	let counter = []
+	$(".calendarPrev").click(function(total){
+		counter.push(-30.5)
+		//console.log(counter)
+		total = counter.reduce(function(sum, num){
+			return sum+num
+		}, 0)
+			
+		//console.log(total)
+		
+		renderMonth(total)
+	})
+	$(".calendarNext").click(function(){
+		counter.push(30.5)
+		//console.log(counter)
+		total = counter.reduce(function(sum, num){
+			return sum+num
+		}, 0)
+		//console.log(total)
+		renderMonth(total)
+	})
+	//console.log($("#2022-02-19").val())
+	//console.log(300/12)
+	renderMonth(0)
+	
+
+	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
 		$("#AppFrameNavBackdrop").toggle()
@@ -387,8 +521,8 @@ $(document).ready(function(e){
 		})
 	}
 	//url == /campaign/new
-	console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-	console.log(new Date().toTimeString().substring(0,5))
+	//console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+	//console.log(new Date().toTimeString().substring(0,5))
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#ValidateBtn").click(function(){
@@ -525,13 +659,13 @@ $(document).ready(function(e){
 	const urlSearchParams = new URLSearchParams(window.location.search);
 	const params = Object.fromEntries(urlSearchParams.entries());
 	let hData = parseInt(params.winners)
-	console.log(params.winners)
-	console.log(hData)
+	//console.log(params.winners)
+	//console.log(hData)
 	let render = []
 	for(let i = 0; i < hData; i++){
 		render.unshift(i)
 	}
-	console.log(render)
+	//console.log(render)
 	if(hData !== null){
 		let vouchers = {}
 		render.forEach((val) => {
@@ -631,10 +765,10 @@ $(document).ready(function(e){
 	})
 
 	//url === /campaign/:id
-	console.log(window.location.pathname)
+	//console.log(window.location.pathname)
 	const path = window.location.pathname
 	const idForGiveaway = parseInt(path.split("/")[2])
-	console.log(idForGiveaway)
+	//console.log(idForGiveaway)
 	if(isNaN(idForGiveaway) === false){
 		$.ajax({
 			url: `/data/campaign/${idForGiveaway}`,

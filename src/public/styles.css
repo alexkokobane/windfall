@@ -15,6 +15,18 @@
     align-items: center;
 }
 
+.calendarDayInUse {
+    background:var(--p-action-critical); 
+    color:var(--p-text-on-interactive); 
+    outline:0.1rem solid transparent;
+}
+
+.calendarDayChosen {
+    background:var(--p-action-primary); 
+    color:var(--p-text-on-interactive); 
+    outline:0.1rem solid transparent;
+}
+
 .theme-light {
     --p-background: rgba(246, 246, 247, 1);
     --p-background-hovered: rgba(241, 242, 243, 1);
