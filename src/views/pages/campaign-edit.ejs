@@ -18,15 +18,21 @@
 		</div>
 	</div>
 	<div class="Polaris-Page__Content">
-		<div class="Polaris-Layout"><a id="SkipToContentTarget" tabindex="-1"></a>
+		<div class="Polaris-Layout">
+			<a id="SkipToContentTarget" tabindex="-1"></a>
 			<div class="Polaris-Layout__Section">
 				<div class="Polaris-Card">
 					<div class="Polaris-Card__Header">
 						<h2 class="Polaris-Heading">Calendar</h2>
 					</div>
-					
-					<%- include("../partials/date-picker")%>
+					<div class="Polaris-Card__Section">
+						<%- include("../partials/date-picker")%>
+					</div>
+					<div class="Polaris-Card__Section">
+						<button id="DDays" class="Polaris-Button Polaris-Button--outline" aria-label="Weekly" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Chosen</span></span></button>
+					</div>
 				</div>
+			</div>
 		</div>
 	</div>
 </div>
