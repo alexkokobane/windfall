@@ -724,6 +724,7 @@ $(document).ready(function(e){
 			}
 		})
 	}
+
 	//url == /campaign/new
 	//console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 	//console.log(new Date().toTimeString().substring(0,5))
@@ -769,7 +770,7 @@ $(document).ready(function(e){
 		}
 		
 		$.ajax({
-			url: `/data/campaign-validator?start=${starts}&end=${ends}`,
+			url: `/data/long-validator?start=${starts}&end=${ends}`,
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){

@@ -340,7 +340,7 @@ data.get('/template/:id', checkApiAuth, async (req, res) => {
 	}
 })
 
-data.get('/campaign-validator', checkApiAuth, async (req, res) => {
+data.get('/long-validator', checkApiAuth, async (req, res) => {
 	try{
 		let starter : string
 		let ender : string 

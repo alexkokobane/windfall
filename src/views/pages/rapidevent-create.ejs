@@ -10,6 +10,7 @@
 				<div>
 					<div class="Polaris-Header-Title__TitleAndSubtitleWrapper">
 						<h1 class="Polaris-Header-Title">Create a rapid event</h1>
+						<div class="Polaris-Header-Title__SubTitle Polaris-Header-Title__SubtitleCompact"><p>A giveaway event that chooses a winner for everyday that it runs and ends it a grand price on the last day</p></div>
 					</div>
 				</div>
 			</div>
@@ -42,16 +43,21 @@
 						<div class="Polaris-Card__Header">
 							<h2 class="Polaris-Heading">Set dates</h2>
 						</div>
+						<div class="Polaris-Card__Section">
+							<%- include('../partials/date-picker')%>
+						</div>
 						<div class="Polaris-CalloutCard__Container">
 							<div class="Polaris-Card__Section">
 								<div class="Polaris-CalloutCard">
 									<div class="Polaris-CalloutCard__Content">
-										<div id="DatesBody" class="Polaris-TextContainer">
+										<div class="Polaris-CalloutCard__Title">
+												<h2 id="RValidHeading" class="Polaris-Heading">Validate scheduling</h2>
+										</div>
+										<div id="RValidBody" class="Polaris-TextContainer">
 												<p>Press the validator button to check for scheduling conflicts with existing giveaways.</p>
 										</div>
 										<div class="Polaris-CalloutCard__Buttons">
-											<button id="DailyBtn" class="Polaris-Button Polaris-Button--outline" aria-label="Daily" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Daily</span></span></button>
-											<button id="WeeklyBtn" class="Polaris-Button Polaris-Button--outline" aria-label="Weekly" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Weekly</span></span></button>
+											<button id="RValidateBtn" class="Polaris-Button Polaris-Button--outline" aria-label="Validate" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Validate</span></span></button>
 										</div>
 									</div>
 								</div>
