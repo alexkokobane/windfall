@@ -52,28 +52,6 @@ $(document).ready(function(e){
 		for(let i = 0; weeks[0].length + i !== 7; i++){
 			one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 		}
-
-		function eachDay(item){
-			one = one.concat(`<td class="Polaris-DatePicker__DayCell"><button id="${new Date(item.date).toISOString().split("T")[0]}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${new Date(item.date).toLocaleDateString()}">${new Date(item.date).getDate()}</button></td>`)
-			$(`#${new Date(item.date).toISOString().split("T")[0]}`).click(function(){
-				const isChosen = $(this).hasClass("calendarDayChosen")
-				const isInUse = $(this).hasClass("calendarDayInUse")
-				if(isInUse){
-					alert("This date is already in use, try another date")
-				} else if(isChosen){
-					$(this).removeClass("calendarDayInUse")
-					const index = chosenDays.indexOf(item.date)
-					if(index > -1){
-						chosenDays.splice(index, 1)
-					}
-					console.log(chosenDays)
-				} else if(!isChosen){
-					$(this).addClass("calendarDayInUse")
-					chosenDays.push(item.date)
-					console.log(chosenDays)
-				}
-			})
-		}
 		
 		weeks[0].forEach(function(item){
 			const eyedee = new Date(item.date).toISOString().split("T")[0]
@@ -97,6 +75,14 @@ $(document).ready(function(e){
 				one = one.concat(`
 					<td class="Polaris-DatePicker__DayCell">
 						<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				one = one.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 							${new Date(item.date).getDate()}
 						</button>
 					</td>
@@ -133,6 +119,14 @@ $(document).ready(function(e){
 				two = two.concat(`
 					<td class="Polaris-DatePicker__DayCell">
 						<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				two = two.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 							${new Date(item.date).getDate()}
 						</button>
 					</td>
@@ -174,6 +168,14 @@ $(document).ready(function(e){
 						</button>
 					</td>
 				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				three = three.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
 			} else {
 				three = three.concat(`
 					<td class="Polaris-DatePicker__DayCell">
@@ -207,6 +209,14 @@ $(document).ready(function(e){
 				four = four.concat(`
 					<td class="Polaris-DatePicker__DayCell">
 						<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				four = four.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 							${new Date(item.date).getDate()}
 						</button>
 					</td>
@@ -248,6 +258,14 @@ $(document).ready(function(e){
 						</button>
 					</td>
 				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				five = five.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
 			} else {
 				five = five.concat(`
 					<td class="Polaris-DatePicker__DayCell">
@@ -281,6 +299,14 @@ $(document).ready(function(e){
 				six = six.concat(`
 					<td class="Polaris-DatePicker__DayCell">
 						<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+							${new Date(item.date).getDate()}
+						</button>
+					</td>
+				`)
+			} else if(new Date(item.date) < new Date(Date.now())){
+				six = six.concat(`
+					<td class="Polaris-DatePicker__DayCell">
+						<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 							${new Date(item.date).getDate()}
 						</button>
 					</td>
@@ -725,7 +751,7 @@ $(document).ready(function(e){
 		})
 	}
 
-	//url == /campaign/new
+	//url == /campaign/long/new
 	//console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 	//console.log(new Date().toTimeString().substring(0,5))
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
@@ -840,7 +866,7 @@ $(document).ready(function(e){
 		}
 		console.log(form)
 		$.ajax({
-			url: "/campaign/new",
+			url: "/campaign/long/new",
 			type: "POST",
 			contentType: "application/json",
 			data: JSON.stringify({form}),

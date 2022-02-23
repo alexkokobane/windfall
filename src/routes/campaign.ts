@@ -84,7 +84,7 @@ campaign.get('/long/new', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/new', checkApiAuth, async (req, res) => {
+campaign.post('/long/new', checkApiAuth, async (req, res) => {
 	try {
 		const data = req.body.form
 		console.log(req.body.form)
@@ -149,6 +149,7 @@ campaign.post('/new', checkApiAuth, async (req, res) => {
 				shop: session.shop,
 				id: giveawayId,
 				name: data.name,
+				type: 'Long',
 				winnersChosen: false,
 				winnersGifted: false,
 				startDate: new Date(`${data.startDate}`),
