@@ -66,47 +66,45 @@
 					</div>
 					<div id="OfWinnersCard" class="Polaris-Card">
 						<div class="Polaris-Card__Header">
-							<h2 class="Polaris-Heading">Number of winners</h2>
+							<h2 class="Polaris-Heading">Prizes</h2>
 						</div>
 						<div class="Polaris-Card__Section">
+							<div class="Polaris-Card__SectionHeader">
+								<h3 class="Polaris-Subheading">Normal prize voucher amount (USD)</h3>
+							</div>
 							<div class="Polaris-Labelled--hidden">
 								<div class="Polaris-Labelled__LabelWrapper">
-									<div class="Polaris-Label"><label id="OfWinnersLabel" for="OfWinners" class="Polaris-Label__Text">Number of winners</label></div>
+									<div class="Polaris-Label"><label id="NormalPrizeLabel" for="NormalPrize" class="Polaris-Label__Text">Normal prize voucher amout (USD)</label></div>
 								</div>
 								<div class="Polaris-Connected">
 									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
 										<div class="Polaris-TextField Polaris-TextField--hasValue">
-											<input id="OfWinners" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputFieldLabel" aria-invalid="false" max="10" value="">
+											<input id="NormalPrize" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="NormalPrizeLabel" value="">
 											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div id="DistributionCard" class="Polaris-Card">
-						<div class="Polaris-Card__Header">
-							<h2 class="Polaris-Heading">Prize distribution</h2>
-						</div>
 						<div class="Polaris-Card__Section">
-							<div class="Polaris-Stack Polaris-Stack--vertical">
-								<div class="Polaris-Stack__Item">
-									<div><label class="Polaris-Choice" for="Equitable"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="Equitable" name="distribution" type="radio" class="Polaris-RadioButton__Input" aria-describedby="EquitableHelpText" value="Equitable"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Equitable</span></label>
-										<div class="Polaris-Choice__Descriptions">
-											<div class="Polaris-Choice__HelpText" id="EquitableHelpText">All winners get the same prize, there is no hierarchy.</div>
-										</div>
-									</div>
+							<div class="Polaris-Card__SectionHeader">
+								<h3 class="Polaris-Subheading">Grand prize voucher amount (USD)</h3>
+							</div>
+							<div class="Polaris-Labelled--hidden">
+								<div class="Polaris-Labelled__LabelWrapper">
+									<div class="Polaris-Label"><label id="GrandPrizeLabel" for="GrandPrize" class="Polaris-Label__Text">Grand prize voucher amout (USD)</label></div>
 								</div>
-								<div class="Polaris-Stack__Item">
-									<div><label class="Polaris-Choice" for="Hierarchical"><span class="Polaris-Choice__Control"><span class="Polaris-RadioButton"><input id="Hierarchical" name="distribution" type="radio" class="Polaris-RadioButton__Input" aria-describedby="HierachicalHelpText" value="Hierarchical"><span class="Polaris-RadioButton__Backdrop"></span></span></span><span class="Polaris-Choice__Label">Hierarchical</span></label>
-										<div class="Polaris-Choice__Descriptions">
-											<div class="Polaris-Choice__HelpText" id="HierarchicalHelpText">Each winner's prize will reflect on their rank as chosen by you.</div>
+								<div class="Polaris-Connected">
+									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+										<div class="Polaris-TextField Polaris-TextField--hasValue">
+											<input id="GrandPrize" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="GrandPrizeLabel" value="">
+											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>				
 				</form>
 			</div>
 			<div class="Polaris-Layout__Section Polaris-Layout__Section--fullWidth">
@@ -115,7 +113,7 @@
 						<button class="Polaris-Button" aria-label="discard" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Discard</span></span></button>
 					</div>
 					<div class="Polaris-Stack__Item">
-						<button id="ContinueButton" class="Polaris-Button Polaris-Button--primary" aria-label="Save giveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Continue</span></span></button>
+						<button id="CreateRapidButton" class="Polaris-Button Polaris-Button--primary" aria-label="Save giveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create</span></span></button>
 					</div>
 				</div>
 			</div>

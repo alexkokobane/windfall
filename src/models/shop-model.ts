@@ -92,7 +92,6 @@ const rapidEventSchema = new mongoose.Schema({
 	grandEvent: {
 		id: Number
 	},
-	distributionType: String,
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
 	winnersTotal: Number,
