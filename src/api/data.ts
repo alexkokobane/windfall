@@ -443,6 +443,26 @@ data.get('/quota-watch', checkApiAuth, async (req, res) => {
 	}
 })
 
+data.get('/all-event-dates', checkApiAuth, async (req, res) => {
+	try{
+		let allEventsEver: any[] = []
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.find({'shop': session.shop})
+		long.forEach((item) => {
+			let start = Number(new Date(item.startDate))
+			let end = Number(new Date(item.endDate))
+			for(let i = 0; start <= end; i++){
+				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
+				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+			}
+		})
+		res.json(allEventsEver)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
