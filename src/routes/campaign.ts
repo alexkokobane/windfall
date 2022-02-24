@@ -34,30 +34,7 @@ campaign.get('/giveaways', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/rapid/new', checkAuth, async (req, res) => {
-	try{
-		const render: renderFor = [
-			{
-				"plan": "Ultimate",
-				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-ultimate"
-			},
-			{
-				"plan": "Standard",
-				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-standard"
-			},
-			{
-				"plan": "Starter",
-				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-starter"
-			}
-		]
-		divide(req, res, render)
-	} catch(err: any){
-		console.log(err)
-	}
-})
+// Long events
 
 campaign.get('/long/new', checkAuth, async (req, res) => {
 	try{
@@ -161,9 +138,9 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 		).save()
 		
 		if(data.distribution === "Equitable"){
-			res.send(`/campaign/new/equitable?id=${giveawayId}`)
+			res.send(`/campaign/long/new/equitable?id=${giveawayId}`)
 		} else if (data.distribution === "Hierarchical"){
-			res.send(`/campaign/new/hierarchical?id=${giveawayId}&winners=${data.ofWinners}`)
+			res.send(`/campaign/long/new/hierarchical?id=${giveawayId}&winners=${data.ofWinners}`)
 		} else {
 			res.status(403).send("Error, choose a distribution type")
 		}
@@ -173,7 +150,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/new/equitable', checkAuth, forCommon, async (req, res) => {
+campaign.get('/long/new/equitable', checkAuth, forCommon, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -213,7 +190,7 @@ campaign.get('/new/equitable', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-campaign.get('/new/hierarchical', checkAuth, forCommon, async (req, res) => {
+campaign.get('/long/new/hierarchical', checkAuth, forCommon, async (req, res) => {
 	try {
 		let decoyId: string
 		let decoyWinners: string
@@ -261,7 +238,7 @@ campaign.get('/new/hierarchical', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-campaign.post('/new/hierarchical/create', checkApiAuth, async (req, res) => {
+campaign.post('/long/new/hierarchical/create', checkApiAuth, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
 		const giveawayId = req.body.id
@@ -291,7 +268,7 @@ campaign.post('/new/hierarchical/create', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/new/equitable/create', checkApiAuth, async (req, res) => {
+campaign.post('/long/new/equitable/create', checkApiAuth, async (req, res) => {
 	try {
 		const amount = req.body.amounts
 		const giveawayId = req.body.id
@@ -328,238 +305,6 @@ campaign.post('/new/equitable/create', checkApiAuth, async (req, res) => {
 		)
 		res.send(`/campaign/${giveawayId}`)
 	} catch(err: any) {
-		console.log(err)
-	}
-})
-
-campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
-	try{
-		const templateId = parseInt(req.params.id)
-		if(isNaN(templateId) === true){
-			return res.status(404).send("Error, template does not exist.")
-		}
-		const starter: number = req.body.future
-		console.log(starter)
-		if(typeof starter !== 'number'){
-			return res.status(403).send("Choose the an appropriate date in the future from the listed buttons")
-		}
-		if(starter > 30){
-			return res.status(403).send("The date you specified is currently not supported")
-		}
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const doesExist = await SavedLong.findOne({'shop': session.shop, 'id': templateId, 'active': true})
-		//console.log(`Logging doesExist: ${doesExist}`)
-		if(doesExist !== null){
-			return res.status(403).send("This template is currently active")
-		}
-		// Check for active campaigns created from this template
-		const fromInUse = await Long.findOne(
-			{
-				'shop': session.shop,
-				'templateId': templateId,
-				'winnersGifted': false
-			}
-		)
-		console.log(fromInUse)
-		if(fromInUse !== null){Long
-			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
-		}
-		// Check active campaigns this template was created from
-		const forParent = await Long.findOne(
-			{
-				'shop': session.shop,
-				'id': templateId,
-				'winnersGifted': false
-			}
-		)
-		console.log(forParent)
-		if(forParent !== null){
-			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
-		}
-		const template = await SavedLong.findOne({'shop': session.shop, 'id': templateId})
-		if(template === null){
-			return res.status(404).send("This template was not found")
-		}
-
-		const newId = Math.floor(Math.random() * 1000000000)
-		const dateNow = Date.now()
-		let newStart: any
-		let newEnd: any
-		switch(starter){
-			case 0:
-				newStart = new Date(dateNow);
-				newEnd = new Date(dateNow+template.duration);
-				break;
-			case 1:
-				newStart = new Date(dateNow+(1000*60*60*24));
-				newEnd = new Date((dateNow+(1000*60*60*24))+template.duration);
-				break;
-			case 3:
-				newStart = new Date(dateNow+(1000*60*60*24*3));
-				newEnd = new Date((dateNow+(1000*60*60*24*3))+template.duration);
-				break;
-			case 7:
-				newStart = new Date(dateNow+(1000*60*60*24*7));
-				newEnd = new Date((dateNow+(1000*60*60*24*7))+template.duration);
-				break;
-			case 14:
-				newStart = new Date(dateNow+(1000*60*60*24*7));
-				newEnd = new Date((dateNow+(1000*60*60*24*14))+template.duration);
-				break;
-			case 30:
-				newStart = new Date(dateNow+(1000*60*60*24*30));
-				newEnd = new Date((dateNow+(1000*60*60*24*30))+template.duration);
-				break;
-			default:
-				newStart = new Date(dateNow);
-				newEnd = new Date(dateNow+template.duration);
-				break;
-		}
-		// Check for scheduling conflict
-		const checkAll = await Long.find(
-			{
-				'shop': session.shop,
-			}
-		)
-		let keyValue: any = []
-		if(checkAll.length !== 0){
-			checkAll.forEach((item) => {
-				const itemStart = new Date(item.startDate)
-				const itemEnd = new Date(item.endDate)
-				const givStart = new Date(newStart)
-				const givEnd = new Date(newEnd)
-
-				const obj = {
-					'name': item.name,
-					'startDate': itemStart,
-					'endDate': itemEnd
-				}
-				
-				if(givStart >= itemStart && givEnd <= itemEnd){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
-					}
-				}
-				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
-					}
-				}
-			})
-			console.log(keyValue)
-			if(keyValue.length !== 0) {
-				return res.status(403).json(keyValue)
-			}
-		}
-		
-		new Long(
-			{
-				shop: session.shop,
-				id: newId,
-				name: template.name,
-				templateId,
-				winnersChosen: false,
-				winnersGifted: false,
-				startDate: newStart,
-				endDate: newEnd,
-				distributionType: template.distributionType,
-				winnersTotal: template.winnersTotal,
-				winners: template.winners
-			}
-			
-		).save()
-
-		await SavedLong.updateOne(
-			{
-				'shop': session.shop,
-				'id': templateId
-			},
-			{
-				'$set': {
-					'active': true
-				}
-			}
-		)
-		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newStart).toDateString()} to ${new Date(newEnd).toDateString()}.`)
-	} catch(err: any) {
-		console.log(err)
-	}
-})
-
-campaign.get('/:id', checkAuth, async (req, res) => {
-	try {
-		const giveawayId = parseInt(req.params.id)
-		if(isNaN(giveawayId) === true){
-			return res.status(404).render('pages/404')
-		}
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
-		if(giveaway === null){
-			return res.status(404).render('pages/404')
-		}
-		const render: renderFor = [
-			{
-				"plan": "Ultimate",
-				"page": "pages/campaign",
-				"layer": "layouts/main-ultimate"
-			},
-			{
-				"plan": "Standard",
-				"page": "pages/campaign",
-				"layer": "layouts/main-standard"
-			},
-			{
-				"plan": "Starter",
-				"page": "pages/campaign",
-				"layer": "layouts/main-starter"
-			}
-		]
-		divide(req, res, render)
-	} catch(err: any) {
-		console.log(err)
-	}
-})
-
-campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
-	res.send("The give away has been edited")
-})
-
-campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
-	try{
-		const giveawayId = parseInt(req.params.id)
-		if(isNaN(giveawayId) === true){
-			return res.status(404).send("This giveaway does not exist")
-		}
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.findOne(
-			{
-				'shop': session.shop,
-				'id': giveawayId
-			}
-		)
-		if(giveaway === null){
-			return res.status(404).send("Giveaway does not exist")
-		}
-		if(giveaway.templateId && giveaway.winnersGifted === false){
-			await SavedLong.updateOne(
-				{
-					'shop': session.shop,
-					'id': giveaway.templateId
-				},
-				{
-					'$set': {
-						'active': false
-					}
-				}
-			)
-		}
-		await Long.deleteOne({
-			'shop': session.shop,
-			'id': giveawayId
-		})
-
-		res.send("/campaign/giveaways")
-	} catch(err: any){
 		console.log(err)
 	}
 })
@@ -712,6 +457,115 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 		//console.log(prizedWinners)
 		res.json(displayWinners)
 	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+// Rapid events
+
+campaign.get('/rapid/new', checkAuth, async (req, res) => {
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/rapidevent-create",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/rapidevent-create",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/rapidevent-create",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+
+
+// An event
+
+campaign.get('/:id', checkAuth, async (req, res) => {
+	try {
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
+		if(giveaway === null){
+			return res.status(404).render('pages/404')
+		}
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaign",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaign",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaign",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
+	res.send("The give away has been edited")
+})
+
+campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Long.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			}
+		)
+		if(giveaway === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+		if(giveaway.templateId && giveaway.winnersGifted === false){
+			await SavedLong.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveaway.templateId
+				},
+				{
+					'$set': {
+						'active': false
+					}
+				}
+			)
+		}
+		await Long.deleteOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
+
+		res.send("/campaign/giveaways")
+	} catch(err: any){
 		console.log(err)
 	}
 })
@@ -888,6 +742,163 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 			}
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+
+// Templates
+
+campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("Error, template does not exist.")
+		}
+		const starter: number = req.body.future
+		console.log(starter)
+		if(typeof starter !== 'number'){
+			return res.status(403).send("Choose the an appropriate date in the future from the listed buttons")
+		}
+		if(starter > 30){
+			return res.status(403).send("The date you specified is currently not supported")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const doesExist = await SavedLong.findOne({'shop': session.shop, 'id': templateId, 'active': true})
+		//console.log(`Logging doesExist: ${doesExist}`)
+		if(doesExist !== null){
+			return res.status(403).send("This template is currently active")
+		}
+		// Check for active campaigns created from this template
+		const fromInUse = await Long.findOne(
+			{
+				'shop': session.shop,
+				'templateId': templateId,
+				'winnersGifted': false
+			}
+		)
+		console.log(fromInUse)
+		if(fromInUse !== null){Long
+			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
+		}
+		// Check active campaigns this template was created from
+		const forParent = await Long.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId,
+				'winnersGifted': false
+			}
+		)
+		console.log(forParent)
+		if(forParent !== null){
+			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
+		}
+		const template = await SavedLong.findOne({'shop': session.shop, 'id': templateId})
+		if(template === null){
+			return res.status(404).send("This template was not found")
+		}
+
+		const newId = Math.floor(Math.random() * 1000000000)
+		const dateNow = Date.now()
+		let newStart: any
+		let newEnd: any
+		switch(starter){
+			case 0:
+				newStart = new Date(dateNow);
+				newEnd = new Date(dateNow+template.duration);
+				break;
+			case 1:
+				newStart = new Date(dateNow+(1000*60*60*24));
+				newEnd = new Date((dateNow+(1000*60*60*24))+template.duration);
+				break;
+			case 3:
+				newStart = new Date(dateNow+(1000*60*60*24*3));
+				newEnd = new Date((dateNow+(1000*60*60*24*3))+template.duration);
+				break;
+			case 7:
+				newStart = new Date(dateNow+(1000*60*60*24*7));
+				newEnd = new Date((dateNow+(1000*60*60*24*7))+template.duration);
+				break;
+			case 14:
+				newStart = new Date(dateNow+(1000*60*60*24*7));
+				newEnd = new Date((dateNow+(1000*60*60*24*14))+template.duration);
+				break;
+			case 30:
+				newStart = new Date(dateNow+(1000*60*60*24*30));
+				newEnd = new Date((dateNow+(1000*60*60*24*30))+template.duration);
+				break;
+			default:
+				newStart = new Date(dateNow);
+				newEnd = new Date(dateNow+template.duration);
+				break;
+		}
+		// Check for scheduling conflict
+		const checkAll = await Long.find(
+			{
+				'shop': session.shop,
+			}
+		)
+		let keyValue: any = []
+		if(checkAll.length !== 0){
+			checkAll.forEach((item) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(newStart)
+				const givEnd = new Date(newEnd)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+			})
+			console.log(keyValue)
+			if(keyValue.length !== 0) {
+				return res.status(403).json(keyValue)
+			}
+		}
+		
+		new Long(
+			{
+				shop: session.shop,
+				id: newId,
+				name: template.name,
+				templateId,
+				winnersChosen: false,
+				winnersGifted: false,
+				startDate: newStart,
+				endDate: newEnd,
+				distributionType: template.distributionType,
+				winnersTotal: template.winnersTotal,
+				winners: template.winners
+			}
+			
+		).save()
+
+		await SavedLong.updateOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			},
+			{
+				'$set': {
+					'active': true
+				}
+			}
+		)
+		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newStart).toDateString()} to ${new Date(newEnd).toDateString()}.`)
 	} catch(err: any) {
 		console.log(err)
 	}
