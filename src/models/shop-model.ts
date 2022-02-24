@@ -145,7 +145,7 @@ const grandEventSchema = new mongoose.Schema({
 	name: String,
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
-	childCampaigns: [{
+	childEvents: [{
 		id: Number,
 		name: String,
 		type: String,

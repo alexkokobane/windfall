@@ -1,6 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
-import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
@@ -520,7 +520,77 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 		}
 
 		// The creation of a rapid event
-		
+		const rapidId = Math.floor(Math.random() * 1000000000)
+		const grandId = Math.floor(Math.random() * 1000000000)
+		const formattedDates: any[] = []
+		dates.forEach((item: string) => {
+			formattedDates.push(new Date(item))
+		})
+		new Rapid({
+			'shop': session.shop,
+			'id': rapidId,
+			'name': data.name,
+			'dates': formattedDates,
+			'grandEvent': {
+				'id': grandId
+			},
+			'winnersChosen': false,
+			'winnersGifted': false,
+			'winnersTotal': formattedDates.length,
+			'prizes': {
+				'normalPrize': parseInt(data.normal),
+				'grandPrize': parseInt(data.grand)
+			}
+		}).save()
+
+		new Grand({
+			'shop': session.shop,
+			'id': grandId,
+			'name': data.name,
+			'winnersChosen': false,
+			'winnersGifted': false,
+			'winners': [{
+				'prizeId': 1,
+				'voucherPrize': parseInt(data.grand)
+			}]
+		}).save()
+
+		formattedDates.forEach(async (item: any) => {
+			const childId = Math.floor(Math.random() * 1000000000)
+			new RapidChild({
+				'shop': session.shop,
+				'id': childId,
+				'name': data.name,
+				'parentId': rapidId,
+				'startDate': item,
+				'endDate': new Date(Number(new Date(item))+(1000*60*60*23)),
+				'winnersChosen': false,
+				'winnersGifted': false,
+				'winnersTotal': 1,
+				'winner': {
+					'prizeId': 1,
+					'voucherPrize': parseInt(data.normal)
+				}
+			}).save()
+
+			await Grand.updateOne(
+				{
+					'shop': session.shop,
+					'id': grandId
+				},
+				{
+					'$push': {
+						'childEvents': {
+							'id': childId,
+							'name': data.name,
+							'type': 'Rapid'
+						}
+					}
+				}
+			)
+		})
+
+		res.send("/data/everything")
 	} catch(err: any){
 		console.log(err)
 		return err
