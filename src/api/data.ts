@@ -468,15 +468,19 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
 		const usage = await Quota.findOne({'shop': session.shop})
-		const campaigns = await Long.find({'shop': session.shop})
+		const longEvents = await Long.find({'shop': session.shop})
 		const templates = await SavedLong.find({'shop': session.shop})
 		const customers = await Customers.find({'shop': session.shop})
-		const superCampaigns = await Grand.find({'shop': session.shop})
+		const grandEvents = await Grand.find({'shop': session.shop})
+		const rapidEvents = await Rapid.find({'shop': session.shop})
+		const rapidChildEvents = await RapidChild.find({'shop': session.shop})
 		const allData = {
 			shop,
 			usage,
-			campaigns,
-			superCampaigns,
+			longEvents,
+			rapidEvents,
+			rapidChildEvents,
+			grandEvents,
 			campaignTemplate: templates,
 			customers
 		}
