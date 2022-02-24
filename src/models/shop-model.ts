@@ -95,12 +95,10 @@ const rapidEventSchema = new mongoose.Schema({
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
 	winnersTotal: Number,
-	winners: [{
-		prizeId: Number,
-		voucherPrize: Number,
-		entrantName: String,
-		entrantEmail: String
-	}],
+	prizes: {
+		normalPrize: Number,
+		grandPrize: Number
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now()
@@ -126,12 +124,12 @@ const rapidChildsSchema = new mongoose.Schema({
 		points: Number
 	}],
 	winnersTotal: Number,
-	winners: [{
+	winner: {
 		prizeId: Number,
 		voucherPrize: Number,
 		entrantName: String,
 		entrantEmail: String
-	}],
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now()
@@ -203,8 +201,10 @@ const rapidEventTemplateSchema = new mongoose.Schema({
 		durationFrom: Number
 	}],
 	winnersTotal: Number,
-	toSuper: [String],
-	winners: [Object],
+	prizes: {
+		normalPrize: Number,
+		grandPrize: Number
+	},
 	active: Boolean,
 	createdAt: {
 		type: Date,
@@ -255,5 +255,7 @@ const Grand = mongoose.model('Super', grandEventSchema)
 const SavedLong = mongoose.model('SavedCampaign', longEventTemplateSchema)
 const Customers = mongoose.model('Customers', customerListSchema)
 const Quota = mongoose.model('Quota', quotaSchema)
+const Rapid = mongoose.model('Rapid',  rapidEventSchema)
+const RapidChild = mongoose.model('RapidChild', rapidChildsSchema)
 
-export { Shop, Long, Grand, SavedLong, Customers, Quota }
+export { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild }

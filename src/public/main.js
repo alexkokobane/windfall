@@ -2468,5 +2468,40 @@ $(document).ready(function(e){
 				}
 			})
 		})
+
+		$("#CreateRapidBtn").click(function(){
+			const normal = $("#NormalPrize").val()
+			const grand = $("#GrandPrize").val()
+			const name = $("#RapidEventName").val()
+			const dates = chosenDays
+			if(normal.length === 0 || grand.length === 0 || name.length === 0 || dates.length === 0){
+				return alert("Please fill all fields.")
+			}
+
+			const event = {
+				"name": name,
+				"normal": normal,
+				"grand": grand,
+				"dates": dates
+			}
+			
+			$.ajax({
+				url: "/campaign/rapid/new",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({event}),
+				success: function(data){
+					location.href=data
+				},
+				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
+					}
+					alert(data.responseText)
+				}
+			})
+		})
 	}
 })

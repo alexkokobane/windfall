@@ -488,6 +488,45 @@ campaign.get('/rapid/new', checkAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
+	try{
+		const data = req.body.event
+		const giveawayId = Math.floor(Math.random() * 1000000000)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		//const store = await Shop.findOne({'shop': session.shop})
+
+		// Validator
+		const dates: any[] = data.dates
+		let allEventsEver: any[] = []
+		const long = await Long.find({'shop': session.shop})
+		long.forEach((item) => {
+			let start = Number(new Date(item.startDate))
+			let end = Number(new Date(item.endDate))
+			for(let i = 0; start <= end; i++){
+				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
+				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+			}
+		})
+		let clashingDates: any[] = []
+		if(allEventsEver.length !== 0){
+			allEventsEver.forEach((item: string) => {
+				if(dates.includes(item) && !clashingDates.includes(item)){
+					clashingDates.push(item)
+				}
+			})
+		}
+		if(clashingDates.length !== 0){
+			return res.status(403).send("Clashing dates have been found, please use the provided validator to check.")
+		}
+
+		// The creation of a rapid event
+		
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
 	try{
 		const dates: any[] = req.body.dates
