@@ -2430,30 +2430,27 @@ $(document).ready(function(e){
 				url: `/campaign/rapid/validator`,
 				type: "POST",
 				contentType: "application/json",
+				data: JSON.stringify({dates: chosenDays}),
 				success: function(data){
 					if(data.length === 0){
 						return (
-							$("#ValidBody").html(`
+							$("#RValidBody").html(`
 								<p class="Polaris-TextStyle--variationStrong" style="color: green;">Successful! No scheduling conflicts found.</p>
 							`)
 						)
 					}
-					$("#ValidBody").html(`
-						<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+					$("#RValidBody").html(`
+						<p id="RValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 						<ul class="Polaris-List">
-							<span id="ValidDecoy"></span>
+							<span id="RValidDecoy"></span>
 						</ul>
 					`)
 					data.forEach(function(item){
-						const begin = new Date(item.startDate).toISOString().split('T')
-						const finish = new Date(item.endDate).toISOString().split('T')
-						$("#ValidDecoy").after(`
-							<li class="Polaris-List__Item" aria-label="${item.name}">
+						$("#RValidDecoy").after(`
+							<li class="Polaris-List__Item" aria-label="Date ${item} clashes with an existing event.">
 								<span class="Polaris-TextStyle--variationStrong">
-									${item.name}
-								</span>, active from
-								<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
-								<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+									${new Date(item).toLocaleDateString()}
+								</span>, clashes with an existing event.
 							</li>
 						`)
 					})
@@ -2464,7 +2461,7 @@ $(document).ready(function(e){
 					} else if(data.responseText === "Forbidden"){
 						return location.href="/billing/plans"
 					}
-					$("#ValidBody").html(`
+					$("#RValidBody").html(`
 						<p>Press the validator button to check for scheduling conflicts with existing giveaways.</p>
 					`)
 					alert(data.responseText)

@@ -488,7 +488,39 @@ campaign.get('/rapid/new', checkAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
+	try{
+		const dates: any[] = req.body.dates
+		if(dates.length === 0){
+			return res.status(403).send("Please choose a date before validating.")
+		}
+		let allEventsEver: any[] = []
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.find({'shop': session.shop})
+		long.forEach((item) => {
+			let start = Number(new Date(item.startDate))
+			let end = Number(new Date(item.endDate))
+			for(let i = 0; start <= end; i++){
+				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
+				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+			}
+		})
 
+		let clashingDates: any[] = []
+		if(allEventsEver.length !== 0){
+			allEventsEver.forEach((item: string) => {
+				if(dates.includes(item) && !clashingDates.includes(item)){
+					clashingDates.push(item)
+				}
+			})
+		}
+
+		res.json(clashingDates)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
 
 // An event
 
