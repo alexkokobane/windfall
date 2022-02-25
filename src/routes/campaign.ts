@@ -628,7 +628,7 @@ campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
 
 // An event
 
-campaign.get('/:id', checkAuth, async (req, res) => {
+campaign.get('/long/:id', checkAuth, async (req, res) => {
 	try {
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){

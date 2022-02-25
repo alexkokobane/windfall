@@ -698,9 +698,9 @@ $(document).ready(function(e){
 					$("#HAwaitingDecoy").after(`
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
-								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
-									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="Await${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
@@ -721,8 +721,8 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
-					$(`#${giv.id}`).click(function(){
-						location.href=`/campaign/${giv.id}`
+					$(`#Await${giv.id}`).click(function(){
+						location.href=`/campaign/long/${giv.id}`
 					})
 				})
 			},
@@ -829,9 +829,9 @@ $(document).ready(function(e){
 					$("#HUGDataDecoy").after(`
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
-								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
-									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
+									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="Upcoming${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
@@ -853,8 +853,8 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
-					$(`#${giv.id}`).click(function(){
-						location.href=`/campaign/${giv.id}`
+					$(`#Upcoming${giv.id}`).click(function(){
+						location.href=`/campaign/long/${giv.id}`
 					})
 				})
 			},
@@ -909,7 +909,7 @@ $(document).ready(function(e){
 							<div class="Polaris-ResourceItem__ItemWrapper">
 								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
 									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
-									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
+									<div class="Polaris-ResourceItem__Container" id="Temp${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
@@ -932,7 +932,7 @@ $(document).ready(function(e){
 						</li>
 					`)
 
-					$(`#${giv.id}`).click(function(){
+					$(`#Temp${giv.id}`).click(function(){
 						location=href=`/campaign/template/${giv.id}`
 					})
 				})
@@ -1192,10 +1192,10 @@ $(document).ready(function(e){
 		})
 	})
 
-	//url === /campaign/:id
+	//url === /campaign/long/:id
 	//console.log(window.location.pathname)
 	const path = window.location.pathname
-	const idForGiveaway = parseInt(path.split("/")[2])
+	const idForGiveaway = parseInt(path.split("/")[3])
 	//console.log(idForGiveaway)
 	if(isNaN(idForGiveaway) === false){
 		$.ajax({
@@ -2484,7 +2484,7 @@ $(document).ready(function(e){
 				"grand": grand,
 				"dates": dates
 			}
-			
+
 			$.ajax({
 				url: "/campaign/rapid/new",
 				type: "POST",
