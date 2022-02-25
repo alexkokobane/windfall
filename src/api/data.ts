@@ -120,12 +120,30 @@ data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 			'endDate': {'$gte': new Date(dateNow)}
 		})
 
+		const rapidEvents = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		})
+
 		let active: any = []
 		giveaway.forEach((item: any) => {
 			active.push({
 				"id": item.id,
 				"name": item.name,
 				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
+			})
+		})
+
+		rapidEvents.forEach((item: any) => {
+			active.push({
+				"id": item.id,
+				"name": item.name,
+				"eventType": item.distributionType,
 				"startDate": item.startDate,
 				"endDate": item.endDate,
 				"entriesTotal": item.entries.length,
@@ -143,18 +161,34 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.find({
+		const longEvents = await Long.find({
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
 		})
-
+		const rapidEvents = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$gte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		})
 		let upcoming: any = []
-		giveaway.forEach((item: any) => {
-			upcoming.push({
+		longEvents.forEach((item: any) => {
+			longEvents.push({
 				"id": item.id,
 				"name": item.name,
 				"type": item.distributionType,
+				"startDate": item.startDate,
+				"endDate": item.endDate,
+				"entriesTotal": item.entries.length,
+				"winnersTotal": item.winnersTotal 
+			})
+		})
+
+		rapidEvents.forEach((item: any) => {
+			rapidEvents.push({
+				"id": item.id,
+				"name": item.name,
+				"eventType": item.eventType,
 				"startDate": item.startDate,
 				"endDate": item.endDate,
 				"entriesTotal": item.entries.length,

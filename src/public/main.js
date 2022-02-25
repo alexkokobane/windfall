@@ -3167,7 +3167,6 @@ $(document).ready(function(e){
 					${data.prizes.normalPrize} USD
 				`)
 				$("#GrandPrize").text(`
-					${data.prizes.grandPrize} USD
 				`)
 			},
 			error: function(data){
