@@ -80,7 +80,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 		let count = longEvents.length
 		let plan = store.pricePlan
 		console.log("It runs and the count is "+count+" on a "+plan+" plan")
-		if(plan === "Starter" && count > 0) {
+		if(plan === "Starter" && count > 15) {
 			console.log("It passes here")
 			return res.status(403).send("Sorry, you have reached your quota")
 		} else if(plan === "Standard" && count > 5){
@@ -328,7 +328,7 @@ campaign.post('/long/new/hierarchical/create', checkApiAuth, async (req, res) =>
 			{'shop': session.shop, 'id': giveawayId },
 			{ '$set': {'winners' : winnerInfo}}
 		)
-		res.send(`/campaign/${giveawayId}`)
+		res.send(`/campaign/long/${giveawayId}`)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -369,7 +369,7 @@ campaign.post('/long/new/equitable/create', checkApiAuth, async (req, res) => {
 			{'shop': session.shop, 'id': giveawayId },
 			{ '$set': {'winners' : winnerInfo}}
 		)
-		res.send(`/campaign/${giveawayId}`)
+		res.send(`/campaign/long/${giveawayId}`)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -1072,13 +1072,40 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 						keyValue.push(obj)
 					}
 				}
-			})
-			console.log(keyValue)
-			if(keyValue.length !== 0) {
-				return res.status(403).json(keyValue)
-			}
+			})			
 		}
-		
+
+		const rapid = await RapidChild.find({'shop': session.shop})
+		if(rapid.length !== 0){
+			rapid.forEach((item: any) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(newStart)
+				const givEnd = new Date(newEnd)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+			})
+		}
+
+		if(keyValue.length !== 0) {
+			return res.status(403).json(keyValue)
+		}
+
 		new Long(
 			{
 				shop: session.shop,
