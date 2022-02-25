@@ -238,6 +238,40 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, async (req, res) =>
 	}
 })
 
+campaign.get('/long/:id', checkAuth, async (req, res) => {
+	try {
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
+		if(giveaway === null){
+			return res.status(404).render('pages/404')
+		}
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/campaign",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/campaign",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/campaign",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
 campaign.post('/long/new/hierarchical/create', checkApiAuth, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
@@ -585,7 +619,7 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			'childrenEvents': childrenEvents
 		}).save()
 
-		res.send("/data/everything")
+		res.send(`/campaign/rapid/${rapidId}`)
 	} catch(err: any){
 		console.log(err)
 		return err
@@ -626,33 +660,31 @@ campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
 	}
 })
 
-// An event
-
-campaign.get('/long/:id', checkAuth, async (req, res) => {
+campaign.get('/rapid/:id', checkAuth, async (req, res) => {
 	try {
-		const giveawayId = parseInt(req.params.id)
-		if(isNaN(giveawayId) === true){
+		const eventId = parseInt(req.params.id)
+		if(isNaN(eventId) === true){
 			return res.status(404).render('pages/404')
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.findOne({'shop': session.shop, 'id': giveawayId})
-		if(giveaway === null){
+		const event = await Rapid.findOne({'shop': session.shop, 'id': eventId})
+		if(event === null){
 			return res.status(404).render('pages/404')
 		}
 		const render: renderFor = [
 			{
 				"plan": "Ultimate",
-				"page": "pages/campaign",
+				"page": "pages/rapidevent",
 				"layer": "layouts/main-ultimate"
 			},
 			{
 				"plan": "Standard",
-				"page": "pages/campaign",
+				"page": "pages/rapidevent",
 				"layer": "layouts/main-standard"
 			},
 			{
 				"plan": "Starter",
-				"page": "pages/campaign",
+				"page": "pages/rapidevent",
 				"layer": "layouts/main-starter"
 			}
 		]
@@ -661,6 +693,8 @@ campaign.get('/long/:id', checkAuth, async (req, res) => {
 		console.log(err)
 	}
 })
+
+// An event
 
 campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
 	res.send("The give away has been edited")

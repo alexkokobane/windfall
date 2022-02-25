@@ -640,7 +640,10 @@ $(document).ready(function(e){
 				one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 			}
 			if(str){
-				let data = str
+				let data = str.map(function(item){
+					return new Date(item).toLocaleDateString('en-ZA')
+				})
+				console.log(data)
 				weeks[0].forEach(function(item){
 					//console.log(data.includes(item.date))
 					//console.log(item.date)
@@ -1838,7 +1841,7 @@ $(document).ready(function(e){
 	const path = window.location.pathname
 	const idForGiveaway = parseInt(path.split("/")[3])
 	//console.log(idForGiveaway)
-	if(isNaN(idForGiveaway) === false){
+	if(isNaN(idForGiveaway) === false && window.location.pathname === "/campaign/long/"+idForGiveaway){
 		$.ajax({
 			url: `/data/campaign/${idForGiveaway}`,
 			type: "GET",
@@ -2588,7 +2591,7 @@ $(document).ready(function(e){
 
 	//url === /campaign/template/:id
 	const idForTemplate = parseInt(path.split("/")[3])
-	if(isNaN(idForTemplate) === false){
+	if(isNaN(idForTemplate) === false && window.location.pathname === "/campaign/template/"+idForTemplate){
 		$.ajax({
 			url: `/data/template/${idForTemplate}`,
 			type: "GET",
@@ -3150,4 +3153,31 @@ $(document).ready(function(e){
 	}
 
 	//url == /campaign/rapid/:id
+	if(!isNaN(idForGiveaway) && window.location.pathname === "/campaign/rapid/"+idForGiveaway){
+		$.ajax({
+			url: `/data/campaign/rapid/${idForGiveaway}`,
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".FirstSketch").remove()
+				eventCalendar(data.dates)
+				$("#RapidName").text(data.title)
+				$("#TotalWinners").text(data.winnersTotal+" plus single Grand prize.")
+				$("#RegularPrize").text(`
+					${data.prizes.normalPrize} USD
+				`)
+				$("#GrandPrize").text(`
+					${data.prizes.grandPrize} USD
+				`)
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+				alert(data.responseText)
+			}
+		})
+	}
 })

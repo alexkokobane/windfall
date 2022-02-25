@@ -4,7 +4,6 @@ import cors from 'cors'
 import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
-//import querySanitizer from '../utils/query-sanitizer'
 
 const data = express.Router()
 
@@ -434,6 +433,48 @@ data.get('/:id/winners', checkApiAuth, async (req, res) => {
 		console.log(err)
 	}
 })
+
+// Rapid
+
+data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
+	try{
+		const eventId = parseInt(req.params.id)
+		console.log(eventId)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Giveaway not found")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			}
+		)
+		console.log(event)
+		if(event === null){
+			return res.status(404).send("Giveaway not found")
+		}
+		
+		const justOne = {
+			"id": event.id,
+			"title": event.name,
+			"dates": event.dates,
+			"grandPrize": event.grandEvent,
+			"winnersChosen": event.winnersChosen,
+			"winnersGifted": event.winnersGifted,
+			"winnersTotal": event.winnersTotal,
+			"prizes": event.prizes
+		}
+		console.log(justOne)
+		res.json(justOne)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+
+
+// Misc
 
 data.get('/quota-watch', checkApiAuth, async (req, res) => {
 	try{

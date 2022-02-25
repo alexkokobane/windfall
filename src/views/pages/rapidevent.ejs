@@ -1,0 +1,74 @@
+<div class="Polaris-Page">
+	<div class="Polaris-Page-Header Polaris-Page-Header--hasNavigation Polaris-Page-Header--mobileView Polaris-Page-Header--mediumTitle">
+		<div class="Polaris-Page-Header__Row">
+			<div class="Polaris-Page-Header__BreadcrumbWrapper">
+				<nav role="navigation"><a class="Polaris-Breadcrumbs__Breadcrumb" href="/campaign/giveaways" data-polaris-unstyled="true"><span class="Polaris-Breadcrumbs__ContentWrapper"><span class="Polaris-Breadcrumbs__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+										<path d="M17 9H5.414l3.293-3.293a.999.999 0 1 0-1.414-1.414l-5 5a.999.999 0 0 0 0 1.414l5 5a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414L5.414 11H17a1 1 0 1 0 0-2z"></path>
+									</svg></span></span><span class="Polaris-VisuallyHidden">Back</span></span></a>
+					</nav>
+			</div>
+			<div class="Polaris-Page-Header__TitleWrapper">
+				<div>
+					<div class="Polaris-Header-Title__TitleAndSubtitleWrapper">
+						<h1 id="RapidName" class="Polaris-Header-Title"><div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeMedium FirstSketch"></div></h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="Polaris-Page__Content">
+		<div class="Polaris-Layout"><a id="SkipToContentTarget" tabindex="-1"></a>
+			<div class="Polaris-Layout__Section">
+				<div class="Polaris-Card">
+					<div class="Polaris-Card__Header">
+						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing Polaris-Stack--alignmentCenter">
+							<div class="Polaris-Stack__Item">
+								<h2 class="Polaris-Heading">Details</h2>
+							</div>
+							<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--outline Add-Rapid-Template" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Save for future use</span></span></button></div>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Total winners</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="TotalWinners"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Schedule</h3>
+						</div>
+						<%- include('../partials/event-calendar')%>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Regular prizes</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="RegularPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Grand prize</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="GrandPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+						</div>
+					</div>
+					<div class="Polaris-Card__Footer">
+						<div class="Polaris-ButtonGroup">
+							<div class="Polaris-ButtonGroup__Item">
+								<button id="DeleteRapidBtn" class="Polaris-Button Polaris-Button--destructive"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Delete</span></span></button>
+							</div>
+							<div class="Polaris-ButtonGroup__Item">
+								<button id="EditRapidBtn" class="Polaris-Button Polaris-Button--outline"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Edit</span></span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
