@@ -1,74 +1,654 @@
 $(document).ready(function(e){
 	//theme
-	function scheduler(num){
-		const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-		const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-		let dateNow = Date.now()
-		let theDate = new Date(dateNow+(1000*60*60*24*num))
+	function datePicker(){
+		function scheduler(num){
+			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			let dateNow = Date.now()
+			let theDate = new Date(dateNow+(1000*60*60*24*num))
 
-		return {
-			"day": days[theDate.getDay()],
-			"month": months[theDate.getMonth()],
-			"year": theDate.getFullYear(),
-			"raw": new Date(theDate.toLocaleDateString()),
-			"which": 2
+			return {
+				"day": days[theDate.getDay()],
+				"month": months[theDate.getMonth()],
+				"year": theDate.getFullYear(),
+				"raw": new Date(theDate.toLocaleDateString()),
+				"which": 2
+			}
 		}
-	}
-	function calendar(num){
-		let today = scheduler(num)
-		let daySoFar = today.raw.getDate()-1
-		let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
-		let aMonth = []
-		for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
-			aMonth.push({
-				"day": firstDay.getDay(),
-				"date": firstDay.toLocaleDateString('en-ZA')
+		function calendar(num){
+			let today = scheduler(num)
+			let daySoFar = today.raw.getDate()-1
+			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			let aMonth = []
+			for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+				aMonth.push({
+					"day": firstDay.getDay(),
+					"date": firstDay.toLocaleDateString('en-ZA')
+				})
+				daySoFar = today.raw.getDate()-i
+				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			}
+			return aMonth
+		}
+		function renderMonth(num){
+			let fullMonth = calendar(num)
+			//console.log("num is "+num)
+			//let takenDays = []
+			
+			function allocateWeeks() {
+				const firstDay = fullMonth[0].day
+				let fromWeekend = 7 - firstDay
+				let week1 = fullMonth.slice(0,fromWeekend)
+				let week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
+				let week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
+				let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
+				let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
+				let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
+				//console.log(week6)
+				return[week1, week2, week3, week4, week5, week6]
+			}
+			const weeks = allocateWeeks()
+			//console.log(weeks[0].length)
+
+			let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
+			
+			for(let i = 0; weeks[0].length + i !== 7; i++){
+				one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
+			}
+			$.ajax({
+				url: "/data/all-event-dates",
+				type: "GET",
+				contentType: "application/json",
+				success: function(data){
+					data
+					console.log(data)
+					weeks[0].forEach(function(item){
+						console.log(data.includes(item.date))
+						console.log(item.date)
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+					weeks[1].forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							two = two.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+					weeks[2].forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							three = three.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+					weeks[3].forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							four = four.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+					weeks[4].forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							five = five.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+					weeks[5].forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString()){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							six = six.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+					})
+
+					let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
+					let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+					let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+					let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+					let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+					let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
+
+					$(".calendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+					$(".calendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+
+					calendar(num).forEach(function(item){
+						const eyedee = new Date(item.date).toISOString().split("T")[0]
+						//console.log($("#"+eyedee).text())
+						$("#"+eyedee).click(function(){
+							const isChosen = $(this).hasClass("calendarDayChosen")
+							const isInUse = $(this).hasClass("calendarDayInUse")
+							console.log(`${item.date} was clicked`)
+							if(isInUse){
+								alert("This date is already in use, try another date")
+							} else if(isChosen){
+								$(this).removeClass("calendarDayChosen")
+								const index = chosenDays.indexOf(item.date)
+								if(index > -1){
+									chosenDays.splice(index, 1)
+								}
+								console.log(chosenDays)
+							} else if(!isChosen){
+								$(this).addClass("calendarDayChosen")
+								chosenDays.push(item.date)
+								console.log(chosenDays)
+							}
+						})
+					})
+				}
 			})
-			daySoFar = today.raw.getDate()-i
-			firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			
+			//console.log(takenDays)
+			
+			//let body = document.getElementById("tbody")
+			
+			//console.log("This day is "+$("#2022-02-19").text())
+			
+			//return [chosenDays]
 		}
-		return aMonth
-	}
-	function renderMonth(num){
-		let fullMonth = calendar(num)
-		//console.log("num is "+num)
-		//let takenDays = []
-		
-		function allocateWeeks() {
-			const firstDay = fullMonth[0].day
-			let fromWeekend = 7 - firstDay
-			let week1 = fullMonth.slice(0,fromWeekend)
-			let week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
-			let week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
-			let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
-			let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
-			let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
-			//console.log(week6)
-			return[week1, week2, week3, week4, week5, week6]
-		}
-		const weeks = allocateWeeks()
-		//console.log(weeks[0].length)
+		let chosenDays = []
+		let counter = []
+		$(".calendarPrev").click(function(total){
+			counter.push(-30.5)
+			//console.log(counter)
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+			
+			$(".calendarBody").html(`
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+			`)
+			//console.log(total)
+			
+			renderMonth(total)
+		})
+		$(".calendarNext").click(function(){
+			counter.push(30.5)
+			//console.log(counter)
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+			$(".calendarBody").html(`
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+			`)
+			//console.log(total)
+			renderMonth(total)
+		})
+		//console.log($("#2022-02-19").val())
+		//console.log(300/12)
+		renderMonth(0)
+		$("#DDays").click(function(){
+			console.log(chosenDays)
+		})
 
-		let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
-		
-		for(let i = 0; weeks[0].length + i !== 7; i++){
-			one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
+		return chosenDays
+	}
+
+	function eventCalendar(str){
+		function scheduler(num){
+			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			let dateNow = Date.now()
+			let theDate = new Date(dateNow+(1000*60*60*24*num))
+
+			return {
+				"day": days[theDate.getDay()],
+				"month": months[theDate.getMonth()],
+				"year": theDate.getFullYear(),
+				"raw": new Date(theDate.toLocaleDateString()),
+				"which": 2
+			}
 		}
-		$.ajax({
-			url: "/data/all-event-dates",
-			type: "GET",
-			contentType: "application/json",
-			success: function(data){
-				data
-				console.log(data)
+		function calendar(num){
+			let today = scheduler(num)
+			let daySoFar = today.raw.getDate()-1
+			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			let aMonth = []
+			for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+				aMonth.push({
+					"day": firstDay.getDay(),
+					"date": firstDay.toLocaleDateString('en-ZA')
+				})
+				daySoFar = today.raw.getDate()-i
+				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+			}
+			return aMonth
+		}
+		function renderMonth(num){
+			let fullMonth = calendar(num)
+			
+			function allocateWeeks() {
+				const firstDay = fullMonth[0].day
+				let fromWeekend = 7 - firstDay
+				let week1 = fullMonth.slice(0,fromWeekend)
+				let week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
+				let week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
+				let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
+				let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
+				let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
+				//console.log(week6)
+				return[week1, week2, week3, week4, week5, week6]
+			}
+			const weeks = allocateWeeks()
+
+			let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
+			
+			for(let i = 0; weeks[0].length + i !== 7; i++){
+				one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
+			}
+			if(str){
+				let data = str
 				weeks[0].forEach(function(item){
-					console.log(data.includes(item.date))
-					console.log(item.date)
+					//console.log(data.includes(item.date))
+					//console.log(item.date)
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						one = one.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -76,39 +656,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						one = one.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						one = one.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						one = one.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						one = one.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						one = one.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -125,10 +681,10 @@ $(document).ready(function(e){
 				})
 				weeks[1].forEach(function(item){
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						two = two.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -136,39 +692,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						two = two.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						two = two.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						two = two.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						two = two.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						two = two.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -185,10 +717,10 @@ $(document).ready(function(e){
 				})
 				weeks[2].forEach(function(item){
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						three = three.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -196,39 +728,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						three = three.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						three = three.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						three = three.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						three = three.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						three = three.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -245,10 +753,10 @@ $(document).ready(function(e){
 				})
 				weeks[3].forEach(function(item){
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						four = four.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -256,39 +764,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						four = four.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						four = four.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						four = four.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						four = four.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						four = four.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -305,10 +789,10 @@ $(document).ready(function(e){
 				})
 				weeks[4].forEach(function(item){
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						five = five.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -316,39 +800,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						five = five.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						five = five.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						five = five.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						five = five.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						five = five.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -365,10 +825,10 @@ $(document).ready(function(e){
 				})
 				weeks[5].forEach(function(item){
 					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+					if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						six = six.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -376,39 +836,15 @@ $(document).ready(function(e){
 					} else if(data.includes(item.date)){
 						six = six.concat(`
 							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
 						`)
-					} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString()){
-						six = six.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(chosenDays.includes(item.date)){
+					} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
 						six = six.concat(`
 							<td class="Polaris-DatePicker__DayCell">
 								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(item.date === new Date(Date.now()).toLocaleDateString()){
-						six = six.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
-									${new Date(item.date).getDate()}
-								</button>
-							</td>
-						`)
-					} else if(new Date(item.date) < new Date(Date.now())){
-						six = six.concat(`
-							<td class="Polaris-DatePicker__DayCell">
-								<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
 									${new Date(item.date).getDate()}
 								</button>
 							</td>
@@ -425,164 +861,368 @@ $(document).ready(function(e){
 				})
 
 				let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
-				let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
-				let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
-				let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
-				let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
-				let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
+						let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+						let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+						let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+						let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+						let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
 
-				$(".calendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
-				$(".calendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
-
-				calendar(num).forEach(function(item){
-					const eyedee = new Date(item.date).toISOString().split("T")[0]
-					//console.log($("#"+eyedee).text())
-					$("#"+eyedee).click(function(){
-						const isChosen = $(this).hasClass("calendarDayChosen")
-						const isInUse = $(this).hasClass("calendarDayInUse")
-						console.log(`${item.date} was clicked`)
-						if(isInUse){
-							alert("This date is already in use, try another date")
-						} else if(isChosen){
-							$(this).removeClass("calendarDayChosen")
-							const index = chosenDays.indexOf(item.date)
-							if(index > -1){
-								chosenDays.splice(index, 1)
+						$(".eventCalendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+						$(".eventCalendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+			} else{
+				$.ajax({
+					url: "/data/all-event-dates",
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						data
+						//console.log(data)
+						weeks[0].forEach(function(item){
+							//console.log(data.includes(item.date))
+							//console.log(item.date)
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								one = one.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								one = one.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								one = one.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								one = one.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
 							}
-							console.log(chosenDays)
-						} else if(!isChosen){
-							$(this).addClass("calendarDayChosen")
-							chosenDays.push(item.date)
-							console.log(chosenDays)
-						}
-					})
+						})
+						weeks[1].forEach(function(item){
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								two = two.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								two = two.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								two = two.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								two = two.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							}
+						})
+						weeks[2].forEach(function(item){
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								three = three.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								three = three.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								three = three.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								three = three.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							}
+						})
+						weeks[3].forEach(function(item){
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								four = four.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								four = four.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								four = four.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								four = four.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							}
+						})
+						weeks[4].forEach(function(item){
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								five = five.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								five = five.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								five = five.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								five = five.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							}
+						})
+						weeks[5].forEach(function(item){
+							const eyedee = new Date(item.date).toISOString().split("T")[0]
+							if(data.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								six = six.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(data.includes(item.date)){
+								six = six.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--selected" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+								six = six.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							} else {
+								six = six.concat(`
+									<td class="Polaris-DatePicker__DayCell">
+										<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+											${new Date(item.date).getDate()}
+										</button>
+									</td>
+								`)
+							}
+						})
+
+						let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
+						let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+						let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+						let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+						let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+						let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
+
+						$(".eventCalendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+						$(".eventCalendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+						//console.log(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+					}
 				})
 			}
-		})
-		
-		//console.log(takenDays)
-		
-		//let body = document.getElementById("tbody")
-		
-		//console.log("This day is "+$("#2022-02-19").text())
-		
-		//return [chosenDays]
-	}
-	let chosenDays = []
-	let counter = []
-	$(".calendarPrev").click(function(total){
-		counter.push(-30.5)
-		//console.log(counter)
-		total = counter.reduce(function(sum, num){
-			return sum+num
-		}, 0)
-		
-		$(".calendarBody").html(`
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-		`)
-		//console.log(total)
-		
-		renderMonth(total)
-	})
-	$(".calendarNext").click(function(){
-		counter.push(30.5)
-		//console.log(counter)
-		total = counter.reduce(function(sum, num){
-			return sum+num
-		}, 0)
-		$(".calendarBody").html(`
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-			<tr class="Polaris-DatePicker__Week">
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-				<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
-			</tr>
-		`)
-		//console.log(total)
-		renderMonth(total)
-	})
-	//console.log($("#2022-02-19").val())
-	//console.log(300/12)
-	renderMonth(0)
-	$("#DDays").click(function(){
-		console.log(chosenDays)
-	})
+		}
+		//let chosenDays = []
+		let counter = []
+		$(".eventCalendarPrev").click(function(total){
+			counter.push(-30.5)
 
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+			
+			$(".eventCalendarBody").html(`
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+			`)
+			
+			renderMonth(total)
+		})
+		$(".eventCalendarNext").click(function(){
+			counter.push(30.5)
+			//console.log(counter)
+			total = counter.reduce(function(sum, num){
+				return sum+num
+			}, 0)
+			$(".eventCalendarBody").html(`
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+				<tr class="Polaris-DatePicker__Week">
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
+				</tr>
+			`)
+
+			renderMonth(total)
+		})
+
+		renderMonth(0)
+		$("#DDays").click(function(){
+			console.log(chosenDays)
+		})
+	}
 	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
@@ -946,6 +1586,7 @@ $(document).ready(function(e){
 				alert(data.responseText)
 			}
 		})
+		eventCalendar()
 	}
 
 	//url == /campaign/long/new
@@ -2404,6 +3045,9 @@ $(document).ready(function(e){
 
 	//url === /campaign/rapid/new
 	if(window.location.pathname === "/campaign/rapid/new"){
+
+		let chosenDays = datePicker()
+
 		$("#RValidateBtn").click(function(){
 			console.log(chosenDays)
 			$("#RValidBody").html(`
@@ -2504,4 +3148,6 @@ $(document).ready(function(e){
 			})
 		})
 	}
+
+	//url == /campaign/rapid/:id
 })
