@@ -456,6 +456,10 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
 			}
 		})
+		const rapid = await RapidChild.find({'shop': session.shop})
+		rapid.forEach((item: any) => {
+			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+		})
 		res.json(allEventsEver)
 	} catch(err: any){
 		console.log(err)
