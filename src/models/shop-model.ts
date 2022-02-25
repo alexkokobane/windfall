@@ -54,7 +54,7 @@ const longEventSchema = new mongoose.Schema({
 	id: Number,
 	name: String,
 	templateId: Number,
-	type: String,
+	eventType: String,
 	startDate: Date,
 	endDate: Date,
 	toSuper: [Number],
@@ -112,7 +112,7 @@ const rapidChildsSchema = new mongoose.Schema({
 	},
 	id: Number,
 	parentId: Number,
-	type: String,
+	eventType: String,
 	startDate: Date,
 	endDate: Date,
 	winnersChosen: Boolean,
@@ -145,10 +145,10 @@ const grandEventSchema = new mongoose.Schema({
 	name: String,
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
-	childEvents: [{
+	childrenEvents: [{
 		id: Number,
 		name: String,
-		type: String,
+		eventType: String,
 		winners: [{
 			entrantId: String,
 			entrantName: String,
@@ -194,7 +194,7 @@ const rapidEventTemplateSchema = new mongoose.Schema({
 	},
 	id: Number,
 	name: String,
-	type: String,
+	eventType: String,
 	dates: [{
 		day: Number,
 		index: Number,

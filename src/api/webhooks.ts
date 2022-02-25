@@ -70,7 +70,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						},
 						{
 							'$push': { 
-									'entries' : {
+								'entries' : {
 									'firstName': firstName,
 									'lastName': lastName,
 									'email': email,

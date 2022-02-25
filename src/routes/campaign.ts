@@ -126,7 +126,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 				shop: session.shop,
 				id: giveawayId,
 				name: data.name,
-				type: 'Long',
+				eventType: 'Long',
 				winnersChosen: false,
 				winnersGifted: false,
 				startDate: new Date(`${data.startDate}`),
@@ -543,24 +543,16 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			}
 		}).save()
 
-		new Grand({
-			'shop': session.shop,
-			'id': grandId,
-			'name': data.name,
-			'winnersChosen': false,
-			'winnersGifted': false,
-			'winners': [{
-				'prizeId': 1,
-				'voucherPrize': parseInt(data.grand)
-			}]
-		}).save()
+		
 
+		let childrenEvents: any[] = []
 		formattedDates.forEach(async (item: any) => {
 			const childId = Math.floor(Math.random() * 1000000000)
 			new RapidChild({
 				'shop': session.shop,
 				'id': childId,
 				'name': data.name,
+				'eventType': 'Rapid',
 				'parentId': rapidId,
 				'startDate': item,
 				'endDate': new Date(Number(new Date(item))+(1000*60*60*23)),
@@ -573,22 +565,25 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 				}
 			}).save()
 
-			await Grand.updateOne(
-				{
-					'shop': session.shop,
-					'id': grandId
-				},
-				{
-					'$push': {
-						'childEvents': {
-							'id': childId,
-							'name': data.name,
-							'type': 'Rapid'
-						}
-					}
-				}
-			)
+			childrenEvents.push({
+				'id': childId,
+				'name': data.name,
+				'eventType': 'Rapid'
+			})
 		})
+
+		new Grand({
+			'shop': session.shop,
+			'id': grandId,
+			'name': data.name,
+			'winnersChosen': false,
+			'winnersGifted': false,
+			'winners': [{
+				'prizeId': 1,
+				'voucherPrize': parseInt(data.grand)
+			}],
+			'childrenEvents': childrenEvents
+		}).save()
 
 		res.send("/data/everything")
 	} catch(err: any){
