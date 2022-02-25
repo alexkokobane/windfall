@@ -91,10 +91,10 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
 		}
-		
-		if(longEvents.length !== 0){
-			let keyValue = []
-			
+
+		let keyValue: any[] = []
+
+		if(longEvents.length !== 0){			
 			longEvents.forEach((item: any) => {
 				const itemStart = new Date(item.startDate)
 				const itemEnd = new Date(item.endDate)
@@ -115,10 +115,42 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 						'endDate': itemEnd
 					})
 				}
+			})			
+		}
+
+		const rapidEvent = await RapidChild.find({'shop': session.shop})
+		if(rapidEvent.length !== 0){
+			rapidEvent.forEach((item: any) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(`${data.startDate}`)
+				const givEnd = new Date(`${data.endDate}`)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
 			})
+			console.log(keyValue)
 			if(keyValue.length !== 0) {
-				return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
+				return res.json(keyValue)
 			}
+		}
+
+		if(keyValue.length !== 0) {
+			return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
 		}
 		//const status: string = new Date(`${data.startDate}`) > new Date() ? 'Upcoming' : 'Active'
 		new Long(
@@ -541,6 +573,10 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
 			}
 		})
+		const rapid = await RapidChild.find({'shop': session.shop})
+		rapid.forEach((item: any) => {
+			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+		})
 		let clashingDates: any[] = []
 		if(allEventsEver.length !== 0){
 			allEventsEver.forEach((item: string) => {
@@ -643,7 +679,10 @@ campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
 				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
 			}
 		})
-
+		const rapid = await RapidChild.find({'shop': session.shop})
+		rapid.forEach((item: any) => {
+			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+		})
 		let clashingDates: any[] = []
 		if(allEventsEver.length !== 0){
 			allEventsEver.forEach((item: string) => {

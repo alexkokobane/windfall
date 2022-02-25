@@ -111,6 +111,7 @@ const rapidChildsSchema = new mongoose.Schema({
 		required: true,
 	},
 	id: Number,
+	name: String,
 	parentId: Number,
 	eventType: String,
 	startDate: Date,

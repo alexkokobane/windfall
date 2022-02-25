@@ -396,6 +396,37 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 			}
 		}
 
+		const rapid = await RapidChild.find({'shop': session.shop})
+		if(rapid.length !== 0){
+			rapid.forEach((item: any) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(starter)
+				const givEnd = new Date(ender)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+			})
+			console.log(keyValue)
+			if(keyValue.length !== 0) {
+				return res.json(keyValue)
+			}
+		}
+
 		res.json(keyValue)
 	} catch(err: any){
 		console.log(err)
