@@ -173,7 +173,7 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 		})
 		let upcoming: any = []
 		longEvents.forEach((item: any) => {
-			longEvents.push({
+			upcoming.push({
 				"id": item.id,
 				"name": item.name,
 				"type": item.distributionType,
@@ -185,15 +185,18 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 		})
 
 		rapidEvents.forEach((item: any) => {
-			rapidEvents.push({
-				"id": item.id,
-				"name": item.name,
-				"eventType": item.eventType,
-				"startDate": item.startDate,
-				"endDate": item.endDate,
-				"entriesTotal": item.entries.length,
-				"winnersTotal": item.winnersTotal 
-			})
+			if(item.name && item.eventType){
+				upcoming.push({
+					"id": item.id,
+					"name": item.name,
+					"parentId": item.parentId,
+					"eventType": item.eventType,
+					"startDate": item.startDate,
+					"endDate": item.endDate,
+					"entriesTotal": item.entries.length,
+					"winnersTotal": item.winnersTotal 
+				})
+			}
 		})
 		console.log(upcoming)
 		res.json(upcoming)

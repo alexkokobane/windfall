@@ -1496,9 +1496,15 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
-					$(`#Upcoming${giv.id}`).click(function(){
-						location.href=`/campaign/long/${giv.id}`
-					})
+					if(giv.eventType === "Rapid"){
+						$(`#Upcoming${giv.id}`).click(function(){
+							location.href=`/campaign/rapid/${giv.parentId}`
+						})
+					} else {
+						$(`#Upcoming${giv.id}`).click(function(){
+							location.href=`/campaign/long/${giv.id}`
+						})
+					}
 				})
 			},
 			error: function(data){
@@ -3162,11 +3168,12 @@ $(document).ready(function(e){
 				$(".FirstSketch").remove()
 				eventCalendar(data.dates)
 				$("#RapidName").text(data.title)
-				$("#TotalWinners").text(data.winnersTotal+" plus single Grand prize.")
+				$("#TotalWinners").text(data.winnersTotal+" prizes up for grabs, plus a single Grand prize.")
 				$("#RegularPrize").text(`
 					${data.prizes.normalPrize} USD
 				`)
 				$("#GrandPrize").text(`
+					${data.prizes.grandPrize} USD
 				`)
 			},
 			error: function(data){
