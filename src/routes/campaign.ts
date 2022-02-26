@@ -527,6 +527,30 @@ campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/long/delete/all', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const longs = await Long.find({
+			'shop': session.shop
+		})
+
+		longs.forEach(async (item: any) => {
+			await Grand.deleteMany({
+				'shop': session.shop,
+				'id': item.grandEventId
+			})
+		})
+		await Long.deleteMany({
+			'shop': session.shop
+		})
+
+		res.send("Successfully deleted every rapid event.")
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 // Rapid events
 
 campaign.get('/rapid/new', checkAuth, async (req, res) => {
@@ -730,6 +754,32 @@ campaign.get('/rapid/:id', checkAuth, async (req, res) => {
 		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
+	}
+})
+
+campaign.post('/rapid/delete/all', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const rapids = await Rapid.find({
+			'shop': session.shop
+		})
+
+		rapids.forEach(async (item: any) => {
+			await Grand.deleteMany({
+				'shop': session.shop,
+				'id': item.grandEvent.id
+			})
+		})
+		await Rapid.deleteMany({
+			'shop': session.shop
+		})
+		await RapidChild.deleteMany({
+			'shop': session.shop
+		})
+		res.send("Successfully deleted every rapid event.")
+	} catch(err: any){
+		console.log(err)
+		return err
 	}
 })
 
@@ -1203,6 +1253,19 @@ campaign.post('/template/:id/delete', checkApiAuth, async (req, res) => {
 		res.send("/")
 	} catch(err: any){
 		console.log(err)
+	}
+})
+
+campaign.post('/template/delete/all', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		await SavedLong.deleteMany({
+			'shop': session.shop
+		})
+		res.send("Successfully deleted every event template.")
+	} catch(err: any){
+		console.log(err)
+		return err
 	}
 })
 

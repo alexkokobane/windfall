@@ -3041,6 +3041,58 @@ $(document).ready(function(e){
 				if(data.plan === "Ultimate"){
 					$("#PlanDetails").html("<p>You are currently on the Ultimate plan for 79 USD per month.</p>")
 				}
+
+				$("#DeleteAllRapidBtn").click(function(){
+					$.ajax({
+						url: "/campaign/rapid/delete/all",
+						type: "POST",
+						contentType: "application/json",
+						success: function(data){
+							alert(data)
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if (data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+						}
+					})
+				})
+				$("#DeleteAllLongBtn").click(function(){
+					$.ajax({
+						url: "/campaign/long/delete/all",
+						type: "POST",
+						contentType: "application/json",
+						success: function(data){
+							alert(data)
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if (data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+						}
+					})
+				})
+				$("#DeleteAllTemplatesBtn").click(function(){
+					$.ajax({
+						url: "/campaign/template/delete/all",
+						type: "POST",
+						contentType: "application/json",
+						success: function(data){
+							alert(data)
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if (data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+						}
+					})
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

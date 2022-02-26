@@ -57,7 +57,7 @@ const longEventSchema = new mongoose.Schema({
 	eventType: String,
 	startDate: Date,
 	endDate: Date,
-	toSuper: [Number],
+	grandEventId: Number,
 	distributionType: String,
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
