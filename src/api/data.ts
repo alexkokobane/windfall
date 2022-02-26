@@ -165,12 +165,12 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
-		})
+		}).limit(3)
 		const rapidEvents = await RapidChild.find({
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
-		})
+		}).limit(3)
 		let upcoming: any = []
 		longEvents.forEach((item: any) => {
 			upcoming.push({
@@ -535,6 +535,148 @@ data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 		}
 		console.log(justOne)
 		res.json(justOne)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
+	try{
+		const dateNow = new Date().toISOString()
+		const eventId = parseInt(req.params.id)
+		//console.log(eventId)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Giveaway not correct")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			}
+		)
+		//console.log(event)
+		if(event === null){
+			return res.status(404).send("Giveaway not found")
+		}
+
+		const child = await RapidChild.find(
+			{
+				'shop': session.shop,
+				'parentId': eventId,
+				'endDate': {'$lt': new Date(dateNow)},
+				'$or': [
+					{'winnersGifted': false},
+					{'winnersChosen': false}
+				]
+			}
+		)
+
+		const awaiting: any[] = []
+		child.forEach((item: any) => {
+			awaiting.push({
+				"id": item.id,
+				"name": item.name,
+				"entriesTotal": item.entries.length,
+			})
+		})
+
+		console.log(awaiting)
+		res.json(awaiting)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaign/rapid/:id/upcoming',  checkApiAuth, async (req, res) => {
+	try{
+		const dateNow = new Date().toISOString()
+		const eventId = parseInt(req.params.id)
+		//console.log(eventId)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Giveaway not correct")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			}
+		)
+		//console.log(event)
+		if(event === null){
+			return res.status(404).send("Giveaway not found")
+		}
+
+		const child = await RapidChild.find({
+			'shop': session.shop,
+			'parentId': eventId,
+			'startDate': {'$gte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		}).limit(3)
+		let upcoming: any = []
+
+		child.forEach((item: any) => {
+			if(item.name && item.eventType){
+				upcoming.push({
+					"id": item.id,
+					"name": item.name,
+					"parentId": item.parentId,
+					"eventType": item.eventType,
+					"startDate": item.startDate,
+					"endDate": item.endDate,
+					"entriesTotal": item.entries.length,
+					"winnersTotal": item.winnersTotal 
+				})
+			}
+		})
+
+		console.log(upcoming)
+		res.json(upcoming)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+data.get('/campaign/rapid/:id/active',  checkApiAuth, async (req, res) => {
+	try{
+		const dateNow = new Date().toISOString()
+		const eventId = parseInt(req.params.id)
+		//console.log(eventId)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Giveaway not correct")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			}
+		)
+		//console.log(event)
+		if(event === null){
+			return res.status(404).send("Giveaway not found")
+		}
+
+		const child = await RapidChild.findOne({
+			'shop': session.shop,
+			'parentId': eventId,
+			'startDate': {'$lte': new Date(dateNow)},
+			'endDate': {'$gte': new Date(dateNow)}
+		})
+
+		const active: any = {
+			"id": child.id,
+			"name": child.name,
+			"eventType": child.distributionType,
+			"startDate": child.startDate,
+			"endDate": child.endDate,
+			"entriesTotal": child.entries.length,
+			"winnersTotal": child.winnersTotal 
+		}
+
+		console.log(active)
+		res.json(active)
 	} catch(err: any) {
 		console.log(err)
 	}
