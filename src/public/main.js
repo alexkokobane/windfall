@@ -1437,7 +1437,7 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				console.log("The upcoming length is "+data.length)
+				//console.log("The upcoming length is "+data.length)
 				if(data.length === 0){
 					$("#HUGListWrapper").remove()
 					return (
@@ -3227,6 +3227,99 @@ $(document).ready(function(e){
 				$("#GrandPrize").text(`
 					${data.prizes.grandPrize} USD
 				`)
+
+				$.ajax({
+					url: `/data/campaign/rapid/${idForGiveaway}/active`,
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						$(".ActiveSketch").remove()
+						$("#RAEnds").text(new Date(data.endDate).toDateString())
+						$("#RAEntries").text(data.entriesTotal)
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+						alert(data.responseText)
+					}
+				})
+				$.ajax({
+					url: `/data/campaign/rapid/${idForGiveaway}/upcoming`,
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						$(".UpcomingSketch").remove()
+						if(data.length === 0){
+							$("#RUListWrapper").remove()
+							return (
+								$("#RU").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
+														<div class="Polaris-EmptyState__Content">
+															<p>Incentivize customers to spend more in your store.</p>
+														</div>
+													</div>
+													<div class="Polaris-EmptyState__Actions">
+														<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
+															<div class="Polaris-Stack__Item"><a href="/campaign/new" class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></a></div>
+															<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+										</div>
+									</div>
+								`)
+							)
+						}
+						$(".RUDecoyItem").remove()
+						data.reverse().forEach(function(giv){
+							const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+							$("#RUDataDecoy").after(`
+								<li class="Polaris-ResourceItem__ListItem">
+									<div class="Polaris-ResourceItem__ItemWrapper">
+										<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
+											<div class="Polaris-ResourceItem__Container" id="Upcoming${giv.id}">
+												<div class="Polaris-ResourceItem__Owned">
+													<div class="Polaris-ResourceItem__Media">
+														<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+															<div class="dp" style="background: ${colour}; color: black;">${giv.name.substring(0,1)}</div>
+														</span>
+													</div>
+												</div>
+												<div class="Polaris-ResourceItem__Content">
+													<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+														<div class="Polaris-Stack__Item">
+															<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+															<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> ${new Date(giv.startDate).toDateString()}</div>
+															<div><span class="Polaris-TextStyle--variationStrong">At</span> ${new Date(giv.startDate).toLocaleTimeString()}</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+							`)
+						})
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+						alert(data.responseText)
+					}
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
