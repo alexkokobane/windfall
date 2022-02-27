@@ -143,10 +143,6 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 					}
 				}
 			})
-			console.log(keyValue)
-			if(keyValue.length !== 0) {
-				return res.json(keyValue)
-			}
 		}
 
 		if(keyValue.length !== 0) {
