@@ -1328,9 +1328,9 @@ $(document).ready(function(e){
 
 				$("#HAwaitingHeader").html(`
 					<span>Awaiting</span>
-					<span style="color: green;">  (${data.length})</span>
+					<span style="color: green;" id="AwaitLength"></span>
 				`)
-
+				$("#AwaitLength").text(` (${data.length})`)
 				$("#HAwaiting").html(`
 					<ul class="Polaris-ResourceList">
 						<span id="HAwaitingDecoy"></span>
@@ -1342,7 +1342,7 @@ $(document).ready(function(e){
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
 								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
-									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
+									<a id="AwaitLink${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
 									<div class="Polaris-ResourceItem__Container" id="Await${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
@@ -1354,7 +1354,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Content">
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 												<div class="Polaris-Stack__Item">
-													<h3 class="Polaris-TextStyle--variationStrong Polaris-Subheading" style="color: green;">${giv.name}</h3>
+													<h3 class="Polaris-TextStyle--variationStrong Polaris-Subheading" style="color: green;" id="AwaitName${giv.id}"></h3>
 													<div><span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> customers waiting for you to pick winners and send them a gift.</div>
 												</div>
 											</div>
@@ -1364,6 +1364,8 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
+					$(`#AwaitName${giv.id}`).text(giv.name)
+					$(`#AwaitLink${giv.id}`).attr("aria-label", `A link to ${giv.name}, an event waiting for you to perform actions`)
 					$(`#Await${giv.id}`).click(function(){
 						location.href=`/campaign/long/${giv.id}`
 					})
@@ -1473,7 +1475,7 @@ $(document).ready(function(e){
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
 								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
-									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
+									<a id="UpcomingLink${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
 									<div class="Polaris-ResourceItem__Container" id="Upcoming${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
@@ -1485,7 +1487,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Content">
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 												<div class="Polaris-Stack__Item">
-													<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+													<h3><span class="Polaris-TextStyle--variationStrong" id="UpcomingName${giv.id}"></span></h3>
 													<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> ${new Date(giv.startDate).toDateString()}</div>
 													<div><span class="Polaris-TextStyle--variationStrong">At</span> ${new Date(giv.startDate).toLocaleTimeString()}</div>
 												</div>
@@ -1496,6 +1498,8 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
+					$(`#UpcomingName${giv.id}`).text(giv.name)
+					$(`#UpcomingLink${giv.id}`).attr("aria-label", `A link to an upcoming event named, ${giv.name}`)
 					if(giv.eventType === "Rapid"){
 						$(`#Upcoming${giv.id}`).click(function(){
 							location.href=`/campaign/rapid/${giv.parentId}`
