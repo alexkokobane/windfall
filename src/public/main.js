@@ -2173,7 +2173,7 @@ $(document).ready(function(e){
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper ">
 								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-									<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+									<a id="Link${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
 									<div class="Polaris-ResourceItem__Container" id="${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
@@ -2185,7 +2185,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Content ">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
-														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
@@ -2204,6 +2204,8 @@ $(document).ready(function(e){
 							</div>
 						</li>
 					`)
+					$(`#Name${giv.id}`).text(giv.name)
+					$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
 					$(`#${giv.id}`).click(function(){
 						location.href=`/campaign/${giv.id}`
 					})
@@ -2299,7 +2301,7 @@ $(document).ready(function(e){
 							<li class="Polaris-ResourceItem__ListItem">
 								<div class="Polaris-ResourceItem__ItemWrapper">
 									<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<a id="Link${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
 										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
@@ -2311,7 +2313,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Content ">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
-														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
@@ -2330,6 +2332,8 @@ $(document).ready(function(e){
 								</div>
 							</li>
 						`)
+						$(`#Name${giv.id}`).text(giv.name)
+						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
 						$(`#${giv.id}`).click(function(){
 							location.href=`/campaign/${giv.id}`
 						})
@@ -2426,7 +2430,7 @@ $(document).ready(function(e){
 							<li class="Polaris-ResourceItem__ListItem">
 								<div class="Polaris-ResourceItem__ItemWrapper">
 									<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<a id="Link${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
 										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
@@ -2438,7 +2442,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Content">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
-														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
@@ -2457,6 +2461,8 @@ $(document).ready(function(e){
 								</div>
 							</li>
 						`)
+						$(`#Name${giv.id}`).text(giv.name)
+						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
 						$(`#${giv.id}`).click(function(){
 							location.href=`/campaign/${giv.id}`
 						})
@@ -2553,7 +2559,7 @@ $(document).ready(function(e){
 							<li class="Polaris-ResourceItem__ListItem">
 								<div class="Polaris-ResourceItem__ItemWrapper">
 									<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/${giv.id}">
-										<a aria-describedby="100" aria-label="View details for ${giv.name}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
+										<a id="Link${giv.id}" class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/${giv.id}" data-polaris-unstyled="true"></a>
 										<div class="Polaris-ResourceItem__Container" id="${giv.id}">
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
@@ -2565,7 +2571,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Content">
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
-														<h3><span class="Polaris-TextStyle--variationStrong">${giv.name}</span></h3>
+														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
 														<div>${giv.type} distribution</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
@@ -2584,6 +2590,8 @@ $(document).ready(function(e){
 								</div>
 							</li>
 						`)
+						$(`#Name${giv.id}`).text(giv.name)
+						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
 						$(`#${giv.id}`).click(function(){
 							location.href=`/campaign/${giv.id}`
 						})
