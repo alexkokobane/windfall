@@ -292,7 +292,18 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 	try{
 		const dateNow = new Date().toISOString()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.find(
+		const long = await Long.find(
+			{
+				'shop': session.shop,
+				'endDate': {'$lt': new Date(dateNow)},
+				'$or': [
+					{'winnersGifted': false},
+					{'winnersChosen': false}
+				]
+			}
+		)
+
+		const rapid = await RapidChild.find(
 			{
 				'shop': session.shop,
 				'endDate': {'$lt': new Date(dateNow)},
@@ -304,7 +315,15 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 		)
 
 		const awaiting: any[] = []
-		giveaway.forEach((item: any) => {
+		long.forEach((item: any) => {
+			awaiting.push({
+				"id": item.id,
+				"name": item.name,
+				"entriesTotal": item.entries.length,
+			})
+		})
+
+		rapid.forEach((item: any) => {
 			awaiting.push({
 				"id": item.id,
 				"name": item.name,
