@@ -597,6 +597,10 @@ data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
 				"id": item.id,
 				"name": item.name,
 				"entriesTotal": item.entries.length,
+				"winnersChosen": item.winnersChosen,
+				"winnersGifted": item.winnersGifted,
+				"winner": item.winner,
+				"endDate": item.endDate
 			})
 		})
 

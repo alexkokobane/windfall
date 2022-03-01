@@ -602,7 +602,7 @@ $(document).ready(function(e){
 				"which": 2
 			}
 		}
-		function calendar(num){
+		function calendar(num, bool){
 			let today = scheduler(num)
 			let daySoFar = today.raw.getDate()-1
 			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
@@ -615,7 +615,17 @@ $(document).ready(function(e){
 				daySoFar = today.raw.getDate()-i
 				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
 			}
-			return aMonth
+			if(bool === true){
+				return {
+					"firstDay": 1,
+					"lastDay": new Date(aMonth.at(-1).date).getDate(),
+					"daySoFar": today.raw.getDate()-1,
+					"lastDate": aMonth.at(-1).date,
+					"difference": today.raw.getDate()
+				}
+			} else {
+				return aMonth
+			}
 		}
 		function renderMonth(num){
 			let fullMonth = calendar(num)
@@ -643,7 +653,7 @@ $(document).ready(function(e){
 				let data = str.map(function(item){
 					return new Date(item).toLocaleDateString('en-ZA')
 				})
-				console.log(data)
+				//console.log(data)
 				weeks[0].forEach(function(item){
 					//console.log(data.includes(item.date))
 					//console.log(item.date)
@@ -1115,13 +1125,19 @@ $(document).ready(function(e){
 		}
 		//let chosenDays = []
 		let counter = []
-		$(".eventCalendarPrev").click(function(total){
+		let meta = []
+		$(".eventCalendarPrev").click(function(total, nav){
+			//To be continued
+			meta.unshift(meta.length === 0? 1-calendar(0, true).lastDay: 1-calendar(prev, true).lastDay)
 			counter.push(-30.5)
 
 			total = counter.reduce(function(sum, num){
 				return sum+num
 			}, 0)
 			
+			prev = meta.reduce(function(sum, num){
+				return sum+num
+			}, 0)
 			$(".eventCalendarBody").html(`
 				<tr class="Polaris-DatePicker__Week">
 					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
@@ -1166,6 +1182,10 @@ $(document).ready(function(e){
 				</tr>
 			`)
 			
+			console.log(prev)
+			nav = calendar(prev, true)
+			console.log(nav)
+			//console.log(calendar(0, true))
 			renderMonth(total)
 		})
 		$(".eventCalendarNext").click(function(){
@@ -3334,14 +3354,112 @@ $(document).ready(function(e){
 						alert(data.responseText)
 					}
 				})
+				$.ajax({
+					url: `/data/campaign/rapid/${idForGiveaway}/awaiting`,
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						$("#AwaitingSketch").remove()
+						if(data.length === 0){
+							const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+							return (
+								$("#HAwaiting").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No actions needed</p>
+														<div class="Polaris-EmptyState__Content">
+															<p>This action center for any outstanding actions required from expired giveaways.</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer">
+												<div style="width: 100%; background: ${colour};"></div>
+											</div>
+										</div>
+									</div>
+								`)
+							)
+						}
+						$("#RAwaitingHeader").html(`
+							<span>Awaiting</span>
+							<span style="color: green;">(${data.length})</span>
+						`)
+						
+						data.reverse().forEach(function(giv){
+							$("#RAwaitingHeader").after(`
+								<div id="AwaitingSketch" class="Polaris-Card__Section">
+									<div class="Polaris-Card__SectionHeader">
+										<h3 class="Polaris-Subheading">${new Date(giv.endDate).toDateString()} - Event</h3>
+									</div>
+									<div class="Polaris-TextContainer">
+										<div class="Polaris-ButtonGroup">
+											<div class="Polaris-ButtonGroup__Item">
+												<button id="chooseWinner${giv.id}" class="Polaris-Button ${giv.winnersChosen === true ? "Polaris-Button--disabled" : "Polaris-Button--outline"}" type="button">
+													<span class="Polaris-Button__Content">
+														<span id="chooseWinner${giv.id}text" class="Polaris-Button__Text">Choose a winner</span>
+													</span>
+												</button>
+											</div>
+											<div class="Polaris-ButtonGroup__Item">
+												<button id="sendVoucher${giv.id}" class="Polaris-Button ${giv.winnersGifted === true ? "Polaris-Button--disabled" : "Polaris-Button--outline"}" type="button">
+													<span class="Polaris-Button__Content">
+														<span id="sendVoucher${giv.id}text" class="Polaris-Button__Text">Sent voucher to winner</span>
+													</span>
+												</button>
+											</div>
+										</div>
+										<div>Winner : 
+											<span class="Polaris-TextStyle--variationStrong">
+												${giv.winnersChosen === true ? giv.winner.entrantEmail : "Not chosen yet"}
+											</span>
+										</div>
+										<div>Voucher status : 
+											<span class="Polaris-TextStyle--variationStrong">
+												${giv.winnersGifted === true ? "Send" : "Not Send"}
+											</span>
+										</div>
+										<div>Total entries : 
+											<span class="Polaris-TextStyle--variationStrong">
+												${giv.entriesTotal}
+											</span>
+										</div>
+									</div>
+								</div>
+							`)
+							if(giv.winnersChosen === false){
+								$(`#chooseWinner${giv.id}`).click(function(){
+									$(this).addClass("Polaris-Button--loading")
+									$(`#chooseWinner${giv.id}text`).before(`<span class="Polaris-Button__Spinner"><span class="Polaris-Spinner Polaris-Spinner--sizeSmall"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+          </svg></span><span role="status"><span class="Polaris-VisuallyHidden">Loading</span></span></span>`)
+								})
+							}
+							if(giv.winnersGifted === false){
+								$(`#sendVoucher${giv.id}`).click(function(){
+									$(this).addClass("Polaris-Button--loading")
+									$(`#sendVoucher${giv.id}text`).before(`<span class="Polaris-Button__Spinner"><span class="Polaris-Spinner Polaris-Spinner--sizeSmall"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+          </svg></span><span role="status"><span class="Polaris-VisuallyHidden">Loading</span></span></span>`)
+								})
+							}							
+						})
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+						alert(data.responseText)
+					}
+				})
 			},
 			error: function(data){
-				if(data.responseText === "Unauthorized"){
-					return location.href="/"
-				} else if(data.responseText === "Forbidden"){
-					return location.href="/billing/plans"
-				}
-				alert(data.responseText)
+				
 			}
 		})
 	}
