@@ -150,6 +150,7 @@ const grandEventSchema = new mongoose.Schema({
 		id: Number,
 		name: String,
 		eventType: String,
+		winnersChosen: Boolean,
 		winners: [{
 			entrantId: String,
 			entrantName: String,

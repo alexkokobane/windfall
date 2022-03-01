@@ -706,6 +706,48 @@ data.get('/campaign/rapid/:id/active',  checkApiAuth, async (req, res) => {
 })
 
 
+// Grand
+
+data.get('/campaign/grand/:id', checkApiAuth, async (req, res) => {
+	try{
+		const dateNow = new Date().toISOString()
+		const eventId = parseInt(req.params.id)
+		//console.log(eventId)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Giveaway not correct")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Grand.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			}
+		)
+		const participants = await Grand.aggregate([
+			{'$match': {'shop': session.shop}},
+			{'$match': {'id': eventId}},
+			{'$unwind': '$childrenEvents'},
+			{'$match': {'childrenEvents.winnersChosen': true}}
+		])
+		//console.log(event)
+		if(event === null){
+			return res.status(404).send("Giveaway not found")
+		}
+		const grand: any = {
+			"id": event.id,
+			"name": event.name,
+			"winnersChosen": event.winnersChosen,
+			"winnersGifted": event.winnersGifted,
+			"winner": event.winners[0],
+			"completedEvents": participants.length,
+			"allEvents": event.childrenEvents.length
+		}
+		console.log(grand)
+		res.json(grand)
+	} catch(err: any){
+		console.log(err)
+	}
+})
 
 // Misc
 
