@@ -687,7 +687,9 @@ data.get('/campaign/rapid/:id/active',  checkApiAuth, async (req, res) => {
 			'startDate': {'$lte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
 		})
-
+		if(child === null){
+			return res.json({"id": 404})
+		}
 		const active: any = {
 			"id": child.id,
 			"name": child.name,
