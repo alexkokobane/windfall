@@ -4,8 +4,8 @@ $(document).ready(function(e){
 		function scheduler(num){
 			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-			let dateNow = Date.now()
-			let theDate = new Date(dateNow+(1000*60*60*24*num))
+			let dateNow = new Date(Date.now())
+			let theDate = new Date(dateNow.setMonth(num))
 
 			return {
 				"day": days[theDate.getDay()],
@@ -470,9 +470,9 @@ $(document).ready(function(e){
 			//return [chosenDays]
 		}
 		let chosenDays = []
-		let counter = []
+		let counter = [new Date(Date.now()).getMonth()]
 		$(".calendarPrev").click(function(total){
-			counter.push(-30.5)
+			counter.push(-1)
 			//console.log(counter)
 			total = counter.reduce(function(sum, num){
 				return sum+num
@@ -526,7 +526,7 @@ $(document).ready(function(e){
 			renderMonth(total)
 		})
 		$(".calendarNext").click(function(){
-			counter.push(30.5)
+			counter.push(1)
 			//console.log(counter)
 			total = counter.reduce(function(sum, num){
 				return sum+num
@@ -577,9 +577,9 @@ $(document).ready(function(e){
 			//console.log(total)
 			renderMonth(total)
 		})
-		//console.log($("#2022-02-19").val())
-		//console.log(300/12)
-		renderMonth(0)
+
+		renderMonth(new Date(Date.now()).getMonth())
+
 		$("#DDays").click(function(){
 			console.log(chosenDays)
 		})
@@ -591,9 +591,9 @@ $(document).ready(function(e){
 		function scheduler(num){
 			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-			let dateNow = Date.now()
-			let theDate = new Date(dateNow+(1000*60*60*24*num))
-
+			let dateNow = new Date(Date.now())
+			let theDate = new Date(dateNow.setMonth(num))
+			//console.log(theDate)
 			return {
 				"day": days[theDate.getDay()],
 				"month": months[theDate.getMonth()],
@@ -1124,20 +1124,13 @@ $(document).ready(function(e){
 			}
 		}
 		//let chosenDays = []
-		let counter = []
-		let meta = []
+		let counter = [new Date(Date.now()).getMonth()]
 		$(".eventCalendarPrev").click(function(total, nav){
-			//To be continued
-			meta.unshift(meta.length === 0? 1-calendar(0, true).lastDay: 1-calendar(prev, true).lastDay)
-			counter.push(-30.5)
-
+			counter.push(-1)
 			total = counter.reduce(function(sum, num){
 				return sum+num
 			}, 0)
-			
-			prev = meta.reduce(function(sum, num){
-				return sum+num
-			}, 0)
+
 			$(".eventCalendarBody").html(`
 				<tr class="Polaris-DatePicker__Week">
 					<td class="Polaris-DatePicker__DayCell"><button class="Polaris-DatePicker__Day"><div class="Polaris-SkeletonBodyText"></div></button></td>
@@ -1182,14 +1175,11 @@ $(document).ready(function(e){
 				</tr>
 			`)
 			
-			console.log(prev)
-			nav = calendar(prev, true)
-			console.log(nav)
 			//console.log(calendar(0, true))
 			renderMonth(total)
 		})
 		$(".eventCalendarNext").click(function(){
-			counter.push(30.5)
+			counter.push(1)
 			//console.log(counter)
 			total = counter.reduce(function(sum, num){
 				return sum+num
@@ -1240,8 +1230,8 @@ $(document).ready(function(e){
 
 			renderMonth(total)
 		})
-
-		renderMonth(0)
+		
+		renderMonth(new Date(Date.now()).getMonth())
 		$("#DDays").click(function(){
 			console.log(chosenDays)
 		})
