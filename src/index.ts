@@ -11,6 +11,7 @@ const { DB_URL, API_SECRET_KEY } = process.env
 
 import checkAuth from './utils/middlewares/check-auth'
 import { setActiveCampaign } from './utils/campaign-worker'
+import { divide, renderFor } from './utils/render-divider'
 
 import auth from './routes/auth'
 import home from './routes/home'
@@ -66,7 +67,25 @@ app.use('/data', data)
 
 //Catch All
 app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) => {
-  res.status(404).render('pages/404')
+  
+  const render: renderFor = [
+      {
+        "plan": "Ultimate",
+        "page": "pages/404",
+        "layer": "layouts/main-ultimate"
+      },
+      {
+        "plan": "Standard",
+        "page": "pages/404",
+        "layer": "layouts/main-standard"
+      },
+      {
+        "plan": "Starter",
+        "page": "pages/404",
+        "layer": "layouts/main-starter"
+      }
+    ]
+    divide(req, res, render, true)
 })
 // Run the app
 app.listen(4000, () => {

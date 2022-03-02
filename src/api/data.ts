@@ -143,7 +143,7 @@ data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 			active.push({
 				"id": item.id,
 				"name": item.name,
-				"eventType": item.distributionType,
+				"eventType": item.eventType,
 				"startDate": item.startDate,
 				"endDate": item.endDate,
 				"entriesTotal": item.entries.length,
