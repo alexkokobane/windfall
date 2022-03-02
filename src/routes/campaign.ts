@@ -371,7 +371,7 @@ campaign.post('/long/new/equitable/create', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/:id/choose-winners', checkApiAuth, async (req, res) => {
+campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 	try{
 		const displayWinners: any = []
 		const giveawayId = parseInt(req.params.id)
@@ -776,6 +776,160 @@ campaign.post('/rapid/delete/all', checkApiAuth, async (req, res) => {
 	} catch(err: any){
 		console.log(err)
 		return err
+	}
+})
+
+campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
+	try{
+		const eventId = parseInt(req.params.id)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Event not found, cannot display winners.")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+				
+		const goodMeasure: any = await RapidChild.findOne({
+			'shop': session.shop,
+			'id': eventId
+		})
+		if(goodMeasure === null){
+			return res.status(404).send("Event not found, cannot display winners.")		
+		}
+		if(goodMeasure.winnersChosen === false){
+			if(new Date(goodMeasure.endDate) > new Date()){
+				return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
+			}
+			let iter: any[] = []
+			for (let i = 0; i < goodMeasure.winnersTotal; i++){
+				iter.push(i)
+			}
+			const entries: any[] = await RapidChild.aggregate([
+				{'$match': {'shop': session.shop}},
+				{'$match': {'id': eventId}},
+				{'$unwind': '$entries'},
+				{'$project': {
+					'_id': 0,
+					'entries': 1
+				}}
+			])
+			if(entries.length === 0){
+				return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
+			}
+			if(entries.length < goodMeasure.winnersTotal){
+				return res.status(403).send("Not enough entries to select a winners, the number of entries must be more than the total possible winners.")
+			}
+			let prizedWinners: any[] = []
+			let checker: any = []
+			let counter: number = 0
+			let allCombined: any[] = []
+
+			entries.forEach((person: any) => {
+				const obj = person.entries
+				for(let i = 0; i < obj.points; i++){
+					allCombined.push(obj)
+				}
+			})
+			//console.log(allCombined)
+
+			let shuffle = (entries: any[]): any[] => {
+				let currentIndex = entries.length
+				let randomIndex: number
+
+				while(currentIndex != 0){
+					randomIndex = Math.floor(Math.random() * currentIndex)
+					currentIndex--
+					[entries[currentIndex], entries[randomIndex]] = [entries[randomIndex], entries[currentIndex]]
+				}
+
+				return entries
+			}
+			let shuffledEntries = shuffle(allCombined)
+			//console.log(shuffledEntries)
+			iter.forEach((head: any) => {
+				head++
+				let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+				if(checker.includes(theOne) === true){
+					// To include a time out
+					while (checker.includes(theOne) === true){
+						theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+					}
+				}
+				theOne.position = head
+				checker.push(theOne)
+				prizedWinners.push(theOne)
+			})
+			if(prizedWinners.length !== goodMeasure.winnersTotal){
+				return res.status(403).send("Could not choose a winner, try again!")
+			}
+
+			prizedWinners.forEach(async (pusher: any) => {
+				const finder = await RapidChild.findOne(
+					{
+						'shop': session.shop,
+						'id': eventId,
+					},
+					{
+						'_id': 0,
+						'winners': {
+							'$elemMatch': {'prizeId': pusher.position}
+						}
+					}
+				)
+				const exact = goodMeasure.winner
+				//console.log(exact)
+				
+				await RapidChild.updateOne(
+					{
+						'shop': session.shop,
+						'id': eventId,
+						'winners.prizeId': pusher.position
+					},
+					{
+						'$set': {
+							'winners.$.prizeId': exact.prizeId,
+							'winners.$.voucherPrize': exact.voucherPrize,
+							'winners.$.entrantName': `${pusher.firstName} ${pusher.lastName}`,
+							'winners.$.entrantEmail': pusher.email
+						}
+					}
+				)
+			})
+			const closer = await RapidChild.updateOne(
+				{
+					'shop': session.shop,
+					'id': eventId
+				},
+				{
+					'$set': {
+						'winnersChosen': true
+					}
+				}
+			)
+
+			if(closer.modifiedCount !== 1){
+				return res.status(403).send("Could not choose a winner, try again!")
+			}
+		}
+
+		if(goodMeasure.winnersChosen === true){
+			return res.status(403).send("Sorry! You have already chosen a winner.")
+		}
+		const anotherMeasure = await RapidChild.findOne(
+			{
+				'shop': session.shop,
+				'id': eventId
+			},
+			{
+				'_id': 0,
+				'winner': 1
+			}
+		)
+
+		const displayWinner = anotherMeasure.winner
+		console.log(displayWinner)
+		//console.log(prizedWinners)
+		res.json(displayWinner)
+	} catch(err: any) {
+		console.log(err)
 	}
 })
 

@@ -2001,7 +2001,7 @@ $(document).ready(function(e){
 							</div>
 						`)
 						$.ajax({
-							url: `/campaign/${data.id}/choose-winners`,
+							url: `/campaign/long/${data.id}/choose-winners`,
 							type: "POST",
 							contentType: "application/json",
 							success: function(data){
