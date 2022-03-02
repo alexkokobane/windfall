@@ -933,6 +933,153 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 	}
 })
 
+
+// Grand events
+
+campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
+	try{
+		const displayWinners: any = []
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("Giveaway not found, cannot display winners.")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+				
+		const goodMeasure: any = await Grand.findOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
+		if(goodMeasure === null){
+			return res.status(404).send("Giveaway not found, cannot display winners.")		
+		}
+		if(goodMeasure.winnersChosen === false){
+			const isDone = await Grand.aggregate([
+				{'$match': {'shop': session.shop}},
+				{'$match': {'id': giveawayId}},
+				{'$unwind': '$childrenEvents'},
+				{'$match': {'childrenEvents.winnersChosen': false}}
+			])
+
+			if(isDone.length === 0){
+				return res.status(403).send("Sorry! Some participating events are still without winners, cannot pick a grand champion.")
+			}
+			const entries: any = []
+			const stagedEntries: any[] = await Grand.aggregate([
+				{'$match': {'shop': session.shop}},
+				{'$match': {'id': giveawayId}},
+				{'$unwind': '$childrenEvents'},
+				{'$unwind': '$winners'},
+				{'$project': {
+					'_id': 0,
+					'winners': 1
+				}}
+			])
+
+			stagedEntries.forEach((item: any) => {
+					const payload = item.winners
+					entries.push(payload)
+			})
+
+			console.log(entries)
+			if(entries.length === 0){
+				return res.status(404).send("Nobody wins when not a single participating events has winners yet.")
+			}
+			let prizedWinners: any[] = []
+			let checker: any = []
+			let counter: number = 0
+			let allCombined: any[] = []
+
+			let shuffle = (entries: any[]): any[] => {
+				let currentIndex = entries.length
+				let randomIndex: number
+
+				while(currentIndex != 0){
+					randomIndex = Math.floor(Math.random() * currentIndex)
+					currentIndex--
+					[entries[currentIndex], entries[randomIndex]] = [entries[randomIndex], entries[currentIndex]]
+				}
+
+				return entries
+			}
+			let shuffledEntries = shuffle(entries)
+			let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
+			theOne.position = 1
+
+			const finder = await Grand.findOne(
+				{
+					'shop': session.shop,
+					'id': giveawayId,
+				},
+				{
+					'_id': 0,
+					'winners': {
+						'$elemMatch': {'prizeId': theOne.position}
+					}
+				}
+			)
+
+			const exact = finder.winners[0]
+			await Grand.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveawayId,
+					'winners.prizeId': theOne.position
+				},
+				{
+					'$set': {
+						'winners.$.prizeId': exact.prizeId,
+						'winners.$.voucherPrize': exact.voucherPrize,
+						'winners.$.entrantName': `${theOne.firstName} ${theOne.lastName}`,
+						'winners.$.entrantEmail': theOne.email
+					}
+				}
+			)
+			
+			const closer = await Grand.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveawayId
+				},
+				{
+					'$set': {
+						'winnersChosen': true
+					}
+				}
+			)
+
+			if(closer.modifiedCount !== 1){
+				return res.status(403).send("Could not choose a winner, try again!")
+			}
+		}
+
+		if(goodMeasure.winnersChosen === true){
+			return res.status(403).send("Sorry! You have already chosen a winner.")
+		}
+		
+		const anotherMeasure = await Grand.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			},
+			{
+				'_id': 0,
+				'winners': 1
+			}
+		)
+
+		anotherMeasure.winners.forEach((what: any) => {
+			displayWinners.push(what)
+		})
+
+		console.log(displayWinners)
+		res.json(displayWinners)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+
+
 // An event
 
 campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
