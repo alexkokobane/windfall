@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
 import ActiveShop from '../models/session-model'
 
 const webhooks = express.Router()
@@ -28,8 +28,9 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 	try{
 		console.log(topic+" was fired.")
 		console.log(`${shop} has an order that has been paid.`)
-
+		//console.log(webhookRequestBody)
 		const obj = JSON.parse(webhookRequestBody)
+		console.log(obj.id)
 		
 		const firstName = obj.customer.first_name
 		const lastName = obj.customer.last_name
@@ -40,11 +41,19 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 		})
 		if(shopExist !== null) {
 			const dateNow = new Date().toISOString()
-			const checkActive = await Long.find({
+			const checkActive = await Long.findOne({
 				'shop': shop,
 				'startDate': {'$lte': new Date(dateNow)},
 				'endDate': {'$gte': new Date(dateNow)}
 			})
+
+			const checkRapid = await RapidChild.findOne({
+				'shop': shop,
+				'startDate': {'$lte': new Date(dateNow)},
+				'endDate': {'$gte': new Date(dateNow)}
+			})
+			console.log(checkActive)
+			console.log(checkRapid)
 			if(checkActive !== null){
 				
 				const participant = await Long.findOne(
@@ -79,7 +88,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							}
 						}
 					)
-					console.log(con)
+					console.log("This is on long "+con)
 				} else {
 					let peat = await Long.updateOne(
 						{
@@ -92,7 +101,55 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							'$inc': {'entries.$.points': subtotal}
 						}
 					)
-					console.log(peat)
+					console.log("This is on long "+peat)
+				}
+			} else if(checkRapid !== null){
+				const participant = await RapidChild.findOne(
+					{
+						'shop': shop, 
+						'startDate': {'$lte': new Date(dateNow)},
+						'endDate': {'$gte': new Date(dateNow)},
+						'entries.email': email
+					},
+					{
+						'entries': {
+							'$elemMatch': {'email': email}
+						}
+					}
+				)
+				console.log(participant)
+				if(participant === null) {
+					let con: any = await RapidChild.updateOne(
+						{
+							'shop': shop, 
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)}
+						},
+						{
+							'$push': { 
+								'entries' : {
+									'firstName': firstName,
+									'lastName': lastName,
+									'email': email,
+									'points': subtotal
+								}
+							}
+						}
+					)
+					console.log("This is on rapid "+con)
+				} else {
+					let peat = await RapidChild.updateOne(
+						{
+							'shop': shop, 
+							'startDate': {'$lte': new Date(dateNow)},
+							'endDate': {'$gte': new Date(dateNow)},
+							'entries.email': email
+						},
+						{
+							'$inc': {'entries.$.points': subtotal}
+						}
+					)
+					console.log("This is on rapid "+peat)
 				}
 			}
 		}
