@@ -328,6 +328,8 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 				"id": item.id,
 				"name": item.name,
 				"entriesTotal": item.entries.length,
+				"parentId": item.parentId,
+				"eventType": item.eventType
 			})
 		})
 

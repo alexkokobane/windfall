@@ -1376,9 +1376,16 @@ $(document).ready(function(e){
 					`)
 					$(`#AwaitName${giv.id}`).text(giv.name)
 					$(`#AwaitLink${giv.id}`).attr("aria-label", `A link to ${giv.name}, an event waiting for you to perform actions`)
-					$(`#Await${giv.id}`).click(function(){
-						location.href=`/campaign/long/${giv.id}`
-					})
+			
+					if(giv.eventType === "Rapid"){
+						$(`#Await${giv.id}`).click(function(){
+							location.href=`/campaign/rapid/${giv.parentId}`
+						})
+					} else {
+						$(`#Await${giv.id}`).click(function(){
+							location.href=`/campaign/long/${giv.id}`
+						})
+					}
 				})
 			},
 			error: function(data){
