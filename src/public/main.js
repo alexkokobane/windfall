@@ -3434,7 +3434,7 @@ $(document).ready(function(e){
 												</button>
 											</div>
 											<div class="Polaris-ButtonGroup__Item">
-												<button id="sendVoucher${giv.id}" class="Polaris-Button ${giv.winnersGifted === true ? "Polaris-Button--disabled" : "Polaris-Button--outline"}" type="button">
+												<button id="sendVoucher${giv.id}" class="Polaris-Button ${giv.winnersGifted === false && giv.winnersChosen === true ? "Polaris-Button--outline" : "Polaris-Button--disabled"}" type="button">
 													<span class="Polaris-Button__Content">
 														<span id="sendVoucher${giv.id}text" class="Polaris-Button__Text">Sent voucher to winner</span>
 													</span>
@@ -3459,11 +3459,11 @@ $(document).ready(function(e){
 									</div>
 								</div>
 							`)
-							if(giv.winnersChosen === false){
+							if(giv.winnersChosen === false && giv.winnersGifted === false){
 								$(`#chooseWinner${giv.id}`).click(function(){
 									$(this).addClass("Polaris-Button--loading")
 									$(`#chooseWinner${giv.id}text`).before(`
-										<span class="Polaris-Button__Spinner">
+										<span id="chooseWinner${giv.id}spinner" class="Polaris-Button__Spinner">
 											<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
 												<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
@@ -3474,9 +3474,28 @@ $(document).ready(function(e){
           									</span>
           								</span>
           							`)
+          							$.ajax({
+          								url: `/campaign/rapid/${giv.id}/choose-winners`,
+          								type: "POST",
+          								contentType: "application/json",
+          								success: function(data){
+          									alert(data)
+          									location.reload()
+          								},
+          								error: function(data){
+          									if(data.responseText === "Unauthorized"){
+												return location.href="/"
+											} else if(data.responseText === "Forbidden"){
+												return location.href="/billing/plans"
+											}
+											$(`#chooseWinner${giv.id}`).removeClass("Polaris-Button--loading")
+											$(`#chooseWinner${giv.id}spinner`).remove()
+											alert(data.responseText)
+          								}
+          							})
 								})
 							}
-							if(giv.winnersGifted === false){
+							if(giv.winnersChosen === true && giv.winnersGifted === false){
 								$(`#sendVoucher${giv.id}`).click(function(){
 									$(this).addClass("Polaris-Button--loading")
 									$(`#sendVoucher${giv.id}text`).before(`
