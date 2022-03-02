@@ -31,66 +31,44 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 		//console.log(webhookRequestBody)
 		const obj = JSON.parse(webhookRequestBody)
 		console.log(obj.id)
-		
-		const firstName = obj.customer.first_name
-		const lastName = obj.customer.last_name
-		const email = obj.customer.email
-		const subtotal = Math.round(obj.subtotal_price)
-		const shopExist = await Shop.findOne({
-			'shop': shop
+		const duplicate = await Shop.findOne({
+			'shop': shop,
+			'lastOrderPaidId': obj.id
 		})
-		if(shopExist !== null) {
-			const dateNow = new Date().toISOString()
-			const checkActive = await Long.findOne({
-				'shop': shop,
-				'startDate': {'$lte': new Date(dateNow)},
-				'endDate': {'$gte': new Date(dateNow)}
+		if(duplicate === null){			
+			const firstName = obj.customer.first_name
+			const lastName = obj.customer.last_name
+			const email = obj.customer.email
+			const subtotal = Math.round(obj.subtotal_price)
+			const shopExist = await Shop.findOne({
+				'shop': shop
 			})
+			if(shopExist !== null) {
+				await Shop.updateOne(
+					{'shop': shop},
+					{
+						'$set': {
+							'lastOrderPaidId': obj.id
+						}
+					}
+				)
+				const dateNow = new Date().toISOString()
+				const checkActive = await Long.findOne({
+					'shop': shop,
+					'startDate': {'$lte': new Date(dateNow)},
+					'endDate': {'$gte': new Date(dateNow)}
+				})
 
-			const checkRapid = await RapidChild.findOne({
-				'shop': shop,
-				'startDate': {'$lte': new Date(dateNow)},
-				'endDate': {'$gte': new Date(dateNow)}
-			})
-			console.log(checkActive)
-			console.log(checkRapid)
-			if(checkActive !== null){
-				
-				const participant = await Long.findOne(
-					{
-						'shop': shop, 
-						'startDate': {'$lte': new Date(dateNow)},
-						'endDate': {'$gte': new Date(dateNow)},
-						'entries.email': email
-					},
-					{
-						'entries': {
-							'$elemMatch': {'email': email}
-						}
-					}
-				)
-				console.log(participant)
-				if(participant === null) {
-					let con: any = await Long.updateOne(
-						{
-							'shop': shop, 
-							'startDate': {'$lte': new Date(dateNow)},
-							'endDate': {'$gte': new Date(dateNow)}
-						},
-						{
-							'$push': { 
-								'entries' : {
-									'firstName': firstName,
-									'lastName': lastName,
-									'email': email,
-									'points': subtotal
-								}
-							}
-						}
-					)
-					console.log("This is on long "+con)
-				} else {
-					let peat = await Long.updateOne(
+				const checkRapid = await RapidChild.findOne({
+					'shop': shop,
+					'startDate': {'$lte': new Date(dateNow)},
+					'endDate': {'$gte': new Date(dateNow)}
+				})
+				console.log(checkActive)
+				console.log(checkRapid)
+				if(checkActive !== null){
+					
+					const participant = await Long.findOne(
 						{
 							'shop': shop, 
 							'startDate': {'$lte': new Date(dateNow)},
@@ -98,47 +76,47 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							'entries.email': email
 						},
 						{
-							'$inc': {'entries.$.points': subtotal}
-						}
-					)
-					console.log("This is on long "+peat)
-				}
-			} else if(checkRapid !== null){
-				const participant = await RapidChild.findOne(
-					{
-						'shop': shop, 
-						'startDate': {'$lte': new Date(dateNow)},
-						'endDate': {'$gte': new Date(dateNow)},
-						'entries.email': email
-					},
-					{
-						'entries': {
-							'$elemMatch': {'email': email}
-						}
-					}
-				)
-				console.log(participant)
-				if(participant === null) {
-					let con: any = await RapidChild.updateOne(
-						{
-							'shop': shop, 
-							'startDate': {'$lte': new Date(dateNow)},
-							'endDate': {'$gte': new Date(dateNow)}
-						},
-						{
-							'$push': { 
-								'entries' : {
-									'firstName': firstName,
-									'lastName': lastName,
-									'email': email,
-									'points': subtotal
-								}
+							'entries': {
+								'$elemMatch': {'email': email}
 							}
 						}
 					)
-					console.log("This is on rapid "+con)
-				} else {
-					let peat = await RapidChild.updateOne(
+					console.log(participant)
+					if(participant === null) {
+						let con: any = await Long.updateOne(
+							{
+								'shop': shop, 
+								'startDate': {'$lte': new Date(dateNow)},
+								'endDate': {'$gte': new Date(dateNow)}
+							},
+							{
+								'$push': { 
+									'entries' : {
+										'firstName': firstName,
+										'lastName': lastName,
+										'email': email,
+										'points': subtotal
+									}
+								}
+							}
+						)
+						console.log("This is on long "+con)
+					} else {
+						let peat = await Long.updateOne(
+							{
+								'shop': shop, 
+								'startDate': {'$lte': new Date(dateNow)},
+								'endDate': {'$gte': new Date(dateNow)},
+								'entries.email': email
+							},
+							{
+								'$inc': {'entries.$.points': subtotal}
+							}
+						)
+						console.log("This is on long "+peat)
+					}
+				} else if(checkRapid !== null){
+					const participant = await RapidChild.findOne(
 						{
 							'shop': shop, 
 							'startDate': {'$lte': new Date(dateNow)},
@@ -146,10 +124,45 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							'entries.email': email
 						},
 						{
-							'$inc': {'entries.$.points': subtotal}
+							'entries': {
+								'$elemMatch': {'email': email}
+							}
 						}
 					)
-					console.log("This is on rapid "+peat)
+					console.log(participant)
+					if(participant === null) {
+						let con: any = await RapidChild.updateOne(
+							{
+								'shop': shop, 
+								'startDate': {'$lte': new Date(dateNow)},
+								'endDate': {'$gte': new Date(dateNow)}
+							},
+							{
+								'$push': { 
+									'entries' : {
+										'firstName': firstName,
+										'lastName': lastName,
+										'email': email,
+										'points': subtotal
+									}
+								}
+							}
+						)
+						console.log("This is on rapid "+con)
+					} else {
+						let peat = await RapidChild.updateOne(
+							{
+								'shop': shop, 
+								'startDate': {'$lte': new Date(dateNow)},
+								'endDate': {'$gte': new Date(dateNow)},
+								'entries.email': email
+							},
+							{
+								'$inc': {'entries.$.points': subtotal}
+							}
+						)
+						console.log("This is on rapid "+peat)
+					}
 				}
 			}
 		}

@@ -1441,6 +1441,15 @@ $(document).ready(function(e){
 				$("#HAGViewBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").click(function(){
 					location.href=`/campaign/${obj.id}`
 				})
+				if(obj.eventType === "Rapid"){
+					$("#HAGViewBtn").click(function(){
+						location.href=`/campaign/rapid/${obj.parentId}`
+					})
+				} else {
+					$("#HAGViewBtn").click(function(){
+						location.href=`/campaign/long/${obj.id}`
+					})
+				}
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

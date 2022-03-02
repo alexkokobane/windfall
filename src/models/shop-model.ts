@@ -40,6 +40,7 @@ const ShopSchema = new mongoose.Schema({
 			default: Date.now()
 		}
 	}],
+	lastOrderPaidId: Number,
 	createdAt: {
 		type: Date,
 		default: Date.now()
