@@ -794,7 +794,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 		if(goodMeasure === null){
 			return res.status(404).send("Event not found, cannot display winners.")		
 		}
-		if(goodMeasure.winnersChosen === true){
+		if(goodMeasure.winnersChosen === false){
 			if(new Date(goodMeasure.endDate) > new Date()){
 				return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
 			}
@@ -906,10 +906,10 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				}
 			)
 			console.log(closer)
-			/*
+			
 			if(closer.modifiedCount !== 1){
 				return res.status(403).send("Could not choose a winner, try again!")
-			}*/
+			}
 			const retrieve = await Rapid.findOne({
 				'shop': session.shop,
 				'id': goodMeasure.parentId
@@ -933,10 +933,10 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 
 			console.log(updateGrand)
 		}
-		/*
+		
 		if(goodMeasure.winnersChosen === true){
 			return res.status(403).send("Sorry! You have already chosen a winner.")
-		}*/
+		}
 		const anotherMeasure = await RapidChild.findOne(
 			{
 				'shop': session.shop,
@@ -983,7 +983,7 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 				{'$unwind': '$childrenEvents'},
 				{'$match': {'childrenEvents.winnersChosen': false}}
 			])
-
+			console.log(isDone)
 			if(isDone.length !== 0){
 				return res.status(403).send("Sorry! Some participating events are still without winners, cannot pick a grand champion.")
 			}
@@ -992,13 +992,13 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 				{'$match': {'shop': session.shop}},
 				{'$match': {'id': giveawayId}},
 				{'$unwind': '$childrenEvents'},
-				{'$unwind': '$winners'},
+				{'$unwind': '$childrenEvents.winners'},
 				{'$project': {
-					'_id': 0,
-					'winners': 1
+					'winners': '$childrenEvents.winners',
+					'_id': 0
 				}}
 			])
-
+			console.log(stagedEntries)
 			stagedEntries.forEach((item: any) => {
 					const payload = item.winners
 					entries.push(payload)
@@ -1041,7 +1041,7 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 					}
 				}
 			)
-
+			//console.log(finder)
 			const exact = finder.winners[0]
 			await Grand.updateOne(
 				{
@@ -1053,8 +1053,8 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 					'$set': {
 						'winners.$.prizeId': exact.prizeId,
 						'winners.$.voucherPrize': exact.voucherPrize,
-						'winners.$.entrantName': `${theOne.firstName} ${theOne.lastName}`,
-						'winners.$.entrantEmail': theOne.email
+						'winners.$.entrantName': theOne.entrantName,
+						'winners.$.entrantEmail': theOne.entrantEmail
 					}
 				}
 			)
@@ -1070,12 +1070,12 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 					}
 				}
 			)
-
+			
 			if(closer.modifiedCount !== 1){
 				return res.status(403).send("Could not choose a winner, try again!")
 			}
 		}
-
+		
 		if(goodMeasure.winnersChosen === true){
 			return res.status(403).send("Sorry! You have already chosen a winner.")
 		}

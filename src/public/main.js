@@ -3427,7 +3427,7 @@ $(document).ready(function(e){
 									<div class="Polaris-TextContainer">
 										<div class="Polaris-ButtonGroup">
 											<div class="Polaris-ButtonGroup__Item">
-												<button id="chooseWinner${giv.id}" class="Polaris-Button ${giv.winnersChosen === false ? "Polaris-Button--disabled" : "Polaris-Button--outline"}" type="button">
+												<button id="chooseWinner${giv.id}" class="Polaris-Button ${giv.winnersChosen === true ? "Polaris-Button--disabled" : "Polaris-Button--outline"}" type="button">
 													<span class="Polaris-Button__Content">
 														<span id="chooseWinner${giv.id}text" class="Polaris-Button__Text">Choose a winner</span>
 													</span>
@@ -3459,7 +3459,7 @@ $(document).ready(function(e){
 									</div>
 								</div>
 							`)
-							if(giv.winnersChosen === true && giv.winnersGifted === false){
+							if(giv.winnersChosen === false && giv.winnersGifted === false){
 								$(`#chooseWinner${giv.id}`).click(function(){
 									$(this).addClass("Polaris-Button--loading")
 									$(`#chooseWinner${giv.id}text`).before(`
