@@ -821,13 +821,14 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 			let checker: any = []
 			let counter: number = 0
 			let allCombined: any[] = []
-
+			//console.log(entries)
 			entries.forEach((person: any) => {
 				const obj = person.entries
 				for(let i = 0; i < obj.points; i++){
 					allCombined.push(obj)
 				}
 			})
+
 			//console.log(allCombined)
 
 			let shuffle = (entries: any[]): any[] => {
@@ -843,7 +844,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				return entries
 			}
 			let shuffledEntries = shuffle(allCombined)
-			//console.log(shuffledEntries)
+			console.log(shuffledEntries.length)
 			iter.forEach((head: any) => {
 				head++
 				let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
@@ -857,6 +858,8 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				checker.push(theOne)
 				prizedWinners.push(theOne)
 			})
+			console.log(prizedWinners)
+			console.log(goodMeasure.winnersTotal)
 			if(prizedWinners.length !== goodMeasure.winnersTotal){
 				return res.status(403).send("Could not choose a winner, try again!")
 			}
@@ -869,29 +872,27 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 					},
 					{
 						'_id': 0,
-						'winners': {
-							'$elemMatch': {'prizeId': pusher.position}
-						}
+						'winner': 1
 					}
 				)
 				const exact = goodMeasure.winner
-				//console.log(exact)
+				console.log(exact)
 				
-				await RapidChild.updateOne(
+				const p = await RapidChild.updateOne(
 					{
 						'shop': session.shop,
-						'id': eventId,
-						'winners.prizeId': pusher.position
+						'id': eventId
 					},
 					{
 						'$set': {
-							'winners.$.prizeId': exact.prizeId,
-							'winners.$.voucherPrize': exact.voucherPrize,
-							'winners.$.entrantName': `${pusher.firstName} ${pusher.lastName}`,
-							'winners.$.entrantEmail': pusher.email
+							'winner.prizeId': exact.prizeId,
+							'winner.voucherPrize': exact.voucherPrize,
+							'winner.entrantName': `${pusher.firstName} ${pusher.lastName}`,
+							'winner.entrantEmail': pusher.email
 						}
 					}
 				)
+				console.log(p)
 			})
 			const closer = await RapidChild.updateOne(
 				{
@@ -904,12 +905,13 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 					}
 				}
 			)
-
+			console.log(closer)
+			
 			if(closer.modifiedCount !== 1){
 				return res.status(403).send("Could not choose a winner, try again!")
 			}
 		}
-
+		
 		if(goodMeasure.winnersChosen === true){
 			return res.status(403).send("Sorry! You have already chosen a winner.")
 		}
@@ -927,7 +929,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 		const displayWinner = anotherMeasure.winner
 		console.log(displayWinner)
 		//console.log(prizedWinners)
-		res.json(displayWinner)
+		res.send("You have successfully picked a winner!")
 	} catch(err: any) {
 		console.log(err)
 	}
