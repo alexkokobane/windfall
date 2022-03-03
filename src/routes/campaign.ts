@@ -794,7 +794,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 		if(goodMeasure === null){
 			return res.status(404).send("Event not found, cannot display winners.")		
 		}
-		if(goodMeasure.winnersChosen === false){
+		if(goodMeasure.winnersChosen === true){
 			if(new Date(goodMeasure.endDate) > new Date()){
 				return res.status(403).send("Cannot choose a winner on a giveaway that is either upcoming or currently active.")
 			}
@@ -876,7 +876,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 					}
 				)
 				const exact = goodMeasure.winner
-				console.log(exact)
+				//console.log(exact)
 				
 				const p = await RapidChild.updateOne(
 					{
@@ -892,7 +892,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 						}
 					}
 				)
-				console.log(p)
+				//console.log(p)
 			})
 			const closer = await RapidChild.updateOne(
 				{
@@ -906,15 +906,37 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				}
 			)
 			console.log(closer)
-			
+			/*
 			if(closer.modifiedCount !== 1){
 				return res.status(403).send("Could not choose a winner, try again!")
-			}
+			}*/
+			const retrieve = await Rapid.findOne({
+				'shop': session.shop,
+				'id': goodMeasure.parentId
+			})
+			const updateGrand = await Grand.updateOne(
+				{
+					'shop': session.shop,
+					'id': retrieve.grandEvent.id,
+					'childrenEvents.id': eventId
+				},
+				{
+					'$set': {
+						'childrenEvents.$.winnersChosen': true,
+						'childrenEvents.$.winners': [{
+							'entrantName': `${prizedWinners[0].firstName} ${prizedWinners[0].lastName}`,
+							'entrantEmail': prizedWinners[0].email
+						}]
+					}
+				}
+			)
+
+			console.log(updateGrand)
 		}
-		
+		/*
 		if(goodMeasure.winnersChosen === true){
 			return res.status(403).send("Sorry! You have already chosen a winner.")
-		}
+		}*/
 		const anotherMeasure = await RapidChild.findOne(
 			{
 				'shop': session.shop,
@@ -962,7 +984,7 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 				{'$match': {'childrenEvents.winnersChosen': false}}
 			])
 
-			if(isDone.length === 0){
+			if(isDone.length !== 0){
 				return res.status(403).send("Sorry! Some participating events are still without winners, cannot pick a grand champion.")
 			}
 			const entries: any = []
@@ -1006,7 +1028,7 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 			let shuffledEntries = shuffle(entries)
 			let theOne = shuffledEntries[Math.floor(Math.random() * shuffledEntries.length)]
 			theOne.position = 1
-
+			console.log(theOne)
 			const finder = await Grand.findOne(
 				{
 					'shop': session.shop,
@@ -1074,7 +1096,7 @@ campaign.post('/grand/:id/choose-winners', checkApiAuth, async (req, res) => {
 		})
 
 		console.log(displayWinners)
-		res.json(displayWinners)
+		res.send("Youu have successfully picked a grand winner!")
 	} catch(err: any) {
 		console.log(err)
 	}

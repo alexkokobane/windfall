@@ -734,7 +734,7 @@ data.get('/campaign/grand/:id', checkApiAuth, async (req, res) => {
 			{'$unwind': '$childrenEvents'},
 			{'$match': {'childrenEvents.winnersChosen': true}}
 		])
-		//console.log(event)
+		console.log(participants)
 		if(event === null){
 			return res.status(404).send("Giveaway not found")
 		}
