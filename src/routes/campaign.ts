@@ -6,6 +6,7 @@ import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
+import { generateDiscountCode } from '../utils/functions'
 
 const campaign = express.Router()
 
@@ -1049,15 +1050,6 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(403).send("The gifts have already been sent.")
 		}
 
-		const generateDiscountCode = (length: number): string => {
-			let result: string = '';
-			let characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-			let charactersLength = characters.length;
-			for ( let i = 0; i < length; i++ ) {
-			  	result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		   }
-		   return result;
-		}
 		const disCode: string = generateDiscountCode(8)
 		const amount: string = giveaway.winner.voucherPrize.toString()+".00"
 		console.log(disCode)
@@ -1412,6 +1404,96 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 		if(checkDuplication !== null){
 			return res.status(403).send("The gifts have already been sent.")
 		}
+		const errorCounter: any[] = []
+
+		giveaway.winners.forEach(async (item: any) => {
+			const disCode: string = generateDiscountCode(8)
+			const amount: string = item.voucherPrize.toString()+".00"
+			console.log(disCode)
+			console.log(amount)
+			const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+			const discount: any = await client.query({
+				data: {
+					"query": `mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+						discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+							codeDiscountNode {
+								codeDiscount{
+									...on DiscountCodeBasic {
+										codes(first: 1) {
+											edges {
+												node {
+													code
+												}
+											}
+										}
+									}
+								}
+							}
+							userErrors {
+								field
+								message
+							}
+						}
+					}`,
+					"variables": {
+						"basicCodeDiscount": {
+							"appliesOncePerCustomer": true,
+							"code": disCode,
+							"customerGets": {
+								"items": {
+									"all": true
+								},
+								"value": {
+									"discountAmount": {
+										"amount": amount,
+										"appliesOnEachItem": false
+									}
+								}
+							},
+							"customerSelection": {
+								"all": true
+							},
+							"endsAt": null,
+							"minimumRequirement": {
+								"quantity": {
+									"greaterThanOrEqualToQuantity": "1"
+								}
+							},
+							"startsAt": new Date(Date.now()).toISOString(),
+							"title": giveaway.name,
+							"usageLimit": 1
+						}
+					}
+				}
+			})
+
+			const logger = discount.body.data.discountCodeBasicCreate.codeDiscountNode.codeDiscount.codes.edges[0].node.code
+			console.log(logger)
+			
+			if(!logger){
+				errorCounter.push()
+			}
+
+			const updateWinner = await Long.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveawayId,
+					'winners.prizeId': item.prizeId
+				},
+				{
+					'$set': {
+						'winners.$.discountCode': disCode
+					}
+				}
+			)
+
+			console.log(updateWinner)
+		})
+
+		if(errorCounter.length !== 0){
+			return res.status(403).send("Error! Please try again and if this persists contact support.")
+		}
+
 		giveaway.entries.forEach(async (item: any) => {
 			let doesExist = await Customers.findOne({
 				'shop': session.shop,
@@ -1447,7 +1529,7 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 					}
 				)
 			}
-		})
+		})		
 
 		await Long.updateOne(
 			{
@@ -1455,7 +1537,9 @@ campaign.post('/:id/gift', checkApiAuth, async (req, res) => {
 				'id': giveawayId
 			},
 			{
-				'$set': {'winnersGifted': true}
+				'$set': {
+					'winnersGifted': true
+				}
 			}
 		)
 		if(giveaway.templateId){
