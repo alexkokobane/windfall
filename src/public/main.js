@@ -2232,9 +2232,15 @@ $(document).ready(function(e){
 					`)
 					$(`#Name${giv.id}`).text(giv.name)
 					$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
-					$(`#${giv.id}`).click(function(){
-						location.href=`/campaign/${giv.id}`
-					})
+					if(giv.eventType === "Rapid"){
+						$(`#${giv.id}`).click(function(){
+							location.href=`/campaign/rapid/${giv.parentId}`
+						})
+					} else {
+						$(`#${giv.id}`).click(function(){
+							location.href=`/campaign/long/${giv.id}`
+						})
+					}
 				})
 			},
 			error: function(data){
@@ -2360,9 +2366,15 @@ $(document).ready(function(e){
 						`)
 						$(`#Name${giv.id}`).text(giv.name)
 						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
-						$(`#${giv.id}`).click(function(){
-							location.href=`/campaign/${giv.id}`
-						})
+						if(giv.eventType === "Rapid"){
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/rapid/${giv.parentId}`
+							})
+						} else {
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/long/${giv.id}`
+							})
+						}
 					})
 				},
 				error: function(data){
@@ -2489,9 +2501,16 @@ $(document).ready(function(e){
 						`)
 						$(`#Name${giv.id}`).text(giv.name)
 						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
-						$(`#${giv.id}`).click(function(){
-							location.href=`/campaign/${giv.id}`
-						})
+						
+						if(giv.eventType === "Rapid"){
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/rapid/${giv.parentId}`
+							})
+						} else {
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/long/${giv.id}`
+							})
+						}
 					})
 				},
 				error: function(data){
@@ -2618,9 +2637,15 @@ $(document).ready(function(e){
 						`)
 						$(`#Name${giv.id}`).text(giv.name)
 						$(`#Link${giv.id}`).attr("aria-label", `A link to event titled: ${giv.name}`)
-						$(`#${giv.id}`).click(function(){
-							location.href=`/campaign/${giv.id}`
-						})
+						if(giv.eventType === "Rapid"){
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/rapid/${giv.parentId}`
+							})
+						} else {
+							$(`#${giv.id}`).click(function(){
+								location.href=`/campaign/long/${giv.id}`
+							})
+						}
 					})
 				},
 				error: function(data){
