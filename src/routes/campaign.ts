@@ -1445,43 +1445,7 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 		if(errorCounter.length !== 0){
 			return res.status(403).send("Error! Please try again and if this persists contact support.")
 		}
-
-		giveaway.entries.forEach(async (item: any) => {
-			let doesExist = await Customers.findOne({
-				'shop': session.shop,
-				'email': item.email
-			})
-			//console.log(item)
-			let ph: number 
-			giveaway.winners.forEach((gman: any) => {
-				gman.entrantEmail === item.email ? ph = 1 : ph = 0
-			})
-			if(doesExist === null){
-				new Customers({
-					'shop': session.shop,
-					'email': item.email,
-					'lastName': item.lastName,
-					'firstName': item.firstName,
-					'totalCampaignsParticipated': 1,
-					'totalPoints': item.points,
-					'totalCampaignsWon': ph
-				}).save()
-			} else {
-				await Customers.findOne(
-					{
-						'shop': session.shop,
-						'email': item.email
-					},
-					{
-						'$inc': {
-							'totalPoints': item.points,
-							'totalCampaignsParticipated': 1,
-							'totalCampaignsWon': ph
-						}
-					}
-				)
-			}
-		})		
+		
 
 		await Grand.updateOne(
 			{
