@@ -33,7 +33,7 @@ billing.get('/details', checkAuth, async (req, res) => {
 		const data = await client.query(
 			{
 				data: `{
-					app(id: "gid://shopify/App/6311347"){
+					app(id: "${process.env.APP_ID}"){
 						title,
 						pricingDetails,
 						installation{
@@ -89,7 +89,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 		const appDetails: any = await client.query(
 			{
 				data: `{
-					app(id: "gid://shopify/App/6311347"){
+					app(id: "${process.env.APP_ID}"){
 						title,
 						pricingDetails,
 						installation{
