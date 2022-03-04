@@ -1120,16 +1120,19 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 		const logger = discount.body.data.discountCodeBasicCreate.codeDiscountNode.codeDiscount.codes.edges[0].node.code
 		console.log(logger)
 		
+		if(!logger){
+			return res.status(403).send("Error! Please try again and if this persists contact support.")
+		}
+
 		giveaway.entries.forEach(async (item: any) => {
 			let doesExist = await Customers.findOne({
 				'shop': session.shop,
 				'email': item.email
 			})
 			//console.log(item)
-			let ph: number 
-			giveaway.winners.forEach((gman: any) => {
-				gman.entrantEmail === item.email ? ph = 1 : ph = 0
-			})
+			let ph: number
+			giveaway.winner.entrantEmail === item.email ? ph = 1 : ph = 0
+			
 			if(doesExist === null){
 				new Customers({
 					'shop': session.shop,
@@ -1157,15 +1160,19 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			}
 		})
 
-		await Long.updateOne(
+		const updateState = await RapidChild.updateOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId
 			},
 			{
-				'$set': {'winnersGifted': true}
+				'$set': {
+					'winnersGifted': true,
+					'winner.discountCode': disCode
+				}
 			}
 		)
+		console.log(updateState)
 		if(giveaway.templateId){
 			await SavedLong.findOne(
 				{
@@ -1178,7 +1185,7 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			)
 		}
 		//res.json(discount)
-		res.redirect(`/campaign/rapid/${128900987}`)
+		res.send("Successfully sent created and sent discount code to winner!")
 	} catch(err: any){
 		console.log(err)
 	}

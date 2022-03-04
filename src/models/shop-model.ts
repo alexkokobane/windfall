@@ -73,7 +73,8 @@ const longEventSchema = new mongoose.Schema({
 		prizeId: Number,
 		voucherPrize: Number,
 		entrantName: String,
-		entrantEmail: String
+		entrantEmail: String,
+		discountCode: String
 	}],
 	createdAt: {
 		type: Date,
@@ -130,7 +131,8 @@ const rapidChildsSchema = new mongoose.Schema({
 		prizeId: Number,
 		voucherPrize: Number,
 		entrantName: String,
-		entrantEmail: String
+		entrantEmail: String,
+		discountCode: String
 	},
 	createdAt: {
 		type: Date,
@@ -161,7 +163,8 @@ const grandEventSchema = new mongoose.Schema({
 		prizeId: Number,
 		voucherPrize: Number,
 		entrantName: String,
-		entrantEmail: String
+		entrantEmail: String,
+		discountCode: String
 	}],
 	createdAt: {
 		type: Date,
