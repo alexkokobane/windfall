@@ -961,7 +961,7 @@ campaign.get('/discount', checkApiAuth, async (req, res) => {
 
 	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 	const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
-	const discount = await client.query({
+	const discount: any = await client.query({
 		data: {
 			"query": `mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
 				discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
@@ -987,7 +987,7 @@ campaign.get('/discount', checkApiAuth, async (req, res) => {
 			"variables": {
 				"basicCodeDiscount": {
 					"appliesOncePerCustomer": true,
-					"code": "JJABRAHMS",
+					"code": "ALEXISSS",
 					"customerGets": {
 						"items": {
 							"all": true
@@ -1015,17 +1015,19 @@ campaign.get('/discount', checkApiAuth, async (req, res) => {
 			}
 		}
 	})
+	const logger = discount.body.data.discountCodeBasicCreate.codeDiscountNode.codeDiscount.codes.edges[0].node.code
+	console.log(logger)
 	res.json(discount)
 })
 
-campaign.get('/rapid/:id/gift', checkAuth, async (req, res) => {
+campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const giveaway = await Long.findOne(
+		const giveaway = await RapidChild.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId,
@@ -1036,7 +1038,7 @@ campaign.get('/rapid/:id/gift', checkAuth, async (req, res) => {
 			return res.status(404).send("Choose winners first before you attempt to send them gifts")
 		}
 		
-		const checkDuplication = await Long.findOne(
+		const checkDuplication = await RapidChild.findOne(
 			{
 				'shop': session.shop,
 				'id': giveawayId,
@@ -1046,6 +1048,78 @@ campaign.get('/rapid/:id/gift', checkAuth, async (req, res) => {
 		if(checkDuplication !== null){
 			return res.status(403).send("The gifts have already been sent.")
 		}
+
+		const generateDiscountCode = (length: number): string => {
+			let result: string = '';
+			let characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			let charactersLength = characters.length;
+			for ( let i = 0; i < length; i++ ) {
+			  	result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		   }
+		   return result;
+		}
+		const disCode: string = generateDiscountCode(8)
+		const amount: string = giveaway.winner.voucherPrize.toString()+".00"
+		console.log(disCode)
+		console.log(amount)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const discount: any = await client.query({
+			data: {
+				"query": `mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+					discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+						codeDiscountNode {
+							codeDiscount{
+								...on DiscountCodeBasic {
+									codes(first: 1) {
+										edges {
+											node {
+												code
+											}
+										}
+									}
+								}
+							}
+						}
+						userErrors {
+							field
+							message
+						}
+					}
+				}`,
+				"variables": {
+					"basicCodeDiscount": {
+						"appliesOncePerCustomer": true,
+						"code": disCode,
+						"customerGets": {
+							"items": {
+								"all": true
+							},
+							"value": {
+								"discountAmount": {
+									"amount": amount,
+									"appliesOnEachItem": false
+								}
+							}
+						},
+						"customerSelection": {
+							"all": true
+						},
+						"endsAt": null,
+						"minimumRequirement": {
+							"quantity": {
+								"greaterThanOrEqualToQuantity": "1"
+							}
+						},
+						"startsAt": new Date(Date.now()).toISOString(),
+						"title": giveaway.name,
+						"usageLimit": 1
+					}
+				}
+			}
+		})
+		const logger = discount.body.data.discountCodeBasicCreate.codeDiscountNode.codeDiscount.codes.edges[0].node.code
+		console.log(logger)
+		
 		giveaway.entries.forEach(async (item: any) => {
 			let doesExist = await Customers.findOne({
 				'shop': session.shop,
@@ -1103,8 +1177,8 @@ campaign.get('/rapid/:id/gift', checkAuth, async (req, res) => {
 				}
 			)
 		}
-
-		res.send("Successfully sent gifts")
+		//res.json(discount)
+		res.redirect(`/campaign/rapid/${128900987}`)
 	} catch(err: any){
 		console.log(err)
 	}
