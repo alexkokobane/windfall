@@ -182,9 +182,9 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
-		  	decoyId = req.query.id
+					decoyId = req.query.id
 		} else {
-		  	return undefined
+					return undefined
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -223,9 +223,9 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, async (req, res) =>
 		let decoyId: string
 		let decoyWinners: string
 		if (req.query.id && typeof req.query.id === 'string') {
-		  	decoyId = req.query.id
+					decoyId = req.query.id
 		} else {
-		  	return undefined
+					return undefined
 		}
 		if(req.query.winners && typeof req.query.winners === 'string') {
 			decoyWinners = req.query.winners
@@ -957,6 +957,159 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.get('/discount', checkApiAuth, async (req, res) => {
+
+	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+	const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+	const discount = await client.query({
+		data: {
+			"query": `mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+				discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+					codeDiscountNode {
+						codeDiscount{
+							...on DiscountCodeBasic {
+								codes(first: 1) {
+									edges {
+										node {
+											code
+										}
+									}
+								}
+							}
+						}
+					}
+					userErrors {
+						field
+						message
+					}
+				}
+			}`,
+			"variables": {
+				"basicCodeDiscount": {
+					"appliesOncePerCustomer": true,
+					"code": "JJABRAHMS",
+					"customerGets": {
+						"items": {
+							"all": true
+						},
+						"value": {
+							"discountAmount": {
+								"amount": "100.00",
+								"appliesOnEachItem": false
+							}
+						}
+					},
+					"customerSelection": {
+						"all": true
+					},
+					"endsAt": null,
+					"minimumRequirement": {
+						"quantity": {
+							"greaterThanOrEqualToQuantity": "1"
+						}
+					},
+					"startsAt": new Date(Date.now()).toISOString(),
+					"title": "One giveaway",
+					"usageLimit": 1
+				}
+			}
+		}
+	})
+	res.json(discount)
+})
+
+campaign.get('/rapid/:id/gift', checkAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Long.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId,
+				'winnersChosen': true
+			}
+		)
+		if(giveaway === null){
+			return res.status(404).send("Choose winners first before you attempt to send them gifts")
+		}
+		
+		const checkDuplication = await Long.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId,
+				'winnersGifted': true
+			}
+		)
+		if(checkDuplication !== null){
+			return res.status(403).send("The gifts have already been sent.")
+		}
+		giveaway.entries.forEach(async (item: any) => {
+			let doesExist = await Customers.findOne({
+				'shop': session.shop,
+				'email': item.email
+			})
+			//console.log(item)
+			let ph: number 
+			giveaway.winners.forEach((gman: any) => {
+				gman.entrantEmail === item.email ? ph = 1 : ph = 0
+			})
+			if(doesExist === null){
+				new Customers({
+					'shop': session.shop,
+					'email': item.email,
+					'lastName': item.lastName,
+					'firstName': item.firstName,
+					'totalCampaignsParticipated': 1,
+					'totalPoints': item.points,
+					'totalCampaignsWon': ph
+				}).save()
+			} else {
+				await Customers.findOne(
+					{
+						'shop': session.shop,
+						'email': item.email
+					},
+					{
+						'$inc': {
+							'totalPoints': item.points,
+							'totalCampaignsParticipated': 1,
+							'totalCampaignsWon': ph
+						}
+					}
+				)
+			}
+		})
+
+		await Long.updateOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			},
+			{
+				'$set': {'winnersGifted': true}
+			}
+		)
+		if(giveaway.templateId){
+			await SavedLong.findOne(
+				{
+					'shop': session.shop,
+					'id': giveaway.templateId
+				},
+				{
+					'$set': {'active': false}
+				}
+			)
+		}
+
+		res.send("Successfully sent gifts")
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 
 // Grand events
 
@@ -1246,9 +1399,9 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
-		  	decoyId = req.query.id
+					decoyId = req.query.id
 		} else {
-		  	return undefined
+					return undefined
 		}
 		if(decoyId === undefined) {
 			return res.status(404).send("Giveaway ID not defined")
