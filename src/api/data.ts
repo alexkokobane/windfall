@@ -103,6 +103,26 @@ data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.winnersTotal 
 			})
 		})
+		const rapidEvents = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)}
+		})
+
+		rapidEvents.forEach((item: any) => {
+			if(item.name && item.eventType){
+				expired.push({
+					"id": item.id,
+					"name": item.name,
+					"parentId": item.parentId,
+					"eventType": item.eventType,
+					"startDate": item.startDate,
+					"endDate": item.endDate,
+					"entriesTotal": item.entries.length,
+					"winnersTotal": item.winnersTotal 
+				})
+			}
+		})
 		console.log(expired)
 		res.json(expired)
 	} catch(err: any) {
