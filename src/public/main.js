@@ -1895,9 +1895,10 @@ $(document).ready(function(e){
 				if(data.winnersGifted === false && data.winnersChosen === true){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
+						console.log("Clicked")
 						$.ajax({
 							url: `/campaign/${data.id}/gift`,
-							type: "POST",
+							type: "GET",
 							contentType: "application/json",
 							success: function(data){
 								alert(data)
