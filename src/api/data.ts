@@ -335,6 +335,13 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 			}
 		)
 
+		const grand = await Grand.find(
+			{
+				'shop': session.shop,
+				'awaiting': true
+			}
+		)
+
 		const awaiting: any[] = []
 		long.forEach((item: any) => {
 			awaiting.push({
@@ -351,6 +358,15 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 				"entriesTotal": item.entries.length,
 				"parentId": item.parentId,
 				"eventType": item.eventType
+			})
+		})
+
+		grand.forEach((item: any) => {
+			awaiting.push({
+				"id": item.id,
+				"name": item.name,
+				"eventType": "Rapid",
+				"entriesTotal": item.childrenEvents.length
 			})
 		})
 

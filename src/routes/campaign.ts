@@ -667,6 +667,7 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			'shop': session.shop,
 			'id': grandId,
 			'name': data.name,
+			'awaiting': false,
 			'winnersChosen': false,
 			'winnersGifted': false,
 			'winners': [{
@@ -933,6 +934,40 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 			)
 
 			console.log(updateGrand)
+
+			const isLast = await RapidChild.find(
+				{
+					'shop': session.shop,
+					'parentId': goodMeasure.parentId,
+					'winnersChosen': false
+				}
+			)
+
+			if(isLast.length === 0){
+				const updateGrand = await Grand.updateOne(
+					{
+						'shop': session.shop,
+						'id': retrieve.grandEvent.id
+					},
+					{
+						'$set': {
+							'awaiting': true
+						}
+					}
+				)
+
+				const updateRapid = await Rapid.updateOne(
+					{
+						'shop': session.shop,
+						'id': retrieve.id
+					},
+					{
+						'$set': {
+							'winnersChosen': true
+						}
+					}
+				)
+			}
 		}
 		
 		if(goodMeasure.winnersChosen === true){
@@ -1165,6 +1200,34 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			}
 		)
 		console.log(updateState)
+
+		const isLast = await RapidChild.find(
+			{
+				'shop': session.shop,
+				'parentId': giveaway.parentId,
+				'winnersGifted': false
+			}
+		)
+
+		if(isLast.length === 0){
+			const parent = await Rapid.findOne({
+				'shop': session.shop,
+				'id': giveaway.parentId
+			})
+
+			const updateRapid = await Rapid.updateOne(
+				{
+					'shop': session.shop,
+					'id': parent.id
+				},
+				{
+					'$set': {
+						'winnersGifted': true
+					}
+				}
+			)
+		}
+
 		if(giveaway.templateId){
 			await SavedLong.findOne(
 				{
@@ -1178,6 +1241,46 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 		}
 		//res.json(discount)
 		res.send("Successfully sent created and sent discount code to winner!")
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+campaign.post('/rapid/:id/delete', checkApiAuth, async (req, res) => {
+	try{
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const giveaway = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			}
+		)
+		if(giveaway === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+		if(giveaway.templateId && giveaway.winnersGifted === false){
+			await SavedLong.updateOne(
+				{
+					'shop': session.shop,
+					'id': giveaway.templateId
+				},
+				{
+					'$set': {
+						'active': false
+					}
+				}
+			)
+		}
+		await Long.deleteOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
+
+		res.send("/campaign/giveaways")
 	} catch(err: any){
 		console.log(err)
 	}
@@ -1454,7 +1557,8 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 			},
 			{
 				'$set': {
-					'winnersGifted': true
+					'winnersGifted': true,
+					'awaiting': false
 				}
 			}
 		)
