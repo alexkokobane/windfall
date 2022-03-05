@@ -1262,22 +1262,20 @@ campaign.post('/rapid/:id/delete', checkApiAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
-		if(giveaway.templateId && giveaway.winnersGifted === false){
-			await SavedLong.updateOne(
-				{
-					'shop': session.shop,
-					'id': giveaway.templateId
-				},
-				{
-					'$set': {
-						'active': false
-					}
-				}
-			)
-		}
-		await Long.deleteOne({
+
+		await Rapid.deleteOne({
 			'shop': session.shop,
 			'id': giveawayId
+		})
+
+		await RapidChild.deleteMany({
+			'shop': session.shop,
+			'parentId': giveaway.id
+		})
+
+		await Grand.deleteOne({
+			'shop': session.shop,
+			'id': giveaway.grandEvent.id
 		})
 
 		res.send("/campaign/giveaways")
