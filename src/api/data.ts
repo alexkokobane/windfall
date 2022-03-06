@@ -810,14 +810,15 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 			let start = Number(new Date(item.startDate))
 			let end = Number(new Date(item.endDate))
 			for(let i = 0; start <= end; i++){
-				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
 				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
 			}
 		})
 		const rapid = await RapidChild.find({'shop': session.shop})
 		rapid.forEach((item: any) => {
 			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
 		})
+		console.log(allEventsEver)
 		res.json(allEventsEver)
 	} catch(err: any){
 		console.log(err)
