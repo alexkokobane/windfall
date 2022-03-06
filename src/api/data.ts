@@ -7,6 +7,7 @@ import loggedInCtx from '../utils/middlewares/loggedInCtx'
 
 const data = express.Router()
 
+// Customers
 data.get('/customers/export-json', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -27,6 +28,20 @@ data.get('/customers/export-json', checkApiAuth, async (req, res) => {
 		console.log(err)
 	}
 })
+
+data.get('/customers/counter', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const customers = await Customers.find({'shop': session.shop})
+
+		console.log(customers.length)
+		res.json(customers.length)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+// Various
 
 data.get('/total-revenue', checkApiAuth, async (req, res) => {
 	res.send("Revenue counter")
