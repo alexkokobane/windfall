@@ -7,8 +7,25 @@ import loggedInCtx from '../utils/middlewares/loggedInCtx'
 
 const data = express.Router()
 
-data.get('/email-list', checkApiAuth, async (rey, res) => {
-	res.send("This is the email list")
+data.get('/customers/export-json', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const customers = await Customers.find({'shop': session.shop})
+		const exportData: any = {}
+		customers.forEach((item: any, index: number) => {
+			index++
+			exportData["customer"+index] = {
+				"first_name": item.firstName,
+				"last_name": item.lastName,
+				"email": item.email
+			}
+		})
+
+		console.log(exportData)
+		res.json(exportData)
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 data.get('/total-revenue', checkApiAuth, async (req, res) => {
