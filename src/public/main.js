@@ -1631,8 +1631,6 @@ $(document).ready(function(e){
 	}
 
 	//url == /campaign/long/new
-	//console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-	//console.log(new Date().toTimeString().substring(0,5))
 	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
 	$("#ValidateBtn").click(function(){
@@ -1768,15 +1766,14 @@ $(document).ready(function(e){
 	//url === /campaign/new/hierarchical
 	const urlSearchParams = new URLSearchParams(window.location.search);
 	const params = Object.fromEntries(urlSearchParams.entries());
-	let hData = parseInt(params.winners)
-	//console.log(params.winners)
-	//console.log(hData)
-	let render = []
-	for(let i = 0; i < hData; i++){
-		render.unshift(i)
-	}
+	let hData = parseInt(params.winners)	
+	
 	//console.log(render)
-	if(hData !== null){
+	if(isNaN(hData) === false && window.location.pathname === "/campaign/new/hierarchical"){
+		let render = []
+		for(let i = 0; i < hData; i++){
+			render.unshift(i)
+		}
 		let vouchers = {}
 		render.forEach((val) => {
 			val++
@@ -1891,7 +1888,18 @@ $(document).ready(function(e){
 				$("#WinnerBody").html(`
 					<p>This is where your winners will display after the run of the giveaway.</p>
 				`)
-				console.log(data)
+
+				dates = []
+				let startDate = Number(new Date(data.startDate))
+				let endDate = Number(new Date(data.endDate))
+				for(let i = 0; startDate <= endDate; i++){
+					//console.log(startDate)
+					dates.push(new Date(startDate).toLocaleDateString('en-ZA'))
+					startDate = startDate+(1000*60*60*24*i)
+				}
+				console.log(dates)
+				eventCalendar(dates)
+				//console.log(data)
 				if(data.winnersGifted === false && data.winnersChosen === true){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
@@ -2088,7 +2096,7 @@ $(document).ready(function(e){
 				}
 				$("#GiveawayName").text(data.title)
 				$("#ForTotalEntries").text(data.entriesTotal)
-				$("#ForActiveDates").text(`From ${new Date(data.startDate).toDateString()} to ${new Date(data.endDate).toDateString()}`)
+				//$("#ForActiveDates").text(`From ${new Date(data.startDate).toDateString()} to ${new Date(data.endDate).toDateString()}`)
 				$("#ForType").text(data.type)
 				data.winners.reverse().forEach(function(item){
 					$("#GiveawayWinnerListDecoy").after(`
