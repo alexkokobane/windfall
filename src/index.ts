@@ -38,6 +38,7 @@ app.use('/auth', auth)
 app.use('/webhooks', webhooks)
 
 app.use(express.static(path.resolve(__dirname, 'public')))
+app.use('/files', express.static(path.join(__dirname, 'files')))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(expressLayouts)
