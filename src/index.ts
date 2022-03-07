@@ -89,6 +89,9 @@ app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) 
     divide(req, res, render, true)
 })
 // Run the app
-app.listen(4000, () => {
-  console.log('your app is now listening on port 4000 :)');
+
+const port = parseInt(process.env.PORT) || 4000
+
+app.listen(port, () => {
+  console.log('your app is now listening on port '+port+' :)');
 })
