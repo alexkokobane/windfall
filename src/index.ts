@@ -67,7 +67,7 @@ app.use('/shop', shopInfo)
 app.use('/data', data)
 
 //Catch All
-app.use('*', checkAuth, async (req: Request, res: Response, next: NextFunction) => {
+app.use(/^(?!.*_ah).*$/, async (req: Request, res: Response, next: NextFunction) => {
   
   const render: renderFor = [
       {
