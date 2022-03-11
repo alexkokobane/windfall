@@ -66,8 +66,11 @@ app.use('/customers', customers)
 app.use('/shop', shopInfo)
 app.use('/data', data)
 
+app.get('/_ah/start', (req, res, next) => {
+  res.status(200).send("Working")
+})
 //Catch All
-app.use(/^(?!.*_ah).*$/, async (req: Request, res: Response, next: NextFunction) => {
+app.use(/^(?!.*_ah).*$/, checkAuth, async (req: Request, res: Response, next: NextFunction) => {
   
   const render: renderFor = [
       {
@@ -90,7 +93,7 @@ app.use(/^(?!.*_ah).*$/, async (req: Request, res: Response, next: NextFunction)
 })
 // Run the app
 
-const port = parseInt(process.env.PORT) || 4000
+const port = process.env.PORT || 4000
 
 app.listen(port, () => {
   console.log('your app is now listening on port '+port+' :)');
