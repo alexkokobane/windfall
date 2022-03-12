@@ -1734,10 +1734,12 @@ $(document).ready(function(e){
 		if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
 			return alert("Please fill all fields")
 		}
+		const starting = new Date(startDate+"T"+startTime)
+		const ending = new Date(endDate+"T"+endTime)
 		let form = {
 			"name": name,
-			"startDate": startDate+"T"+startTime,
-			"endDate": endDate+"T"+endTime,
+			"startDate": starting,
+			"endDate": ending,
 			"ofWinners": ofWinners,
 			"distribution": distrubution
 		}
