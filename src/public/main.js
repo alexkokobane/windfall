@@ -1752,18 +1752,20 @@ $(document).ready(function(e){
 		})
 	})
 
-	//url === /campaign/new/hierarchical
+	//url === /campaign/long/new/hierarchical
 	const urlSearchParams = new URLSearchParams(window.location.search);
 	const params = Object.fromEntries(urlSearchParams.entries());
 	let hData = parseInt(params.winners)	
 	
 	//console.log(render)
-	if(isNaN(hData) === false && window.location.pathname === "/campaign/new/hierarchical"){
+	if(isNaN(hData) === false && window.location.pathname === "/campaign/long/new/hierarchical"){
 		let render = []
 		for(let i = 0; i < hData; i++){
 			render.unshift(i)
 		}
 		let vouchers = {}
+
+		console.log(render)
 		render.forEach((val) => {
 			val++
 			console.log(val)
