@@ -1,39 +1,44 @@
 $(document).ready(function(e){
 	//theme
 	function datePicker(){
-		function scheduler(num){
-			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-			let dateNow = new Date(Date.now())
-			let theDate = new Date(dateNow.setMonth(num))
-
-			return {
-				"day": days[theDate.getDay()],
-				"month": months[theDate.getMonth()],
-				"year": theDate.getFullYear(),
-				"raw": new Date(theDate.toLocaleDateString()),
-				"which": 2
-			}
-		}
-		function calendar(num){
-			let today = scheduler(num)
-			let daySoFar = today.raw.getDate()-1
-			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
-			let aMonth = []
-			for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
-				aMonth.push({
-					"day": firstDay.getDay(),
-					"date": firstDay.toLocaleDateString('en-ZA')
-				})
-				daySoFar = today.raw.getDate()-i
-				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
-			}
-			return aMonth
-		}
 		function renderMonth(num){
+
+			function scheduler(num){
+				const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+				const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+				let dateNow = new Date(Date.now())
+				let theDate = new Date(dateNow.setMonth(num))
+				return {
+					"day": days[theDate.getDay()],
+					"month": months[theDate.getMonth()],
+					"year": theDate.getFullYear(),
+					"raw": new Date(theDate),
+					"which": 2
+				}
+			}
+
+			function calendar(num){
+				let today = scheduler(num)
+				let daySoFar = today.raw.getDate()-1
+				let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+				let aMonth = []
+				for(let i = 2; today.raw.getMonth() === firstDay.getMonth(); i++){
+	
+					aMonth.push({
+						"day": firstDay.getDay(),
+						"date": firstDay.toLocaleDateString('en-ZA')
+					})
+					daySoFar = today.raw.getDate()-i
+					firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
+				}
+				
+				return aMonth
+			}
+
 			let fullMonth = calendar(num)
-			//console.log("num is "+num)
-			//let takenDays = []
+			if(fullMonth.length === 0){
+				alert("The error.")
+			}
 			
 			function allocateWeeks() {
 				const firstDay = fullMonth[0].day
@@ -44,22 +49,21 @@ $(document).ready(function(e){
 				let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
 				let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
 				let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
-				//console.log(week6)
+				
 				return[week1, week2, week3, week4, week5, week6]
 			}
-			const weeks = allocateWeeks()
-			//console.log(weeks[0].length)
-
-			let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
 			
-			for(let i = 0; weeks[0].length + i !== 7; i++){
-				one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
-			}
 			$.ajax({
 				url: "/data/all-event-dates",
 				type: "GET",
 				contentType: "application/json",
 				success: function(data){
+					const weeks = allocateWeeks()
+					let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
+			
+					for(let i = 0; weeks[0].length + i !== 7; i++){
+						one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
+					}
 					data
 					console.log(data)
 					weeks[0].forEach(function(item){
@@ -460,14 +464,6 @@ $(document).ready(function(e){
 					})
 				}
 			})
-			
-			//console.log(takenDays)
-			
-			//let body = document.getElementById("tbody")
-			
-			//console.log("This day is "+$("#2022-02-19").text())
-			
-			//return [chosenDays]
 		}
 		let chosenDays = []
 		let counter = [new Date(Date.now()).getMonth()]
@@ -577,7 +573,7 @@ $(document).ready(function(e){
 			//console.log(total)
 			renderMonth(total)
 		})
-
+		
 		renderMonth(new Date(Date.now()).getMonth())
 
 		$("#DDays").click(function(){
@@ -598,11 +594,11 @@ $(document).ready(function(e){
 				"day": days[theDate.getDay()],
 				"month": months[theDate.getMonth()],
 				"year": theDate.getFullYear(),
-				"raw": new Date(theDate.toLocaleDateString()),
+				"raw": new Date(theDate),
 				"which": 2
 			}
 		}
-		function calendar(num, bool){
+		function calendar(num){
 			let today = scheduler(num)
 			let daySoFar = today.raw.getDate()-1
 			let firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
@@ -615,17 +611,8 @@ $(document).ready(function(e){
 				daySoFar = today.raw.getDate()-i
 				firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
 			}
-			if(bool === true){
-				return {
-					"firstDay": 1,
-					"lastDay": new Date(aMonth.at(-1).date).getDate(),
-					"daySoFar": today.raw.getDate()-1,
-					"lastDate": aMonth.at(-1).date,
-					"difference": today.raw.getDate()
-				}
-			} else {
-				return aMonth
-			}
+			
+			return aMonth			
 		}
 		function renderMonth(num){
 			let fullMonth = calendar(num)
@@ -1887,9 +1874,7 @@ $(document).ready(function(e){
 				$("#WinnersSkeleton").remove()
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
-				$("#WinnerBody").html(`
-					<p>This is where your winners will display after the run of the giveaway.</p>
-				`)
+				
 
 				dates = []
 				let startDate = Number(new Date(data.startDate))
@@ -1901,7 +1886,10 @@ $(document).ready(function(e){
 				}
 				console.log(dates)
 				eventCalendar(dates)
-				//console.log(data)
+				$("#WinnerBody").html(`
+					<p>This is where your winners will display after the run of the giveaway.</p>
+				`)
+				console.log(data.id)
 				if(data.winnersGifted === false && data.winnersChosen === true){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
