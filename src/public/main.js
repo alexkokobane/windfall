@@ -1765,7 +1765,7 @@ $(document).ready(function(e){
 		}
 		let vouchers = {}
 
-		console.log(render)
+		$(".WinnerPlaceholder").remove()
 		render.forEach((val) => {
 			val++
 			console.log(val)
