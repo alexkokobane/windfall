@@ -12,20 +12,21 @@ const login = express.Router()
 login.post('/', loggedInCtx, async (req, res) => {
 	try {
 
-		const url = getShop(req)
+		const url = req.body.shop.replace(/\s+/g, '')
 		const store = await Shop.findOne({shop: url})
 		if(store){
 			return res.status(200).send("/auth?shop="+store.shop)
 		}
 
 		const holder: string[] = url.split(".")
+		console.log(holder)
 		if(holder[1] !== "myshopify"){
 			return res.status(403).send("Please use your 'myshopify' url.")
 		} else if(holder[2] !== "com"){
 			return res.status(403).send("Error! The top level domain of every 'myshopify' url is dot com.")
 		}
 
-		res.status(200).send("/auth?shop="+store.shop)
+		res.status(200).send("/auth?shop="+url)
 	} catch(err: any) {
 		console.log(err)
 	}
