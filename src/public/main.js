@@ -1302,6 +1302,14 @@ $(document).ready(function(e){
 					data.forEach(function(giv){
 						$("#HTRCard").before(`
 							<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="UnfinishedBanner${giv.id}Heading" aria-describedby="UnfinishedBanner${giv.id}Content">
+								<div class="Polaris-Banner__Ribbon">
+									<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
+										<span class="Polaris-VisuallyHidden"></span>
+										<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+          									<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+        								</svg>
+        							</span>
+        						</div>
 								<div class="Polaris-Banner__ContentWrapper">
 									<div class="Polaris-Banner__Heading" id="UnfinishedBanner${giv.id}Heading">
 										<p id="HUBHead${giv.id}" class="Polaris-Heading"></p>
@@ -1322,7 +1330,7 @@ $(document).ready(function(e){
 							</div>
 						`)
 
-						$(`#HUBHead${giv.id}`).text(`${giv.name} needs your attention`)
+						$(`#HUBHead${giv.id}`).text(`"${giv.name}" needs your attention!`)
 						if(giv.eventType === "Rapid"){
 							$(`#HUBBtn${giv.id}`).click(function(){
 								location.href=`/campaign/rapid/${giv.parentId}`

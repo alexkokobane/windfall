@@ -258,6 +258,30 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 	}
 })
 
+data.get('/campaigns/unfinished', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.find(
+			{
+				'shop': session.shop
+			}
+		)
+		const defects: any[] = []
+		long.forEach((item) => {
+			if(item.winners.length < 1 || !item.winners){
+				defects.push({
+					"name": item.name,
+					"id": item.id,
+					"eventType": item.eventType
+				})
+			}
+		})
+		res.json(defects)
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
 data.get('/campaigns/hierarchical', checkApiAuth, async (req, res) => {
 	try {
 		const dateNow = new Date().toISOString()
