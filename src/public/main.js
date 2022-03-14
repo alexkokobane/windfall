@@ -3297,7 +3297,12 @@ $(document).ready(function(e){
 		let chosenDays = datePicker()
 
 		$("#RValidateBtn").click(function(){
-			console.log(chosenDays)
+			let dates = []
+			chosenDays.forEach(function(giv){
+				console.log(giv)
+				dates.push(new Date(giv))
+			})
+			console.log(dates)
 			$("#RValidBody").html(`
 				<div>
 					<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
@@ -3310,7 +3315,7 @@ $(document).ready(function(e){
 					</span>
 				</div>
 			`)
-			if(chosenDays.length === 0){
+			if(dates.length === 0){
 				return (
 					$("#RValidBody").html(`
 						<p class="Polaris-InlineError">Error! Please choose at least one date.</p>
@@ -3322,7 +3327,7 @@ $(document).ready(function(e){
 				url: `/campaign/rapid/validator`,
 				type: "POST",
 				contentType: "application/json",
-				data: JSON.stringify({dates: chosenDays}),
+				data: JSON.stringify({dates: dates}),
 				success: function(data){
 					if(data.length === 0){
 						return (
@@ -3365,10 +3370,13 @@ $(document).ready(function(e){
 			const normal = $("#NormalPrize").val()
 			const grand = $("#GrandPrize").val()
 			const name = $("#RapidEventName").val()
-			const dates = []
+			
+			let dates = []
 			chosenDays.forEach(function(giv){
+				console.log(giv)
 				dates.push(new Date(giv))
 			})
+
 			if(normal.length === 0 || grand.length === 0 || name.length === 0 || dates.length === 0){
 				return alert("Please fill all fields.")
 			}
