@@ -47,12 +47,19 @@ app.set('view engine', 'ejs')
 app.set('layout', 'layouts/main')
 
 let options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+	useNewUrlParser: true,
+	useUnifiedTopology: true
 } as mongoose.ConnectOptions
 mongoose.connect(DB_URL, options )
 let db = mongoose.connection
 db.on('error', console.error.bind(console, "MongoDB connection errors"))
+
+app.use(function(req, res, next) {
+	if (req.secure) {
+		res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+	}
+	next();
+})
 
 // Controller routes
 app.use('/', home)
@@ -67,34 +74,34 @@ app.use('/shop', shopInfo)
 app.use('/data', data)
 
 app.get('/_ah/start', (req, res, next) => {
-  res.status(200).send("Working")
+	res.status(200).send("Working")
 })
 //Catch All
 app.use(/^(?!.*_ah).*$/, checkAuth, async (req: Request, res: Response, next: NextFunction) => {
-  
-  const render: renderFor = [
-      {
-        "plan": "Ultimate",
-        "page": "pages/404",
-        "layer": "layouts/main-ultimate"
-      },
-      {
-        "plan": "Standard",
-        "page": "pages/404",
-        "layer": "layouts/main-standard"
-      },
-      {
-        "plan": "Starter",
-        "page": "pages/404",
-        "layer": "layouts/main-starter"
-      }
-    ]
-    divide(req, res, render, true)
+	
+	const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/404",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/404",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/404",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render, true)
 })
 // Run the app
 
 const port = process.env.PORT || 4000
 
 app.listen(port, () => {
-  console.log('your app is now listening on port '+port+' :)');
+	console.log('your app is now listening on port '+port+' :)');
 })
