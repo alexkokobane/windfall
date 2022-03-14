@@ -54,11 +54,19 @@ mongoose.connect(DB_URL, options )
 let db = mongoose.connection
 db.on('error', console.error.bind(console, "MongoDB connection errors"))
 
-app.use(function(req, res, next) {
+app.use((req: Request, res: Response, next: NextFunction) => {
 	if (req.secure) {
-		res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+		res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
 	}
-	next();
+	next()
+})
+
+app.use((req: Request, res: Response, next: NextFunction) =>{
+	res.setHeader(
+		"Content-Security-Policy", 
+		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline'"
+		)
+	next()
 })
 
 // Controller routes
