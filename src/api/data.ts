@@ -272,7 +272,8 @@ data.get('/campaigns/unfinished', checkApiAuth, async (req, res) => {
 				defects.push({
 					"name": item.name,
 					"id": item.id,
-					"eventType": item.eventType
+					"eventType": item.eventType,
+					"distributionType": item.distributionType
 				})
 			}
 		})

@@ -1333,11 +1333,11 @@ $(document).ready(function(e){
 						$(`#HUBHead${giv.id}`).text(`"${giv.name}" needs your attention!`)
 						if(giv.eventType === "Rapid"){
 							$(`#HUBBtn${giv.id}`).click(function(){
-								location.href=`/campaign/rapid/${giv.parentId}`
+								location.href=`/campaign/rapid/${giv.parentId}/edit`
 							})
 						} else {
 							$(`#HUBBtn${giv.id}`).click(function(){
-								location.href=`/campaign/long/${giv.id}`
+								location.href=`/campaign/long/${giv.id}/edit`
 							})
 						}
 					})
@@ -1469,7 +1469,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 									</div>
-									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+									<div class="Polaris-EmptyState__ImageContainer"></div>
 								</div>
 							</div>
 						`)
@@ -1533,7 +1533,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 									</div>
-									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+									<div class="Polaris-EmptyState__ImageContainer"></div>
 								</div>
 							</div>
 						`)
@@ -1619,7 +1619,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 									</div>
-									<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+									<div class="Polaris-EmptyState__ImageContainer"></div>
 								</div>
 							</div>
 						`)
@@ -2238,7 +2238,7 @@ $(document).ready(function(e){
 										</div>
 									</div>
 									<div class="Polaris-EmptyState__ImageContainer">
-										<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+										
 									</div>
 								</div>
 							</div>
@@ -2372,7 +2372,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 										<div class="Polaris-EmptyState__ImageContainer">
-											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+											
 										</div>
 									</div>
 								</div>
@@ -2507,7 +2507,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 										<div class="Polaris-EmptyState__ImageContainer">
-											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+											
 										</div>
 									</div>
 								</div>
@@ -2643,7 +2643,7 @@ $(document).ready(function(e){
 											</div>
 										</div>
 										<div class="Polaris-EmptyState__ImageContainer">
-											<img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="Empty State Image" class="Polaris-EmptyState__Image">
+											
 										</div>
 									</div>
 								</div>
@@ -3365,10 +3365,15 @@ $(document).ready(function(e){
 			const normal = $("#NormalPrize").val()
 			const grand = $("#GrandPrize").val()
 			const name = $("#RapidEventName").val()
-			const dates = chosenDays
+			const dates = []
+			chosenDays.forEach(function(giv){
+				dates.push(new Date(giv))
+			})
 			if(normal.length === 0 || grand.length === 0 || name.length === 0 || dates.length === 0){
 				return alert("Please fill all fields.")
 			}
+
+			console.log(dates)
 
 			const event = {
 				"name": name,
@@ -3519,7 +3524,7 @@ $(document).ready(function(e){
 													</div>
 												</div>
 											</div>
-											<div class="Polaris-EmptyState__ImageContainer"><img src="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png" role="presentation" alt="" class="Polaris-EmptyState__Image"></div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
 										</div>
 									</div>
 								`)

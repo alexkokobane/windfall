@@ -740,6 +740,10 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.get('/long/:id/edit', checkApiAuth, async (req, res) => {
+	res.send("The give away has been edited")
+})
+
 // Rapid events
 
 campaign.get('/rapid/new', checkAuth, async (req, res) => {
@@ -1772,10 +1776,6 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 
 
 // An event
-
-campaign.post('/:id/edit', checkApiAuth, async (req, res) => {
-	res.send("The give away has been edited")
-})
 
 campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 	try{
