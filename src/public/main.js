@@ -1223,6 +1223,23 @@ $(document).ready(function(e){
 			console.log(chosenDays)
 		})
 	}
+
+	function toISOLocal(d) {
+		var z  = n =>  ('0' + n).slice(-2);
+		var zz = n => ('00' + n).slice(-3);
+		var off = d.getTimezoneOffset();
+		var sign = off > 0? '-' : '+';
+		off = Math.abs(off);
+
+		return d.getFullYear() + '-'
+					 + z(d.getMonth()+1) + '-' +
+					 z(d.getDate()) + 'T' +
+					 z(d.getHours()) + ':'  + 
+					 z(d.getMinutes()) + ':' +
+					 z(d.getSeconds()) + '.' +
+					 zz(d.getMilliseconds()) +
+					 sign + z(off/60|0) + ':' + z(off%60); 
+	}
 	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
@@ -1306,10 +1323,10 @@ $(document).ready(function(e){
 									<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
 										<span class="Polaris-VisuallyHidden"></span>
 										<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
-          									<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
-        								</svg>
-        							</span>
-        						</div>
+														<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+												</svg>
+											</span>
+										</div>
 								<div class="Polaris-Banner__ContentWrapper">
 									<div class="Polaris-Banner__Heading" id="UnfinishedBanner${giv.id}Heading">
 										<p id="HUBHead${giv.id}" class="Polaris-Heading"></p>
@@ -1813,9 +1830,7 @@ $(document).ready(function(e){
 	//url === /campaign/long/new/hierarchical
 	const urlSearchParams = new URLSearchParams(window.location.search);
 	const params = Object.fromEntries(urlSearchParams.entries());
-	let hData = parseInt(params.winners)	
-	
-	//console.log(render)
+	let hData = parseInt(params.winners)
 	if(isNaN(hData) === false && window.location.pathname === "/campaign/long/new/hierarchical"){
 		let render = []
 		for(let i = 0; i < hData; i++){
@@ -1921,10 +1936,8 @@ $(document).ready(function(e){
 	})
 
 	//url === /campaign/long/:id
-	//console.log(window.location.pathname)
 	const path = window.location.pathname
 	const idForGiveaway = parseInt(path.split("/")[3])
-	//console.log(idForGiveaway)
 	if(isNaN(idForGiveaway) === false && window.location.pathname === "/campaign/long/"+idForGiveaway){
 		$.ajax({
 			url: `/data/campaign/${idForGiveaway}`,
@@ -2191,6 +2204,10 @@ $(document).ready(function(e){
 						})
 					}
 				})
+
+				$("#EditLongBtn").click(function(){
+					location.href=`/campaign/long/${data.id}/edit`
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
@@ -2202,6 +2219,32 @@ $(document).ready(function(e){
 			}
 		})
 	}
+
+	//url === /campaign/long/:id/edit
+	if(isNaN(idForGiveaway) === false && window.location.pathname === "/campaign/long/"+idForGiveaway+"/edit"){
+		$.ajax({
+			url: `/data/campaign/${idForGiveaway}`,
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$("#GiveawayNameInput").val(data.title)
+				$("#StartDate").val(toISOLocal(new Date(data.startDate)).substring(0, 10))
+				$("#StartTime").val(toISOLocal(new Date(data.startDate)).split("T")[1].substring(0, 5))
+				$("#EndDate").val(toISOLocal(new Date(data.endDate)).substring(0, 10))
+				$("#EndTime").val(toISOLocal(new Date(data.endDate)).split("T")[1].substring(0, 5))
+				$("#ofWinners").val(data.winnersTotal)
+				data.distributionType === "Equitable" ? $("#Equitable").attr("checked", "true") : $("#Hierarchical").attr("checked", "true")
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+	}
+
 
 	//url === /campaign/giveaways
 	if(window.location.pathname === "/campaign/giveaways"){

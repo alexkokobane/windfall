@@ -741,7 +741,28 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 })
 
 campaign.get('/long/:id/edit', checkApiAuth, async (req, res) => {
-	res.send("The give away has been edited")
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/longevent-edit",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/longevent-edit",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/longevent-edit",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 // Rapid events
