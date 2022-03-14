@@ -1294,6 +1294,56 @@ $(document).ready(function(e){
 	})
 	if(window.location.pathname === "/"){
 		$.ajax({
+			url: "/data/campaigns/unfinished",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.length > 0){
+					data.forEach(function(giv){
+						$("#HTRCard").before(`
+							<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="UnfinishedBanner${giv.id}Heading" aria-describedby="UnfinishedBanner${giv.id}Content">
+								<div class="Polaris-Banner__ContentWrapper">
+									<div class="Polaris-Banner__Heading" id="UnfinishedBanner${giv.id}Heading">
+										<p id="HUBHead${giv.id}" class="Polaris-Heading"></p>
+									</div>
+									<div class="Polaris-Banner__Content" id="UnfinishedBanner${giv.id}Content">
+										<p>Fill in all the critical fields required in this event, in order for it to run.</p>
+										<div class="Polaris-Banner__Actions">
+											<div class="Polaris-ButtonGroup">
+												<div class="Polaris-ButtonGroup__Item">
+													<div class="Polaris-Banner__PrimaryAction">
+														<button id="HUBBtn${giv.id}" class="Polaris-Banner__Button" type="button">Edit event</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						`)
+
+						$(`#HUBHead${giv.id}`).text(`${giv.name} needs your attention`)
+						if(giv.eventType === "Rapid"){
+							$(`#HUBBtn${giv.id}`).click(function(){
+								location.href=`/campaign/rapid/${giv.parentId}`
+							})
+						} else {
+							$(`#HUBBtn${giv.id}`).click(function(){
+								location.href=`/campaign/long/${giv.id}`
+							})
+						}
+					})
+				}
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+		$.ajax({
 			url: "/data/awaiting",
 			type: "GET",
 			contentType: "application/json",
