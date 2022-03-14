@@ -2232,8 +2232,8 @@ $(document).ready(function(e){
 				$("#StartTime").val(toISOLocal(new Date(data.startDate)).split("T")[1].substring(0, 5))
 				$("#EndDate").val(toISOLocal(new Date(data.endDate)).substring(0, 10))
 				$("#EndTime").val(toISOLocal(new Date(data.endDate)).split("T")[1].substring(0, 5))
-				$("#ofWinners").val(data.winnersTotal)
-				data.distributionType === "Equitable" ? $("#Equitable").attr("checked", "true") : $("#Hierarchical").attr("checked", "true")
+				$("#OfWinners").val(data.winnersTotal)
+				data.type === "Equitable" ? $("#Equitable").attr("checked", "true") : $("#Hierarchical").attr("checked", "true")
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
