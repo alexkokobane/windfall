@@ -1,7 +1,8 @@
-.boxier {
+#windfall-app-boxier {
 	display: block;
    	width: 100%;
    	height: 30%;
+   	position: relative;
 }
 
 img {
@@ -9,4 +10,26 @@ img {
   width: 100%;
   height: 30vh;
   object-fit: cover;
+}
+
+#windfall-app-promo-content {
+	position: absolute;
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%,-30%);
+}
+
+#windfall-app-tagline {
+	font-size: 1.8em;
+	font-weight: bolder;
+}
+
+@media (max-width: 48.0625em){
+	#windfall-app-promo-content {
+	    left: 20%;
+	    transform: translate(-20%,-30%);
+	}
+	#windfall-app-boxier {
+	   	height: 40%;
+	}
 }

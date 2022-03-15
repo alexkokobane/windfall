@@ -1,8 +1,12 @@
-<div class="boxier">
+<div id="windfall-app-boxier">
 	{%- if block.settings.image_1 -%}
 		<img src="{{ block.settings.image_1 | image_url: width: 1024 }}" alt="{{ block.settings.image_1.alt }}" loading="lazy" width="{{ block.settings.image_1.width }}" height="{{ block.settings.image_1.height }}">
 	{%- endif -%}
-	<h2>My App Block</h2>
+	<div id="windfall-app-promo-content">
+		{%- if block.settings.headline -%}
+			<h2 id="windfall-app-tagline" style="color: {{ block.settings.for_tagline }};">{{ block.settings.headline }}</h2>
+		{%- endif -%}
+	</div>	
 </div>
 
 {% schema %}
@@ -15,6 +19,18 @@
 				"type": "image_picker",
 				"id": "image_1",
 				"label": "Background Promotional Photo"
+			},
+			{
+				"type": "text",
+				"id": "headline",
+				"label": "Tagline",
+				"default": "Stand a chance to win a voucher!"
+			},
+			{
+				"type": "color",
+				"id": "for_tagline",
+				"label": "Tagline text colour",
+				"default": "#FFFFFF"
 			}
 		]
 	}
