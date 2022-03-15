@@ -1,0 +1,21 @@
+<div class="boxier">
+	{%- if block.settings.image_1 -%}
+		<img src="{{ block.settings.image_1 | image_url: width: 1024 }}" alt="{{ block.settings.image_1.alt }}" loading="lazy" width="{{ block.settings.image_1.width }}" height="{{ block.settings.image_1.height }}">
+	{%- endif -%}
+	<h2>My App Block</h2>
+</div>
+
+{% schema %}
+	{
+		"name": "Giveaway Event",
+		"target": "section",
+		"stylesheet": "promo.css",
+		"settings": [
+			{
+				"type": "image_picker",
+				"id": "image_1",
+				"label": "Background Promotional Photo"
+			}
+		]
+	}
+{% endschema %}
