@@ -2283,6 +2283,73 @@ $(document).ready(function(e){
 				$("#OfWinners").val(data.winnersTotal)
 				data.type === "Equitable" ? $("#Equitable").attr("checked", "true") : $("#Hierarchical").attr("checked", "true")
 				$("#EditValidateBtn").click(function(){validateLong(data.id)})
+				$("#ContinueEditButton").click(function(e){
+					e.preventDefault()
+					console.log($("input[type='radio'][name='distribution']:checked").val())
+					let name = $("#GiveawayNameInput").val()
+					let startDate = $("#StartDate").val()
+					let startTime = $("#StartTime").val()
+					let endDate = $("#EndDate").val()
+					let endTime = $("#EndTime").val()
+					let ofWinners = $("#OfWinners").val()
+					let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+					if(isNaN(parseInt(ofWinners)) === true){
+						return alert("The number of winners has to be a number")
+					}
+					if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
+						return alert("Please fill all fields")
+					}
+					const starting = new Date(startDate+"T"+startTime)
+					const ending = new Date(endDate+"T"+endTime)
+					let form = {
+						"name": name,
+						"startDate": starting,
+						"endDate": ending,
+						"ofWinners": ofWinners,
+						"distribution": distrubution
+					}
+					console.log(form)
+					$.ajax({
+						url: `/campaign/long/${data.id}/edit`,
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify({form}),
+						success: function(data){
+							console.log(data) 
+							return location.href=data
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+							console.log(data.responseText)
+							return alert(data.responseText)
+						}
+					})
+				})
+				$("#DeleteGiveawayBtn").click(function(){
+					let consent = confirm("Are you sure?")
+					if(consent){
+						$.ajax({
+							url: `/campaign/${data.id}/delete`,
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								location.href=data
+							},
+							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
+								}
+								alert(data.responseText)
+							}
+						})
+					}
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

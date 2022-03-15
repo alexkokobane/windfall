@@ -765,6 +765,143 @@ campaign.get('/long/:id/edit', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/long/:id/edit', checkApiAuth, async (req, res) => {
+	try {
+		const data = req.body.form
+		console.log(req.body.form)
+		const giveawayId = parseInt(req.params.id)
+		if(isNaN(giveawayId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const store = await Shop.findOne({'shop': session.shop})
+		
+		const long =  await Long.findOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
+
+		if(long === null){
+			return res.status(404).send("Error, it appears that this event does not exist.")
+		}
+
+		if(new Date(long.endDate) < new Date()){
+			return res.status(403).send("Error! You cannot edit an event that has already past.")
+		}
+
+		if(new Date(`${data.endDate}`) < new Date()){
+			return res.status(403).send("The end date of a giveaway cannot be in the past")
+		}
+
+		if(store === null){
+			return res.status(404).send("Error, shop was not found")
+		}
+
+		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
+			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
+		}
+
+		const longEvents: any = await Long.find({'shop': session.shop})
+		const rapidEvents = await RapidChild.find({'shop': session.shop})
+		let keyValue: any[] = []
+
+		if(longEvents.length !== 0){
+			let cleaned: any[] = []	
+			longEvents.forEach((item: any) => {
+				if(item.id !== giveawayId){
+					cleaned.push(item)
+				}
+			})		
+			cleaned.forEach((item: any) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(`${data.startDate}`)
+				const givEnd = new Date(`${data.endDate}`)
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					keyValue.push({
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					})
+				}
+			})			
+		}
+		
+		if(rapidEvents.length !== 0){
+			let cleaned: any[] = []	
+			rapidEvents.forEach((item: any) => {
+				if(item.id !== giveawayId){
+					cleaned.push(item)
+				}
+			})
+			cleaned.forEach((item: any) => {
+				const itemStart = new Date(item.startDate)
+				const itemEnd = new Date(item.endDate)
+				const givStart = new Date(`${data.startDate}`)
+				const givEnd = new Date(`${data.endDate}`)
+
+				const obj = {
+					'name': item.name,
+					'startDate': itemStart,
+					'endDate': itemEnd
+				}
+				
+				if(givStart >= itemStart && givEnd <= itemEnd){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+					if(!keyValue.includes(obj)){
+						keyValue.push(obj)
+					}
+				}
+			})
+		}
+
+		if(keyValue.length !== 0) {
+			return res.status(403).send("Cannot create giveaway, scheduling conflict detected.")
+		}
+
+		const longUpdate =  await Long.updateOne(
+			{
+				'shop': session.shop,
+				'id': giveawayId
+			},
+			{
+				'$set': {
+					'name': data.name,
+					'startDate': new Date(data.startDate),
+					'endDate': new Date(data.endDate),
+					'distributionType': data.distribution,
+					'winnersTotal': parseInt(data.ofWinners)
+				}
+			}
+		)
+
+		console.log(longUpdate)
+		
+		if(data.distribution === "Equitable"){
+			res.send(`/campaign/long/new/equitable?id=${giveawayId}`)
+		} else if (data.distribution === "Hierarchical"){
+			res.send(`/campaign/long/new/hierarchical?id=${giveawayId}&winners=${data.ofWinners}`)
+		} else {
+			res.status(403).send("Error, choose a distribution type")
+		}
+	} catch(err: any){
+		console.log(err)
+		//res.status(401).send("Error, could not submit the form")
+	}
+})
+
 // Rapid events
 
 campaign.get('/rapid/new', checkAuth, async (req, res) => {

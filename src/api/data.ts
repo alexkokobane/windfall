@@ -531,7 +531,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 			}
 
 			if(checkAll.length !== 0){
-				const cleaned: any[] = []
+				let cleaned: any[] = []
 				checkAll.forEach((item: any) => {
 					if(item.id !== eventId){
 						cleaned.push(item)
@@ -568,7 +568,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 			}
 
 			if(rapid.length !== 0){
-				const cleaned: any[] = []
+				let cleaned: any[] = []
 				rapid.forEach((item: any) => {
 					if(item.id !== eventId){
 						cleaned.push(item)
