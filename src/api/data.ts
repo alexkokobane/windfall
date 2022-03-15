@@ -495,6 +495,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 	try{
 		let starter : string
 		let ender : string 
+		let eventId : number
 
 		if (req.query.start && typeof req.query.start === 'string') {
 		  starter = req.query.start
@@ -508,74 +509,159 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 		  ender = 'undefined'
 		}
 
+		if (req.query.id && typeof req.query.id === 'string') {
+		  eventId = parseInt(req.query.id)
+		} else {
+		  eventId = 0
+		}
+
 		if(starter === 'undefined' || ender === 'undefined'){
 			return res.status(403).send("Please fill in both dates.")
 		}
+
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const checkAll = await Long.find(
-			{
-				'shop': session.shop,
-			}
-		)
+		const checkAll: any[] = await Long.find({'shop': session.shop})
+		const rapid: any[] = await RapidChild.find({'shop': session.shop})
+
 		let keyValue: any = []
-		if(checkAll.length !== 0){
-			checkAll.forEach((item: any) => {
-				const itemStart = new Date(item.startDate)
-				const itemEnd = new Date(item.endDate)
-				const givStart = new Date(starter)
-				const givEnd = new Date(ender)
-
-				const obj = {
-					'name': item.name,
-					'startDate': itemStart,
-					'endDate': itemEnd
-				}
-				
-				if(givStart >= itemStart && givEnd <= itemEnd){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
-					}
-				}
-				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
-					}
-				}
-			})
-			console.log(keyValue)
-			if(keyValue.length !== 0) {
-				return res.json(keyValue)
+		console.log(eventId)
+		if(eventId !== 0){
+			if(isNaN(eventId) === true){
+				return res.status(404).send("Oops! This event seems corrupt, try reload and if the problem persists contact support.")
 			}
-		}
 
-		const rapid = await RapidChild.find({'shop': session.shop})
-		if(rapid.length !== 0){
-			rapid.forEach((item: any) => {
-				const itemStart = new Date(item.startDate)
-				const itemEnd = new Date(item.endDate)
-				const givStart = new Date(starter)
-				const givEnd = new Date(ender)
+			if(checkAll.length !== 0){
+				const cleaned: any[] = []
+				checkAll.forEach((item: any) => {
+					if(item.id !== eventId){
+						cleaned.push(item)
+					}
+				})
 
-				const obj = {
-					'name': item.name,
-					'startDate': itemStart,
-					'endDate': itemEnd
-				}
-				
-				if(givStart >= itemStart && givEnd <= itemEnd){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
+				cleaned.forEach((item: any) => {
+					const itemStart = new Date(item.startDate)
+					const itemEnd = new Date(item.endDate)
+					const givStart = new Date(starter)
+					const givEnd = new Date(ender)
+
+					const obj = {
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
 					}
-				}
-				if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
-					if(!keyValue.includes(obj)){
-						keyValue.push(obj)
+					
+					if(givStart >= itemStart && givEnd <= itemEnd){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
 					}
+					if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+				})
+				console.log(keyValue)
+				if(keyValue.length !== 0) {
+					return res.json(keyValue)
 				}
-			})
-			console.log(keyValue)
-			if(keyValue.length !== 0) {
-				return res.json(keyValue)
+			}
+
+			if(rapid.length !== 0){
+				const cleaned: any[] = []
+				rapid.forEach((item: any) => {
+					if(item.id !== eventId){
+						cleaned.push(item)
+					}
+				})
+
+				cleaned.forEach((item: any) => {
+					const itemStart = new Date(item.startDate)
+					const itemEnd = new Date(item.endDate)
+					const givStart = new Date(starter)
+					const givEnd = new Date(ender)
+
+					const obj = {
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					}
+					
+					if(givStart >= itemStart && givEnd <= itemEnd){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+					if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+				})
+				console.log(keyValue)
+				if(keyValue.length !== 0) {
+					return res.json(keyValue)
+				}
+			}
+		} else {
+			if(checkAll.length !== 0){
+				checkAll.forEach((item: any) => {
+					const itemStart = new Date(item.startDate)
+					const itemEnd = new Date(item.endDate)
+					const givStart = new Date(starter)
+					const givEnd = new Date(ender)
+
+					const obj = {
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					}
+					
+					if(givStart >= itemStart && givEnd <= itemEnd){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+					if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+				})
+				console.log(keyValue)
+				if(keyValue.length !== 0) {
+					return res.json(keyValue)
+				}
+			}
+
+			if(rapid.length !== 0){
+				rapid.forEach((item: any) => {
+					const itemStart = new Date(item.startDate)
+					const itemEnd = new Date(item.endDate)
+					const givStart = new Date(starter)
+					const givEnd = new Date(ender)
+
+					const obj = {
+						'name': item.name,
+						'startDate': itemStart,
+						'endDate': itemEnd
+					}
+					
+					if(givStart >= itemStart && givEnd <= itemEnd){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+					if((givStart >= itemStart && givStart <= itemEnd) || (itemStart >= givStart && itemStart <= givEnd)){
+						if(!keyValue.includes(obj)){
+							keyValue.push(obj)
+						}
+					}
+				})
+				console.log(keyValue)
+				if(keyValue.length !== 0) {
+					return res.json(keyValue)
+				}
 			}
 		}
 
