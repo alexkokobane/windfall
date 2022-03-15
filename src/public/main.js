@@ -2003,7 +2003,7 @@ $(document).ready(function(e){
 				for(let i = 0; startDate <= endDate; i++){
 					//console.log(startDate)
 					dates.push(new Date(startDate).toLocaleDateString('en-ZA'))
-					startDate = startDate+(1000*60*60*24*i)
+					startDate = Number(new Date(data.startDate))+(1000*60*60*24*i)
 				}
 				console.log(dates)
 				eventCalendar(dates)
