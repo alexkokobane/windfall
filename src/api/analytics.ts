@@ -36,10 +36,11 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		if(long === null){
 			return res.status(404).send("Error! Event could not be found.")
 		}
-
+		
+		const avgSpent = "me"
 		const stats = {
 			"averageSpent": "",
-			"revenueGoal": "",
+			"revenueGoal": long.goals.totalRevenue,
 			"revenue": "",
 			"toRevenueGoal": "",
 			"projectedAverageSpent": ""

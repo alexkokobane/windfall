@@ -66,7 +66,8 @@ const longEventSchema = new mongoose.Schema({
 		firstName: String,
 		lastName: String,
 		email: String,
-		points: Number
+		points: Number,
+		spent: Number
 	}],
 	winnersTotal: Number,
 	winners: [{

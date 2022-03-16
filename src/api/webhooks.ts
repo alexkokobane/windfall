@@ -40,11 +40,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 			const lastName = obj.customer.last_name
 			const email = obj.customer.email
 			const subtotal = Math.round(obj.subtotal_price)
+			const money = obj.subtotal_price
 			const shopExist = await Shop.findOne({
 				'shop': shop
 			})
 			if(shopExist !== null) {
-				await Shop.updateOne(
+				const addId = await Shop.updateOne(
 					{'shop': shop},
 					{
 						'$set': {
@@ -95,7 +96,8 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 										'firstName': firstName,
 										'lastName': lastName,
 										'email': email,
-										'points': subtotal
+										'points': subtotal,
+										'spent': money
 									}
 								}
 							}
@@ -110,7 +112,10 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 								'entries.email': email
 							},
 							{
-								'$inc': {'entries.$.points': subtotal}
+								'$inc': {
+									'entries.$.points': subtotal,
+									'entries.$.spent': money
+								}
 							}
 						)
 						console.log("This is on long "+peat)
@@ -143,7 +148,8 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 										'firstName': firstName,
 										'lastName': lastName,
 										'email': email,
-										'points': subtotal
+										'points': subtotal,
+										'spent': money
 									}
 								}
 							}
@@ -158,7 +164,10 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 								'entries.email': email
 							},
 							{
-								'$inc': {'entries.$.points': subtotal}
+								'$inc': {
+									'entries.$.points': subtotal,
+									'entries.$.spent': money
+								}
 							}
 						)
 						console.log("This is on rapid "+peat)
