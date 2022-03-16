@@ -1,14 +1,14 @@
 #windfall-app-boxier {
 	display: block;
    	width: 100%;
-   	height: 30%;
+   	height: 100%;
    	position: relative;
 }
 
 img {
   display: block;
   width: 100%;
-  height: 30vh;
+  height: 35vh;
   object-fit: cover;
 }
 
@@ -29,7 +29,7 @@ img {
 	    left: 20%;
 	    transform: translate(-20%,-30%);
 	}
-	#windfall-app-boxier {
-	   	height: 40%;
+	img {
+		height: 80%;
 	}
 }
