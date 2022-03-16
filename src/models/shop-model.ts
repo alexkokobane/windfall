@@ -77,7 +77,8 @@ const longEventSchema = new mongoose.Schema({
 		discountCode: String
 	}],
 	goals: {
-		totalRevenue: Number
+		totalRevenue: Number,
+		totalEntries: Number
 	},
 	createdAt: {
 		type: Date,

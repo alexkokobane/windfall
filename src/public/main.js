@@ -1831,6 +1831,7 @@ $(document).ready(function(e){
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
 		let totalRevenue = $("#TotalRevenueInput").val()
+		let totalEntries = $("#TotalEntriesInput").val()
 		if(isNaN(parseInt(ofWinners)) === true){
 			return alert("The number of winners has to be a number")
 		}
@@ -1842,6 +1843,11 @@ $(document).ready(function(e){
 				return alert("The Total Revenue has to a number")
 			}
 		}
+		if(totalEntries){
+			if(isNaN(parseInt(totalEntries)) === true){
+				return alert("The Total Entries has to a number")
+			}
+		}
 		const starting = new Date(startDate+"T"+startTime)
 		const ending = new Date(endDate+"T"+endTime)
 		let form = {
@@ -1850,7 +1856,8 @@ $(document).ready(function(e){
 			"endDate": ending,
 			"ofWinners": ofWinners,
 			"distribution": distrubution,
-			"totalRevenue": totalRevenue ? totalRevenue : 0
+			"totalRevenue": totalRevenue ? totalRevenue : 0,
+			"totalEntries": totalEntries ? totalEntries : 0,
 		}
 		console.log(form)
 		$.ajax({

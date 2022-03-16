@@ -19,7 +19,7 @@ analytics.get('/', checkApiAuth, async (req, res) => {
 	}
 })
 
-analytics.get('/long/:id/revenue', checkApiAuth, async (req, res) => {
+analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 	try{
 		const eventId = parseInt(req.params.id)
 		if(isNaN(eventId) === true){
