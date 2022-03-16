@@ -1830,11 +1830,17 @@ $(document).ready(function(e){
 		let endTime = $("#EndTime").val()
 		let ofWinners = $("#OfWinners").val()
 		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+		let totalRevenue = $("#TotalRevenueInput").val()
 		if(isNaN(parseInt(ofWinners)) === true){
 			return alert("The number of winners has to be a number")
 		}
 		if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
 			return alert("Please fill all fields")
+		}
+		if(totalRevenue){
+			if(isNaN(parseInt(totalRevenue)) === true){
+				return alert("The Total Revenue has to a number")
+			}
 		}
 		const starting = new Date(startDate+"T"+startTime)
 		const ending = new Date(endDate+"T"+endTime)
@@ -1843,7 +1849,8 @@ $(document).ready(function(e){
 			"startDate": starting,
 			"endDate": ending,
 			"ofWinners": ofWinners,
-			"distribution": distrubution
+			"distribution": distrubution,
+			"totalRevenue": totalRevenue ? totalRevenue : 0
 		}
 		console.log(form)
 		$.ajax({

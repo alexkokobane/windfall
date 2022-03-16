@@ -161,7 +161,10 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 				startDate: new Date(`${data.startDate}`),
 				endDate: new Date(`${data.endDate}`),
 				distributionType: data.distribution,
-				winnersTotal: parseInt(data.ofWinners)
+				winnersTotal: parseInt(data.ofWinners),
+				goals: {
+					totalRevenue: data.totalRevenue
+				}
 			}
 			
 		).save()

@@ -25,6 +25,7 @@ import customers from './api/customers'
 import shopInfo from './api/shop-info'
 import data from './api/data'
 import webhooks from './api/webhooks'
+import analytics from './api/analytics'
 
 const app = express()
 
@@ -80,6 +81,7 @@ app.use('/login', login)
 app.use('/customers', customers)
 app.use('/shop', shopInfo)
 app.use('/data', data)
+app.use('/analytics', analytics)
 
 app.get('/_ah/start', (req, res, next) => {
 	res.status(200).send("Working")
