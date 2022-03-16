@@ -541,7 +541,7 @@ campaign.post('/long/delete/all', checkApiAuth, async (req, res) => {
 			'shop': session.shop
 		})
 
-		res.send("Successfully deleted every rapid event.")
+		res.send("Successfully deleted every long event.")
 	} catch(err: any){
 		console.log(err)
 		return err
