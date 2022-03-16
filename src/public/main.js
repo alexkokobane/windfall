@@ -582,7 +582,14 @@ $(document).ready(function(e){
 
 		return chosenDays
 	}
-
+	const you = [
+		{"a": 3},
+		{"a": 6},
+		{"a": 4},
+		{"a": 8},
+		{"a": 1}
+	]
+	//console.log(you.reduce((sum, num) => sum+num.a, 0))
 	function eventCalendar(str){
 		function scheduler(num){
 			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];

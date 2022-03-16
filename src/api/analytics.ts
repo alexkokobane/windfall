@@ -36,14 +36,22 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		if(long === null){
 			return res.status(404).send("Error! Event could not be found.")
 		}
-		
-		const avgSpent = "me"
+		if(long.goals.totalRevenue === 0 && long.goals.totalEntries === 0){
+			return res.json({"status": false})
+		}
+		const moneyMade: number = long.entries.length > 0 ? long.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+		const avgSpent: number = moneyMade > 0 ? moneyMade/long.entries.length : 0
+		const revenueProgress: number = long.goals.totalRevenue > 0 ? (moneyMade/long.goals.totalRevenue)*100 : 0
+		const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
+		const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
 		const stats = {
-			"averageSpent": "",
+			"averageSpent": avgSpent,
 			"revenueGoal": long.goals.totalRevenue,
-			"revenue": "",
-			"toRevenueGoal": "",
-			"projectedAverageSpent": ""
+			"revenue": moneyMade,
+			"revenueProgress": revenueProgress,
+			"projectedAverageSpent": projectedAvgSpent,
+			"averageSpentProgress": avgSpentProgress,
+			"status": true
 		}
 		res.json(stats)
 	} catch(err: any){
