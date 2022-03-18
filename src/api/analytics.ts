@@ -51,7 +51,7 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 			"revenueGoal": long.goals.totalRevenue,
 			"revenue": moneyMade,
 			"revenueProgress": revenueProgress,
-			"projectedAverageSpent": projectedAvgSpent,
+			"averageSpentProjected": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
 			"netProfit": netProfit,
 			"averageSpentCounter": avgSpentData,
@@ -82,7 +82,7 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
 		 	total+money
 		})
-		res.send(total)
+		res.send(total.toString())
 	} catch(err: any){
 		console.log(err)
 		return err

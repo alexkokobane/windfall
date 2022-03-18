@@ -128,7 +128,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					const avgSpent: number = moneyMade > 0 ? moneyMade/long.entries.length : 0
 					const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
 					const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
-					let now: number = checkActive.timer ? Number(new Date(checkActive.timer))+(1000*60*60) : Date.now()
+					let now: number = Date.now()
 					if(checkActive.timer && now-checkActive.timer >= 1000*60*60){
 						const hourly = await Long.updateOne(
 							{
