@@ -120,10 +120,13 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						)
 						console.log("This is on long "+peat)
 					}
-
-					const moneyMade: number = checkActive.entries.length > 0 ? checkActive.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-					const avgSpent: number = moneyMade > 0 ? moneyMade/checkActive.entries.length : 0					
-					const projectedAvgSpent: number = checkActive.goals.totalEntries > 0 ? checkActive.goals.totalRevenue/checkActive.goals.totalEntries : 0 
+					const long = await Long.findOne({
+						'shop': shop,
+						'id': checkActive.id
+					})
+					const moneyMade: number = long.entries.length > 0 ? long.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+					const avgSpent: number = moneyMade > 0 ? moneyMade/long.entries.length : 0
+					const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
 					const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
 					let now: number = checkActive.timer ? Number(new Date(checkActive.timer))+(1000*60*60) : Date.now()
 					if(checkActive.timer && now-checkActive.timer >= 1000*60*60){
