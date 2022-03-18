@@ -120,6 +120,49 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						)
 						console.log("This is on long "+peat)
 					}
+
+					const moneyMade: number = checkActive.entries.length > 0 ? checkActive.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+					const avgSpent: number = moneyMade > 0 ? moneyMade/checkActive.entries.length : 0					
+					const projectedAvgSpent: number = checkActive.goals.totalEntries > 0 ? checkActive.goals.totalRevenue/checkActive.goals.totalEntries : 0 
+					const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
+					let now: number = checkActive.timer ? Number(new Date(checkActive.timer))+(1000*60*60) : Date.now()
+					if(checkActive.timer && now-checkActive.timer >= 1000*60*60){
+						const hourly = await Long.updateOne(
+							{
+								'shop': shop,
+								'id': checkActive.id
+							},
+							{
+								'$set': {
+									'timer': new Date(now)
+								},
+								'$push': {
+									'analytics.avgSpentCounter': {
+										'time': new Date(now),
+										'value': avgSpentProgress
+									}
+								}
+							}
+						)
+					} else if(!checkActive.timer){
+						const hourly = await Long.updateOne(
+							{
+								'shop': shop,
+								'id': checkActive.id
+							},
+							{
+								'$set': {
+									'timer': new Date(now)
+								},
+								'$push': {
+									'analytics.avgSpentCounter': {
+										'time': new Date(now),
+										'value': avgSpentProgress
+									}
+								}
+							}
+						)
+					}
 				} else if(checkRapid !== null){
 					const participant = await RapidChild.findOne(
 						{

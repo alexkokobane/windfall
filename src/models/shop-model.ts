@@ -81,6 +81,13 @@ const longEventSchema = new mongoose.Schema({
 		totalRevenue: Number,
 		totalEntries: Number
 	},
+	analytics: {
+		avgSpentCounter: [{
+			time: String,
+			value: Number
+		}]
+	},
+	timer: Date,
 	createdAt: {
 		type: Date,
 		default: Date.now()

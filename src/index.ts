@@ -65,7 +65,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((req: Request, res: Response, next: NextFunction) =>{
 	res.setHeader(
 		"Content-Security-Policy", 
-		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline'"
+		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net"
 		)
 	next()
 })
@@ -113,5 +113,5 @@ app.use(/^(?!.*_ah).*$/, checkAuth, async (req: Request, res: Response, next: Ne
 const port = process.env.PORT || 4000
 
 app.listen(port, () => {
-	console.log('your app is now listening on port '+port+' :)');
+	console.log('your app is now listening on port '+port+' :)... https://'+process.env.HOST);
 })
