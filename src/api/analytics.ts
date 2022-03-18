@@ -64,4 +64,29 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 	}
 })
 
+analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
+	try{
+		let total = 0
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.find({
+			'shop': session.shop,
+		})
+		const rapid = await RapidChild.find({
+			'shop': session.shop
+		})
+		long.forEach((item: any) => {
+		 	const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+		 	total+money
+		})
+		rapid.forEach((item: any) => {
+			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+		 	total+money
+		})
+		res.send(total)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 export default analytics
