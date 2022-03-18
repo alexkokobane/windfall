@@ -44,6 +44,7 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		const revenueProgress: number = long.goals.totalRevenue > 0 ? (moneyMade/long.goals.totalRevenue)*100 : 0
 		const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
 		const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
+		const avgSpentData : number = long.analytics.avgSpentCounter
 		const netProfit: number = moneyMade - long.winners.reduce((sum: number, num: any) => sum+num.voucherPrize, 0)
 		const stats = {
 			"averageSpent": avgSpent,
@@ -53,6 +54,7 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 			"projectedAverageSpent": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
 			"netProfit": netProfit,
+			"averageSpentCounter": avgSpentData,
 			"status": true
 		}
 		res.json(stats)
