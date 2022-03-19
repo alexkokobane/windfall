@@ -983,6 +983,10 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			'grandEvent': {
 				'id': grandId
 			},
+			'goals': {
+				'totalRevenue': data.totalRevenue,
+				'totalEntries': data.totalEntries
+			},
 			'winnersChosen': false,
 			'winnersGifted': false,
 			'winnersTotal': formattedDates.length,

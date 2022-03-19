@@ -106,6 +106,10 @@ const rapidEventSchema = new mongoose.Schema({
 	grandEvent: {
 		id: Number
 	},
+	goals: {
+		totalRevenue: Number,
+		totalEntries: Number
+	},
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
 	winnersTotal: Number,
@@ -139,10 +143,6 @@ const rapidChildsSchema = new mongoose.Schema({
 		points: Number,
 		spent: Number
 	}],
-	goals: {
-		totalRevenue: Number,
-		totalEntries: Number
-	},
 	winnersTotal: Number,
 	winner: {
 		prizeId: Number,

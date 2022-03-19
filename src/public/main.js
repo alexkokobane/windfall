@@ -2282,19 +2282,7 @@ $(document).ready(function(e){
 					type: "GET",
 					contentType: "application/json",
 					success: function(data){
-						const rh = 20
-						const rw = 100
-						d3.select("#RevGoal")
-							.append("svg")
-							.attr("height", rh)
-							.attr("width", rw)
-							.style("border", "2px #000000")
-							.append("rect")
-							.attr("x", (d) => rw - data.revenue)
-							.attr("y", 30)
-							.attr("height", 25)
-							.attr("width", data.revenue)
-							.attr("fill", "green")
+
 					},
 					error: function(data){
 						if(data.responseText === "Unauthorized"){
@@ -3577,7 +3565,8 @@ $(document).ready(function(e){
 			const normal = $("#NormalPrize").val()
 			const grand = $("#GrandPrize").val()
 			const name = $("#RapidEventName").val()
-			
+			let totalRevenue = $("#TotalRevenueInput").val()
+			let totalEntries = $("#TotalEntriesInput").val()
 			let dates = []
 			chosenDays.forEach(function(giv){
 				console.log(giv)
@@ -3588,13 +3577,26 @@ $(document).ready(function(e){
 				return alert("Please fill all fields.")
 			}
 
+			if(totalRevenue){
+				if(isNaN(parseInt(totalRevenue)) === true){
+					return alert("The Total Revenue has to a number")
+				}
+			}
+			if(totalEntries){
+				if(isNaN(parseInt(totalEntries)) === true){
+					return alert("The Total Entries has to a number")
+				}
+			}
+
 			console.log(dates)
 
 			const event = {
 				"name": name,
 				"normal": normal,
 				"grand": grand,
-				"dates": dates
+				"dates": dates,
+				"totalRevenue": totalRevenue ? totalRevenue : 0,
+				"totalEntries": totalEntries ? totalEntries : 0,
 			}
 
 			$.ajax({
