@@ -136,8 +136,13 @@ const rapidChildsSchema = new mongoose.Schema({
 		firstName: String,
 		lastName: String,
 		email: String,
-		points: Number
+		points: Number,
+		spent: Number
 	}],
+	goals: {
+		totalRevenue: Number,
+		totalEntries: Number
+	},
 	winnersTotal: Number,
 	winner: {
 		prizeId: Number,

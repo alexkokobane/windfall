@@ -68,7 +68,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 				console.log(checkActive)
 				console.log(checkRapid)
 				if(checkActive !== null){
-					
+					// update entries
 					const participant = await Long.findOne(
 						{
 							'shop': shop, 
@@ -120,6 +120,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						)
 						console.log("This is on long "+peat)
 					}
+					// update analytics
 					const long = await Long.findOne({
 						'shop': shop,
 						'id': checkActive.id
@@ -129,7 +130,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
 					const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
 					let now: number = Date.now()
-					if(checkActive.timer && now-checkActive.timer >= 1000*60){
+					if(checkActive.timer && now-checkActive.timer >= 1000*60*30){
 						const hourly = await Long.updateOne(
 							{
 								'shop': shop,
