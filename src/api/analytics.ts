@@ -76,11 +76,11 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 		})
 		long.forEach((item: any) => {
 		 	const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-		 	total+money
+		 	total+=money
 		})
 		rapid.forEach((item: any) => {
 			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-		 	total+money
+		 	total+=money
 		})
 		res.send(total.toString())
 	} catch(err: any){

@@ -2277,6 +2277,33 @@ $(document).ready(function(e){
 				$("#EditLongBtn").click(function(){
 					location.href=`/campaign/long/${data.id}/edit`
 				})
+				$.ajax({
+					url: `/analytics/long/${data.id}`,
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						const rh = 20
+						const rw = 100
+						d3.select("#RevGoal")
+							.append("svg")
+							.attr("height", rh)
+							.attr("width", rw)
+							.style("border", "2px #000000")
+							.append("rect")
+							.attr("x", (d) => rw - data.revenue)
+							.attr("y", 30)
+							.attr("height", 25)
+							.attr("width", data.revenue)
+							.attr("fill", "green")
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+					}
+				})				
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
