@@ -64,6 +64,61 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 	}
 })
 
+analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
+	try{
+		const eventId = parseInt(req.params.id)
+		if(isNaN(eventId) === true){
+			return res.status(404).send("Error! Something is wrong with this event's id.")
+		}
+
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+
+		const parent =  await Rapid.findOne({
+			'shop': session.shop,
+			'id': eventId
+		})
+
+		const children = await RapidChild.find({
+			'shop': session.shop,
+			'parentId': eventId
+		})
+
+		if(parent === null){
+			return res.status(404).send("Error! Event could not be found.")
+		}
+		if(parent.goals.totalRevenue === 0 && parent.goals.totalEntries === 0){
+			return res.json({"status": false})
+		}
+		let moneyMade: number = 0
+		let allEntries: number = 0
+		children.forEach((item: any) => {
+			moneyMade+= item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+			allEntries+= item.entries.length
+		})
+		const totalPrizes: number = parent.prizes.grandPrize+(parent.prizes.normalPrize*parent.dates.length)
+		const avgSpent: number = moneyMade > 0 ? moneyMade/allEntries : 0
+		const revenueProgress: number = parent.goals.totalRevenue > 0 ? (moneyMade/parent.goals.totalRevenue)*100 : 0
+		const projectedAvgSpent: number = parent.goals.totalEntries > 0 ? parent.goals.totalRevenue/parent.goals.totalEntries : 0 
+		const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
+		const netProfit: number = moneyMade - totalPrizes
+		const stats = {
+			"averageSpent": avgSpent,
+			"revenueGoal": parent.goals.totalRevenue,
+			"revenue": moneyMade,
+			"revenueProgress": revenueProgress,
+			"averageSpentProjected": projectedAvgSpent,
+			"averageSpentProgress": avgSpentProgress,
+			"netProfit": netProfit,
+			"totalPrizes": totalPrizes,
+			"status": true
+		}
+		res.json(stats)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 	try{
 		let total = 0
