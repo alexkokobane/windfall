@@ -49,11 +49,11 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		const stats = {
 			"averageSpent": avgSpent,
 			"revenueGoal": long.goals.totalRevenue,
-			"revenue": moneyMade,
+			"revenueGross": moneyMade,
 			"revenueProgress": revenueProgress,
 			"averageSpentProjected": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
-			"netProfit": netProfit,
+			"revenueNet": netProfit,
 			"averageSpentCounter": avgSpentData,
 			"status": true
 		}

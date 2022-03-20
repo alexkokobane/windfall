@@ -1232,13 +1232,13 @@ $(document).ready(function(e){
 		off = Math.abs(off);
 
 		return d.getFullYear() + '-'
-					 + z(d.getMonth()+1) + '-' +
-					 z(d.getDate()) + 'T' +
-					 z(d.getHours()) + ':'  + 
-					 z(d.getMinutes()) + ':' +
-					 z(d.getSeconds()) + '.' +
-					 zz(d.getMilliseconds()) +
-					 sign + z(off/60|0) + ':' + z(off%60); 
+						+ z(d.getMonth()+1) + '-' +
+						z(d.getDate()) + 'T' +
+						z(d.getHours()) + ':'  + 
+						z(d.getMinutes()) + ':' +
+						z(d.getSeconds()) + '.' +
+						zz(d.getMilliseconds()) +
+						sign + z(off/60|0) + ':' + z(off%60); 
 	}
 
 	function validateLong(id){
@@ -2282,7 +2282,27 @@ $(document).ready(function(e){
 					type: "GET",
 					contentType: "application/json",
 					success: function(data){
-
+						const revCtx = $("#RevGoal")
+						new Chart(revCtx, {
+							type: 'bar',
+							data: {
+								labels: ["Revenue Goal", "Gross Revenue", "Net Revenue"],
+								datasets: [
+									{
+										label: "Revenue (in ZAR)",
+										backgroundColor: ["blue", "green", "orange"],
+										data: [data.revenueGoal, data.revenueGross, data.revenueNet]
+									}
+								]
+							},
+							options: {
+								legend: { display: false },
+								title: {
+									display: false,
+									text: 'Predicted world population (millions) in 2050'
+								}
+							}
+						})
 					},
 					error: function(data){
 						if(data.responseText === "Unauthorized"){
