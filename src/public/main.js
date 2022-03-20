@@ -1837,7 +1837,7 @@ $(document).ready(function(e){
 
 	$("#ContinueButton").click(function(e){
 		e.preventDefault()
-		console.log($("input[type='radio'][name='distribution']:checked").val())
+		//console.log($("input[type='radio'][name='distribution']:checked").val())
 		let name = $("#GiveawayNameInput").val()
 		let startDate = $("#StartDate").val()
 		let startTime = $("#StartTime").val()
@@ -1874,14 +1874,29 @@ $(document).ready(function(e){
 			"totalRevenue": totalRevenue ? totalRevenue : 0,
 			"totalEntries": totalEntries ? totalEntries : 0,
 		}
-		console.log(form)
+		//console.log(form)
+
+		$(this).addClass("Polaris-Button--loading")
+		$("#ContinueButtonText").before(`
+			<span id="ContinueButtonSpinner" class="Polaris-Button__Spinner">
+				<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+					<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+					</svg>
+				</span>
+				<span role="status">
+					<span class="Polaris-VisuallyHidden">Loading</span>
+				</span>
+			</span>
+		`)
+
 		$.ajax({
 			url: "/campaign/long/new",
 			type: "POST",
 			contentType: "application/json",
 			data: JSON.stringify({form}),
 			success: function(data){
-				console.log(data) 
+				//console.log(data) 
 				return location.href=data
 			},
 			error: function(data){
@@ -1890,7 +1905,10 @@ $(document).ready(function(e){
 				} else if(data.responseText === "Forbidden"){
 					return location.href="/billing/plans"
 				}
-				console.log(data.responseText)
+
+				$("#ContinueButton").removeClass("Polaris-Button--loading")
+				$("#ContinueButtonSpinner").remove()
+				//console.log(data.responseText)
 				return alert(data.responseText)
 			}
 		})
@@ -1917,8 +1935,8 @@ $(document).ready(function(e){
 						<div class="Polaris-Stack__Item">
 							<div class="Polaris-Stack distributionFillEvenly">
 								<div class="Polaris-Stack__Item"><span aria-label="Farrah" role="img" class="Polaris-Avatar Polaris-Avatar--sizeMedium"><span class="Polaris-Avatar__Initials"><svg class="Polaris-Avatar__Svg" viewBox="0 0 40 40">
-												<path fill="currentColor" d="M8.28 27.5A14.95 14.95 0 0120 21.8c4.76 0 8.97 2.24 11.72 5.7a14.02 14.02 0 01-8.25 5.91 14.82 14.82 0 01-6.94 0 14.02 14.02 0 01-8.25-5.9zM13.99 12.78a6.02 6.02 0 1112.03 0 6.02 6.02 0 01-12.03 0z"></path>
-											</svg></span></span>
+										<path fill="currentColor" d="M8.28 27.5A14.95 14.95 0 0120 21.8c4.76 0 8.97 2.24 11.72 5.7a14.02 14.02 0 01-8.25 5.91 14.82 14.82 0 01-6.94 0 14.02 14.02 0 01-8.25-5.9zM13.99 12.78a6.02 6.02 0 1112.03 0 6.02 6.02 0 01-12.03 0z"></path>
+									</svg></span></span>
 								</div>
 								<div class="Polaris-Stack__Item">
 									<div class="Polaris-Card__SectionHeader">
@@ -1955,9 +1973,24 @@ $(document).ready(function(e){
 		$("#HCreate").click(function(e){
 			e.preventDefault()
 			if($.isEmptyObject(vouchers)){
-					return alert("Enter voucher amounts for all winners")
+				return alert("Enter voucher amounts for all winners")
 			}
 			console.log({id: params.id, amounts: vouchers})
+
+			$(this).addClass("Polaris-Button--loading")
+			$("#HCreateText").before(`
+				<span id="HCreateSpinner" class="Polaris-Button__Spinner">
+					<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+						<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+								<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+						</svg>
+					</span>
+					<span role="status">
+						<span class="Polaris-VisuallyHidden">Loading</span>
+					</span>
+				</span>
+			`)
+
 			$.ajax({
 				url: "/campaign/long/new/hierarchical/create",
 				type: "POST",
@@ -1972,6 +2005,8 @@ $(document).ready(function(e){
 					} else if(data.responseText === "Forbidden"){
 						return location.href="/billing/plans"
 					}
+					$("#HCreate").removeClass("Polaris-Button--loading")
+					$("#HCreateSpinner").remove()
 					alert(data.responseText)
 				}
 			})
@@ -1985,6 +2020,22 @@ $(document).ready(function(e){
 		if(voucher === "" && parseInt(voucher) == null){
 			return alert("Enter voucher amount and make sure they are number")
 		}
+
+
+		$(this).addClass("Polaris-Button--loading")
+		$("#ECreateText").before(`
+			<span id="ECreateSpinner" class="Polaris-Button__Spinner">
+				<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+					<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+					</svg>
+				</span>
+				<span role="status">
+					<span class="Polaris-VisuallyHidden">Loading</span>
+				</span>
+			</span>
+		`)
+
 		$.ajax({
 			url: "/campaign/long/new/equitable/create",
 			type: "POST",
@@ -1999,6 +2050,8 @@ $(document).ready(function(e){
 				} else if(data.responseText === "Forbidden"){
 					return location.href="/billing/plans"
 				}
+				$("#ECreate").removeClass("Polaris-Button--loading")
+				$("#ECreateSpinner").remove()
 				alert(data.responseText)
 			}
 		})
@@ -2382,6 +2435,21 @@ $(document).ready(function(e){
 						"distribution": distrubution
 					}
 					console.log(form)
+
+					$(this).addClass("Polaris-Button--loading")
+					$("#ContinueEditButtonText").before(`
+						<span id="ContinueEditButtonSpinner" class="Polaris-Button__Spinner">
+							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+								</svg>
+							</span>
+							<span role="status">
+								<span class="Polaris-VisuallyHidden">Loading</span>
+							</span>
+						</span>
+					`)
+
 					$.ajax({
 						url: `/campaign/long/${data.id}/edit`,
 						type: "POST",
@@ -2397,6 +2465,9 @@ $(document).ready(function(e){
 							} else if(data.responseText === "Forbidden"){
 								return location.href="/billing/plans"
 							}
+
+							$("#ContinueEditButton").removeClass("Polaris-Button--loading")
+							$("#ContinueEditButtonSpinner").remove()
 							console.log(data.responseText)
 							return alert(data.responseText)
 						}
