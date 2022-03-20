@@ -14,11 +14,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="Polaris-Page-Header__RightAlign">
-				<div class="Polaris-Page-Header__PrimaryActionWrapper">
-					<button id="ChooseWinners" class="Polaris-Button Polaris-Button--disabled ChooseWinners" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Pick winners</span></span></button>
-				</div>
-			</div>
 		</div>
 	</div>
 	<div class="Polaris-Page__Content">
@@ -105,18 +100,7 @@
 					<div class="Polaris-Card__Header">
 						<h2 class="Polaris-Heading">Analytics</h2>
 					</div>
-					<div class="Polaris-Card__Section">
-						<div class="Polaris-Card__SectionHeader">
-							<h3 class="Polaris-Subheading">Revenue</h3>
-						</div>
-						<canvas id="RevGoal"></canvas>
-					</div>
-					<div class="Polaris-Card__Section">
-						<div class="Polaris-Card__SectionHeader">
-							<h3 class="Polaris-Subheading">Spending</h3>
-						</div>
-						<canvas id="SpreeCount"></canvas>
-					</div>
+					<%- include('../partials/event-analytics')%>
 				</div>
 			</div>
 		</div>

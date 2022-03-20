@@ -4161,6 +4161,58 @@ $(document).ready(function(e){
 						alert(data.responseText)
 					}
 				})
+				$.ajax({
+					url: `/analytics/rapid/${data.id}`,
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						const revCtx = $("#RevGoal")
+						const spentCtx = $("#SpreeCount")
+						new Chart(revCtx, {
+							type: 'bar',
+							data: {
+								labels: ["Revenue Goal", "Gross Revenue", "Net Revenue"],
+								datasets: [
+									{
+										label: "Revenue (in ZAR)",
+										backgroundColor: ["blue", "green", "orange"],
+										data: [data.revenueGoal, data.revenueGross, data.revenueNet]
+									}
+								]
+							},
+							options: {
+								legend: { display: false },
+								title: {
+									display: false,
+									text: 'Predicted world population (millions) in 2050'
+								}
+							}
+						})
+						new Chart(spentCtx, {
+							type: "bar",
+							data: {
+								labels: ["Projected Avg Spent", "Average Spent"],
+								datasets: [
+									{
+										label: "Money (in ZAR)",
+										backgroundColor: ["violet", "indigo"],
+										data: [data.averageSpentProjected, data.averageSpent]
+									}
+								]
+							},
+							options: {
+								legend: {display: false}
+							}
+						})
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+					}
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

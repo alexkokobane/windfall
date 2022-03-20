@@ -54,7 +54,6 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 			"averageSpentProjected": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
 			"revenueNet": netProfit,
-			"averageSpentCounter": avgSpentData,
 			"status": true
 		}
 		res.json(stats)
@@ -108,7 +107,7 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 			"revenueProgress": revenueProgress,
 			"averageSpentProjected": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
-			"netProfit": netProfit,
+			"revenueNet": netProfit,
 			"totalPrizes": totalPrizes,
 			"status": true
 		}
