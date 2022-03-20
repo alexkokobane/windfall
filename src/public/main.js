@@ -2283,6 +2283,7 @@ $(document).ready(function(e){
 					contentType: "application/json",
 					success: function(data){
 						const revCtx = $("#RevGoal")
+						const spentCtx = $("#SpreeCount")
 						new Chart(revCtx, {
 							type: 'bar',
 							data: {
@@ -2301,6 +2302,22 @@ $(document).ready(function(e){
 									display: false,
 									text: 'Predicted world population (millions) in 2050'
 								}
+							}
+						})
+						new Chart(spentCtx, {
+							type: "bar",
+							data: {
+								labels: ["Projected Avg Spent", "Average Spent"],
+								datasets: [
+									{
+										label: "Money (in ZAR)",
+										backgroundColor: ["violet", "indigo"],
+										data: [data.averageSpentProjected, data.averageSpent]
+									}
+								]
+							},
+							options: {
+								legend: {display: false}
 							}
 						})
 					},
