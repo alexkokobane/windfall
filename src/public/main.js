@@ -3366,11 +3366,26 @@ $(document).ready(function(e){
 			location.href="/billing/change"
 		})
 		$("#DeleteAllRapidBtn").click(function(){
+			$(this).addClass("Polaris-Button--loading")
+			$("#DeleteAllRapidBtnText").before(`
+				<span id="DeleteAllRapidBtnSpinner" class="Polaris-Button__Spinner">
+					<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+						<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+						</svg>
+					</span>
+					<span role="status">
+						<span class="Polaris-VisuallyHidden">Loading</span>
+					</span>
+				</span>
+			`)
 			$.ajax({
 				url: "/campaign/rapid/delete/all",
 				type: "POST",
 				contentType: "application/json",
 				success: function(data){
+					$("#DeleteAllRapidBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllRapidBtnSpinner").remove()
 					alert(data)
 				},
 				error: function(data){
@@ -3379,15 +3394,32 @@ $(document).ready(function(e){
 					} else if (data.responseText === "Forbidden"){
 						return location.href="/billing/plans"
 					}
+					$("#DeleteAllRapidBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllRapidBtnSpinner").remove()
 				}
 			})
 		})
 		$("#DeleteAllLongBtn").click(function(){
+			$(this).addClass("Polaris-Button--loading")
+			$("#DeleteAllLongBtnText").before(`
+				<span id="DeleteAllLongBtnSpinner" class="Polaris-Button__Spinner">
+					<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+						<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+						</svg>
+					</span>
+					<span role="status">
+						<span class="Polaris-VisuallyHidden">Loading</span>
+					</span>
+				</span>
+			`)
 			$.ajax({
 				url: "/campaign/long/delete/all",
 				type: "POST",
 				contentType: "application/json",
 				success: function(data){
+					$("#DeleteAllLongBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllLongBtnSpinner").remove()
 					alert(data)
 				},
 				error: function(data){
@@ -3396,15 +3428,32 @@ $(document).ready(function(e){
 					} else if (data.responseText === "Forbidden"){
 						return location.href="/billing/plans"
 					}
+					$("#DeleteAllLongBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllLongBtnSpinner").remove()
 				}
 			})
 		})
 		$("#DeleteAllTemplatesBtn").click(function(){
+			$(this).addClass("Polaris-Button--loading")
+			$("#DeleteAllTemplatesBtnText").before(`
+				<span id="DeleteAllTemplatesBtnSpinner" class="Polaris-Button__Spinner">
+					<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+						<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+						</svg>
+					</span>
+					<span role="status">
+						<span class="Polaris-VisuallyHidden">Loading</span>
+					</span>
+				</span>
+			`)
 			$.ajax({
 				url: "/campaign/template/delete/all",
 				type: "POST",
 				contentType: "application/json",
 				success: function(data){
+					$("#DeleteAllTemplatesBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllTemplatesBtnSpinner").remove()
 					alert(data)
 				},
 				error: function(data){
@@ -3413,6 +3462,8 @@ $(document).ready(function(e){
 					} else if (data.responseText === "Forbidden"){
 						return location.href="/billing/plans"
 					}
+					$("#DeleteAllTemplatesBtn").removeClass("Polaris-Button--loading")
+					$("#DeleteAllTemplatesBtnSpinner").remove()
 				}
 			})
 		})
