@@ -1,7 +1,7 @@
 {
-  "name": "scrutiny",
-  "version": "0.1.0",
-  "description": "A TypeScript and Express version of the Shopify comments app.",
+  "name": "Windfall",
+  "version": "0.8.0",
+  "description": "A Shopify app that automates the process of running giveaways.",
   "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
