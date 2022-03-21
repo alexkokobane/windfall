@@ -1451,6 +1451,7 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				$("#HTRSketch").remove()
 				$("#HTRText").text("$"+data)
 			},
 			error: function(data){
