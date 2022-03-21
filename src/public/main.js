@@ -1931,7 +1931,18 @@ $(document).ready(function(e){
 		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
 		$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
 
-		$("#ProductSelectionModal").removeClass("disappear")		
+		$("#ProductSelectionModal").removeClass("disappear")
+		$.ajax({
+			url: "/data/products",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+
+			},
+			error: function(data){
+				
+			}
+		})		
 	})
 
 	$("#ChooseCollectionBtn").click(function(){

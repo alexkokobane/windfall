@@ -51,7 +51,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
-		const storeProducts = await client.query({
+		const storeProducts: any = await client.query({
 			data: `
 				{
 					products(first:100 ){
@@ -61,7 +61,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 								title,
 								featuredImage{
 									altText,
-									originalSrc
+									url
 								}
 							}
 						}
@@ -70,7 +70,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 			`
 		})
 		console.log(storeProducts.body)
-		res.json(storeProducts.body)
+		res.json(storeProducts.body.data.products.edges)
 	} catch(err: any) {
 		console.log(err)
 	}

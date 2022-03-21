@@ -19,13 +19,13 @@ Shopify.Context.initialize({
 	SCOPES: [SCOPES],
 	HOST_NAME: HOST,
 	IS_EMBEDDED_APP: false,
-	API_VERSION: ApiVersion.January21,
+	API_VERSION: ApiVersion.January22,
 	
 	SESSION_STORAGE: new Shopify.Session.CustomSessionStorage(
-			storeCallback,
-			loadCallback,
-			deleteCallback
-	 )
+		storeCallback,
+		loadCallback,
+		deleteCallback
+	)
 });
 
 auth.get('/', sessionContext, async (req: Request, res: Response) => {
