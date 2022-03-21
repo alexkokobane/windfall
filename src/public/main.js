@@ -1387,6 +1387,11 @@ $(document).ready(function(e){
 		$("#AppFrameNavBackdrop").toggle()
 		$("#AppFrameNavDismissButton").toggle()
 	})
+
+	$(".ProductSelectionModalClose").click(function(){
+		$("#ProductSelectionModal").addClass("disappear")
+		console.log("Clicked")
+	})
 	
 	$("#LogoutButton").click(function(e){
 		e.preventDefault()
@@ -1912,6 +1917,28 @@ $(document).ready(function(e){
 				return alert(data.responseText)
 			}
 		})
+	})
+
+	$("#AllProductsBtn").click(function(){		
+		$(this).addClass("Polaris-Button--pressed")
+		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
+		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")		
+	})
+
+	$("#ChooseProductsBtn").click(function(){		
+		$(this).addClass("Polaris-Button--pressed")
+		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
+		$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
+
+		$("#ProductSelectionModal").removeClass("disappear")		
+	})
+
+	$("#ChooseCollectionBtn").click(function(){
+		$(this).addClass("Polaris-Button--pressed")
+		$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
+		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")
+
+		$("#ProductSelectionModal").removeClass("disappear")
 	})
 
 	//url === /campaign/long/new/hierarchical
