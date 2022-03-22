@@ -65,7 +65,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((req: Request, res: Response, next: NextFunction) =>{
 	res.setHeader(
 		"Content-Security-Policy", 
-		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net"
+		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net; img-src 'self' https://cdn.shopify.com"
 		)
 	next()
 })

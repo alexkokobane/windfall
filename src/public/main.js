@@ -1937,10 +1937,51 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-
+				if(data.length > 0){
+					data.forEach(function(item){
+						const giv = item.node
+						$("#ProductsModalListDecoy").after(`
+							<div class="Polaris-Stack Polaris-Stack--alignmentCenter" style="padding: 1.5em;">
+								<div class="Polaris-Stack__Item">
+									<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2">
+										<span class="Polaris-Choice__Control">
+											<span class="Polaris-Checkbox">
+												<input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value="">
+													<span class="Polaris-Checkbox__Backdrop"></span>
+													<span class="Polaris-Checkbox__Icon">
+														<span class="Polaris-Icon">
+															<span class="Polaris-VisuallyHidden"></span>
+															<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+				  												<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+															</svg>
+														</span>
+													</span>
+												</span>
+											</span>
+										<span class="Polaris-Choice__Label">Basic checkbox</span>
+									</label>
+			   					</div>
+								<div class="Polaris-Stack__Item">
+									<div class="Polaris-Stack Polaris-Stack--spaceTight">
+										<div class="Polaris-Stack__Item">
+											<span aria-label="Farrah" role="img" class="Polaris-Avatar Polaris-Avatar--sizeMedium">
+												<span class="Polaris-Avatar__Initials">
+													<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
+												</span>
+											</span>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<h2 class="Polaris-Heading">${giv.title}</h2>
+										</div>
+									</div>
+								</div>
+							</div>
+						`)
+					})
+				}
 			},
 			error: function(data){
-				
+
 			}
 		})		
 	})
