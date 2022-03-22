@@ -165,9 +165,10 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 				goals: {
 					totalRevenue: data.totalRevenue,
 					totalEntries: data.totalEntries
-				}
-			}
-			
+				},
+				qualifying: data.qualifying,
+				qualifyingId: data.qualifyingId
+			}			
 		).save()
 		
 		if(data.distribution === "Equitable"){

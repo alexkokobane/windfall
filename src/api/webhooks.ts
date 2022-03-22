@@ -24,7 +24,7 @@ export const handleAppUninstall = async (topic: string, shop: string, webhookReq
 	}
 }
 
-export const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: any) => {
+export const handleOrdersPaid = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
 	try{
 		console.log(topic+" was fired.")
 		console.log(`${shop} has an order that has been paid.`)
@@ -39,8 +39,8 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 			const firstName = obj.customer.first_name
 			const lastName = obj.customer.last_name
 			const email = obj.customer.email
-			const subtotal = Math.round(obj.subtotal_price)
-			const money = obj.subtotal_price
+			let subtotal = Math.round(obj.subtotal_price)
+			let money = obj.subtotal_price
 			const shopExist = await Shop.findOne({
 				'shop': shop
 			})
@@ -83,89 +83,95 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						}
 					)
 					console.log(participant)
-					if(participant === null) {
-						let con: any = await Long.updateOne(
-							{
-								'shop': shop, 
-								'startDate': {'$lte': new Date(dateNow)},
-								'endDate': {'$gte': new Date(dateNow)}
-							},
-							{
-								'$push': { 
-									'entries' : {
-										'firstName': firstName,
-										'lastName': lastName,
-										'email': email,
-										'points': subtotal,
-										'spent': money
-									}
-								}
-							}
-						)
-						console.log("This is on long "+con)
-					} else {
-						let peat = await Long.updateOne(
-							{
-								'shop': shop, 
-								'startDate': {'$lte': new Date(dateNow)},
-								'endDate': {'$gte': new Date(dateNow)},
-								'entries.email': email
-							},
-							{
-								'$inc': {
-									'entries.$.points': subtotal,
-									'entries.$.spent': money
-								}
-							}
-						)
-						console.log("This is on long "+peat)
-					}
-					// update analytics
-					const long = await Long.findOne({
-						'shop': shop,
-						'id': checkActive.id
-					})
-					const moneyMade: number = long.entries.length > 0 ? long.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-					const avgSpent: number = moneyMade > 0 ? moneyMade/long.entries.length : 0
-					const projectedAvgSpent: number = long.goals.totalEntries > 0 ? long.goals.totalRevenue/long.goals.totalEntries : 0 
-					const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
-					let now: number = Date.now()
-					if(checkActive.timer && now-checkActive.timer >= 1000*60*30){
-						const hourly = await Long.updateOne(
-							{
-								'shop': shop,
-								'id': checkActive.id
-							},
-							{
-								'$set': {
-									'timer': new Date(now)
+					// check for qualifying products and respond accordingly
+					if(checkActive.qualifying === "all"){
+						if(participant === null) {
+							let con: any = await Long.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)}
 								},
-								'$push': {
-									'analytics.avgSpentCounter': {
-										'time': new Date(now),
-										'value': avgSpentProgress
+								{
+									'$push': { 
+										'entries' : {
+											'firstName': firstName,
+											'lastName': lastName,
+											'email': email,
+											'points': subtotal,
+											'spent': money
+										}
 									}
 								}
-							}
-						)
-					} else if(!checkActive.timer){
-						const hourly = await Long.updateOne(
-							{
-								'shop': shop,
-								'id': checkActive.id
-							},
-							{
-								'$set': {
-									'timer': new Date(now)
+							)
+							console.log("This is on long "+con)
+						} else {
+							let peat = await Long.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)},
+									'entries.email': email
 								},
-								'$push': {
-									'analytics.avgSpentCounter': {
-										'time': new Date(now),
-										'value': avgSpentProgress
+								{
+									'$inc': {
+										'entries.$.points': subtotal,
+										'entries.$.spent': money
 									}
 								}
-							}
-						)
+							)
+							console.log("This is on long "+peat)
+						}
+					} else if(checkActive.qualifying === "select"){
+						let products: any[] = []
+						obj.line_items.forEach((item: any) => {
+							checkActive.qualifyingId.includes(item.product_id) ? products.push(item.price) : 0
+						})
+
+						subtotal = Math.round(products.reduce((sum: number, num: any) => sum+num, 0))
+						money = products.reduce((sum: number, num: any) => sum+num, 0)
+
+						if(subtotal < 1){
+							return null
+						}
+
+						if(participant === null) {
+							let con: any = await Long.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)}
+								},
+								{
+									'$push': { 
+										'entries' : {
+											'firstName': firstName,
+											'lastName': lastName,
+											'email': email,
+											'points': subtotal,
+											'spent': money
+										}
+									}
+								}
+							)
+							console.log("This is on long "+con)
+						} else {
+							let peat = await Long.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)},
+									'entries.email': email
+								},
+								{
+									'$inc': {
+										'entries.$.points': subtotal,
+										'entries.$.spent': money
+									}
+								}
+							)
+							console.log("This is on long "+peat)
+						}
 					}
 				} else if(checkRapid !== null){
 					const participant = await RapidChild.findOne(

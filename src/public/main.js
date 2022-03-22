@@ -2069,6 +2069,15 @@ $(document).ready(function(e){
 			if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
 				return alert("Please fill all fields")
 			}
+			if(qualify.products === "select" && qualify.items.length === 0){
+				return alret("Please select at least one qualifying product")
+			}
+
+			let qualifying = []
+			qualify.items.forEach(function(giv){
+				qualifying.push(giv[0].split("/")[4])
+			})
+
 			if(totalRevenue){
 				if(isNaN(parseInt(totalRevenue)) === true){
 					return alert("The Total Revenue has to a number")
@@ -2089,6 +2098,8 @@ $(document).ready(function(e){
 				"distribution": distrubution,
 				"totalRevenue": totalRevenue ? totalRevenue : 0,
 				"totalEntries": totalEntries ? totalEntries : 0,
+				"qualifying": qualify.products,
+				"qualifyingId": qualify.products === "all" ? [] : qualifying
 			}
 			//console.log(form)
 
