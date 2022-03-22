@@ -1372,65 +1372,210 @@ $(document).ready(function(e){
 		}
 	}
 
-	const productLoadingStr = `
-		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
-			<div class="Polaris-Stack__Item">
-				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
-				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
-				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
-			</div>
-			<div class="Polaris-Stack__Item">
-				<div class="Polaris-Stack Polaris-Stack--spaceTight">
-					<div class="Polaris-Stack__Item">
-						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
-						</span>
-					</div>
-					<div class="Polaris-Stack__Item">
-						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+	function chooseProducts(){
+		const productLoadingStr = `
+			<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+				<div class="Polaris-Stack__Item">
+					<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+					<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+					</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+				</div>
+				<div class="Polaris-Stack__Item">
+					<div class="Polaris-Stack Polaris-Stack--spaceTight">
+						<div class="Polaris-Stack__Item">
+							<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+								<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+							</span>
+						</div>
+						<div class="Polaris-Stack__Item">
+							<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
-			<div class="Polaris-Stack__Item">
-				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
-				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
-				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
-			</div>
-			<div class="Polaris-Stack__Item">
-				<div class="Polaris-Stack Polaris-Stack--spaceTight">
-					<div class="Polaris-Stack__Item">
-						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
-						</span>
-					</div>
-					<div class="Polaris-Stack__Item">
-						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+			<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+				<div class="Polaris-Stack__Item">
+					<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+					<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+					</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+				</div>
+				<div class="Polaris-Stack__Item">
+					<div class="Polaris-Stack Polaris-Stack--spaceTight">
+						<div class="Polaris-Stack__Item">
+							<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+								<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+							</span>
+						</div>
+						<div class="Polaris-Stack__Item">
+							<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
-			<div class="Polaris-Stack__Item">
-				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
-				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
-				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
-			</div>
-			<div class="Polaris-Stack__Item">
-				<div class="Polaris-Stack Polaris-Stack--spaceTight">
-					<div class="Polaris-Stack__Item">
-						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
-						</span>
-					</div>
-					<div class="Polaris-Stack__Item">
-						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+			<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+				<div class="Polaris-Stack__Item">
+					<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+					<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+					</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+				</div>
+				<div class="Polaris-Stack__Item">
+					<div class="Polaris-Stack Polaris-Stack--spaceTight">
+						<div class="Polaris-Stack__Item">
+							<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+								<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+							</span>
+						</div>
+						<div class="Polaris-Stack__Item">
+							<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	`
+		`
+		let quantity = {
+			"products": "all",
+			"items": []
+		}
+
+		$("#AllProductsBtn").click(function(){
+			quantity.products = "all"
+			$(this).addClass("Polaris-Button--pressed")
+			$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
+			$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")	
+			$("#CPCDValue").text("All products qualify as an entry into this giveaway")	
+			$("#ChosenProductsWrapper").remove()
+		})
+
+		$("#ChooseProductsBtn").click(function(){
+			quantity.products = "select"
+			$(this).addClass("Polaris-Button--pressed")
+			$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
+			$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
+
+			$("#ProductSelectionModal").removeClass("disappear")
+			$.ajax({
+				url: "/data/products",
+				type: "GET",
+				contentType: "application/json",
+				success: function(data){
+					if(data.length > 0){
+						$(".ProductSelectionModalSketch").remove()
+						data.forEach(function(item){
+							const giv = item.node
+							const id = giv.id.split("/")[4]
+							//console.log(id)
+							$("#ProductsModalListDecoy").after(`
+								<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalItemContainer" style="padding: 1.5em;">
+									<div id="${id}label" class="Polaris-Stack__Item">
+										<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
+											<span class="Polaris-Choice__Control">
+												<span class="Polaris-Checkbox">
+													<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url}">
+														<span class="Polaris-Checkbox__Backdrop"></span>
+														<span class="Polaris-Checkbox__Icon">
+															<span class="Polaris-Icon">
+																<span class="Polaris-VisuallyHidden"></span>
+																<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+					  												<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+																</svg>
+															</span>
+														</span>
+													</span>
+												</span>
+											<span class="Polaris-Choice__Label">${giv.title}</span>
+										</label>
+				   					</div>
+									<div class="Polaris-Stack__Item">
+										<div class="Polaris-Stack Polaris-Stack--spaceTight">
+											<div class="Polaris-Stack__Item">
+												<span aria-label="${giv.featuredImagealtText}" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
+												</span>
+											</div>
+											<div class="Polaris-Stack__Item">
+												<h2 class="Polaris-Heading">${giv.title}</h2>
+											</div>
+										</div>
+									</div>
+								</div>
+							`)
+
+							$(`#${id}label`).click(function(){
+								$(`#${id}`).attr("aria-checked", $(`#${id}`).attr("checked") === "true" ? "true" : "false")
+							})
+						})
+					}
+				},
+				error: function(data){
+
+				}
+			})	
+
+			$("#CPCDValue").text("Only the chosen products qualify as an entry into this giveaway")	
+		})
+
+		$("#ProductSelectionModalSave").click(function(){
+			let checked = []
+			$(".ProductSelectionModalItem:checked").each(function(i){
+				checked[i] = $(this).val()
+			})
+
+			if(checked.length === 0){
+				return alert("Please select at least one item before you save")
+			}
+
+			$("#ChosenProductsWrapper").remove()
+
+			let parsedData = []
+			checked.forEach(function(giv){
+				parsedData.push(giv.split(","))
+			})
+			$("#ChooseProductsChoiceDescript").after(`
+				<div id="ChosenProductsWrapper" class="Polaris-ResourceList__ResourceListWrapper">
+					<ul class="Polaris-ResourceList">
+						<span id="ChosenProductsDecoy"></span>
+					</ul>
+				</div>
+			`)
+			quantity.items = parsedData
+			parsedData.forEach(function(giv){
+				const title = giv[1]
+				const id = giv[0]
+				const url = giv[2]
+
+				$("#ChosenProductsDecoy").after(`
+					<li class="Polaris-ResourceItem__ListItem">
+						<div class="Polaris-ResourceItem__ItemWrapper">
+							<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
+								<div class="Polaris-ResourceItem__Container" id="${id.split("/")[4]}copy">
+									<div class="Polaris-ResourceItem__Owned">
+										<div class="Polaris-ResourceItem__Media">
+											<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+												<img src="${url}" /> 
+											</span>
+										</div>
+									</div>
+									<div class="Polaris-ResourceItem__Content">
+										<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+											<div class="Polaris-Stack__Item">
+												<h3><span class="Polaris-TextStyle--variationStrong">${title}</span></h3>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				`)
+			})
+
+			$(".ProductSelectionModalItemContainer").remove()
+			$("#ProductsModalListDecoy").after(productLoadingStr)
+			$("#ProductSelectionModal").addClass("disappear")		
+		})
+
+		return quantity
+	}
 	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
@@ -1899,233 +2044,93 @@ $(document).ready(function(e){
 	}
 
 	//url == /campaign/long/new
-	$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
-	$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
-	$("#ValidateBtn").click(function(){validateLong()})
 
-	$("#ContinueButton").click(function(e){
-		e.preventDefault()
-		//console.log($("input[type='radio'][name='distribution']:checked").val())
-		let name = $("#GiveawayNameInput").val()
-		let startDate = $("#StartDate").val()
-		let startTime = $("#StartTime").val()
-		let endDate = $("#EndDate").val()
-		let endTime = $("#EndTime").val()
-		let ofWinners = $("#OfWinners").val()
-		let distrubution = $("input[type='radio'][name='distribution']:checked").val()
-		let totalRevenue = $("#TotalRevenueInput").val()
-		let totalEntries = $("#TotalEntriesInput").val()
-		if(isNaN(parseInt(ofWinners)) === true){
-			return alert("The number of winners has to be a number")
-		}
-		if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
-			return alert("Please fill all fields")
-		}
-		if(totalRevenue){
-			if(isNaN(parseInt(totalRevenue)) === true){
-				return alert("The Total Revenue has to a number")
+	if(window.location.pathname === "/campaign/long/new"){
+		$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
+		$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
+		$("#ValidateBtn").click(function(){validateLong()})
+
+		let qualify = chooseProducts()
+		$("#ContinueButton").click(function(e){
+			e.preventDefault()
+			console.log(qualify)
+			let name = $("#GiveawayNameInput").val()
+			let startDate = $("#StartDate").val()
+			let startTime = $("#StartTime").val()
+			let endDate = $("#EndDate").val()
+			let endTime = $("#EndTime").val()
+			let ofWinners = $("#OfWinners").val()
+			let distrubution = $("input[type='radio'][name='distribution']:checked").val()
+			let totalRevenue = $("#TotalRevenueInput").val()
+			let totalEntries = $("#TotalEntriesInput").val()
+			if(isNaN(parseInt(ofWinners)) === true){
+				return alert("The number of winners has to be a number")
 			}
-		}
-		if(totalEntries){
-			if(isNaN(parseInt(totalEntries)) === true){
-				return alert("The Total Entries has to a number")
+			if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
+				return alert("Please fill all fields")
 			}
-		}
-		const starting = new Date(startDate+"T"+startTime)
-		const ending = new Date(endDate+"T"+endTime)
-		let form = {
-			"name": name,
-			"startDate": starting,
-			"endDate": ending,
-			"ofWinners": ofWinners,
-			"distribution": distrubution,
-			"totalRevenue": totalRevenue ? totalRevenue : 0,
-			"totalEntries": totalEntries ? totalEntries : 0,
-		}
-		//console.log(form)
-
-		$(this).addClass("Polaris-Button--loading")
-		$("#ContinueButtonText").before(`
-			<span id="ContinueButtonSpinner" class="Polaris-Button__Spinner">
-				<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
-					<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-							<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
-					</svg>
-				</span>
-				<span role="status">
-					<span class="Polaris-VisuallyHidden">Loading</span>
-				</span>
-			</span>
-		`)
-
-		$.ajax({
-			url: "/campaign/long/new",
-			type: "POST",
-			contentType: "application/json",
-			data: JSON.stringify({form}),
-			success: function(data){
-				//console.log(data) 
-				return location.href=data
-			},
-			error: function(data){
-				if(data.responseText === "Unauthorized"){
-					return location.href="/"
-				} else if(data.responseText === "Forbidden"){
-					return location.href="/billing/plans"
+			if(totalRevenue){
+				if(isNaN(parseInt(totalRevenue)) === true){
+					return alert("The Total Revenue has to a number")
 				}
-
-				$("#ContinueButton").removeClass("Polaris-Button--loading")
-				$("#ContinueButtonSpinner").remove()
-				//console.log(data.responseText)
-				return alert(data.responseText)
 			}
-		})
-	})
-
-	$("#AllProductsBtn").click(function(){		
-		$(this).addClass("Polaris-Button--pressed")
-		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
-		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")	
-		$("#CPCDValue").text("All products qualify as an entry into this giveaway")	
-		$("#ChosenProductsWrapper").remove()
-	})
-
-	$("#ChooseProductsBtn").click(function(){		
-		$(this).addClass("Polaris-Button--pressed")
-		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
-		$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
-
-		$("#ProductSelectionModal").removeClass("disappear")
-		$.ajax({
-			url: "/data/products",
-			type: "GET",
-			contentType: "application/json",
-			success: function(data){
-				if(data.length > 0){
-					$(".ProductSelectionModalSketch").remove()
-					data.forEach(function(item){
-						const giv = item.node
-						const id = giv.id.split("/")[4]
-						console.log(id)
-						$("#ProductsModalListDecoy").after(`
-							<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalItemContainer" style="padding: 1.5em;">
-								<div id="${id}label" class="Polaris-Stack__Item">
-									<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
-										<span class="Polaris-Choice__Control">
-											<span class="Polaris-Checkbox">
-												<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url}">
-													<span class="Polaris-Checkbox__Backdrop"></span>
-													<span class="Polaris-Checkbox__Icon">
-														<span class="Polaris-Icon">
-															<span class="Polaris-VisuallyHidden"></span>
-															<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
-				  												<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
-															</svg>
-														</span>
-													</span>
-												</span>
-											</span>
-										<span class="Polaris-Choice__Label">${giv.title}</span>
-									</label>
-			   					</div>
-								<div class="Polaris-Stack__Item">
-									<div class="Polaris-Stack Polaris-Stack--spaceTight">
-										<div class="Polaris-Stack__Item">
-											<span aria-label="${giv.featuredImagealtText}" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-												<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
-											</span>
-										</div>
-										<div class="Polaris-Stack__Item">
-											<h2 class="Polaris-Heading">${giv.title}</h2>
-										</div>
-									</div>
-								</div>
-							</div>
-						`)
-
-						$(`#${id}label`).click(function(){
-							$(`#${id}`).attr("aria-checked", $(`#${id}`).attr("checked") === "true" ? "true" : "false")
-						})
-					})
+			if(totalEntries){
+				if(isNaN(parseInt(totalEntries)) === true){
+					return alert("The Total Entries has to a number")
 				}
-			},
-			error: function(data){
-
 			}
-		})	
+			const starting = new Date(startDate+"T"+startTime)
+			const ending = new Date(endDate+"T"+endTime)
+			let form = {
+				"name": name,
+				"startDate": starting,
+				"endDate": ending,
+				"ofWinners": ofWinners,
+				"distribution": distrubution,
+				"totalRevenue": totalRevenue ? totalRevenue : 0,
+				"totalEntries": totalEntries ? totalEntries : 0,
+			}
+			//console.log(form)
 
-		$("#CPCDValue").text("Only the chosen products qualify as an entry into this giveaway")	
-	})
-
-	$("#ChooseCollectionBtn").click(function(){
-		$(this).addClass("Polaris-Button--pressed")
-		$("#AllProductsBtn").removeClass("Polaris-Button--pressed")
-		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")
-
-		$("#ProductSelectionModal").removeClass("disappear")
-
-		$("#CPCDValue").text("Only products in the chosen collection(s) qualify as an entry into this giveaway")
-	})
-
-	$("#ProductSelectionModalSave").click(function(){
-		let checked = []
-		$(".ProductSelectionModalItem:checked").each(function(i){
-			checked[i] = $(this).val()
-		})
-		if(checked.length === 0){
-			return alert("Please select at least one item before you save")
-		}
-
-		$("#ChosenProductsWrapper").remove()
-
-		let parsedData = []
-		checked.forEach(function(giv){
-			parsedData.push(giv.split(","))
-		})
-		$("#ChooseProductsChoiceDescript").after(`
-			<div id="ChosenProductsWrapper" class="Polaris-ResourceList__ResourceListWrapper">
-				<ul class="Polaris-ResourceList">
-					<span id="ChosenProductsDecoy"></span>
-				</ul>
-			</div>
-		`)
-
-		parsedData.forEach(function(giv){
-			const title = giv[1]
-			const id = giv[0]
-			const url = giv[2]
-
-			$("#ChosenProductsDecoy").after(`
-				<li class="Polaris-ResourceItem__ListItem">
-					<div class="Polaris-ResourceItem__ItemWrapper">
-						<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
-							<div class="Polaris-ResourceItem__Container" id="${id.split("/")[4]}">
-								<div class="Polaris-ResourceItem__Owned">
-									<div class="Polaris-ResourceItem__Media">
-										<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-											<img src="${url}" /> 
-										</span>
-									</div>
-								</div>
-								<div class="Polaris-ResourceItem__Content">
-									<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-										<div class="Polaris-Stack__Item">
-											<h3><span class="Polaris-TextStyle--variationStrong">${title}</span></h3>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</li>
+			$(this).addClass("Polaris-Button--loading")
+			$("#ContinueButtonText").before(`
+				<span id="ContinueButtonSpinner" class="Polaris-Button__Spinner">
+					<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+						<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+								<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+						</svg>
+					</span>
+					<span role="status">
+						<span class="Polaris-VisuallyHidden">Loading</span>
+					</span>
+				</span>
 			`)
-		})
 
-		$(".ProductSelectionModalItemContainer").remove()
-		$("#ProductsModalListDecoy").after(productLoadingStr)
-		$("#ProductSelectionModal").addClass("disappear")
-		
-	})
+			$.ajax({
+				url: "/campaign/long/new",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify({form}),
+				success: function(data){
+					//console.log(data) 
+					return location.href=data
+				},
+				error: function(data){
+					if(data.responseText === "Unauthorized"){
+						return location.href="/"
+					} else if(data.responseText === "Forbidden"){
+						return location.href="/billing/plans"
+					}
+
+					$("#ContinueButton").removeClass("Polaris-Button--loading")
+					$("#ContinueButtonSpinner").remove()
+					//console.log(data.responseText)
+					return alert(data.responseText)
+				}
+			})
+		})
+	}
+
 
 	//url === /campaign/long/new/hierarchical
 	const urlSearchParams = new URLSearchParams(window.location.search);
