@@ -1371,6 +1371,66 @@ $(document).ready(function(e){
 			})
 		}
 	}
+
+	const productLoadingStr = `
+		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+			<div class="Polaris-Stack__Item">
+				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+			</div>
+			<div class="Polaris-Stack__Item">
+				<div class="Polaris-Stack Polaris-Stack--spaceTight">
+					<div class="Polaris-Stack__Item">
+						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+						</span>
+					</div>
+					<div class="Polaris-Stack__Item">
+						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+			<div class="Polaris-Stack__Item">
+				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+			</div>
+			<div class="Polaris-Stack__Item">
+				<div class="Polaris-Stack Polaris-Stack--spaceTight">
+					<div class="Polaris-Stack__Item">
+						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+						</span>
+					</div>
+					<div class="Polaris-Stack__Item">
+						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalSketch" style="padding: 1.5em;">
+			<div class="Polaris-Stack__Item">
+				<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2"><span class="Polaris-Choice__Control"><span class="Polaris-Checkbox"><input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value=""><span class="Polaris-Checkbox__Backdrop"></span><span class="Polaris-Checkbox__Icon"><span class="Polaris-Icon"><span class="Polaris-VisuallyHidden"></span><svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+				<path d="m8.315 13.859-3.182-3.417a.506.506 0 0 1 0-.684l.643-.683a.437.437 0 0 1 .642 0l2.22 2.393 4.942-5.327a.436.436 0 0 1 .643 0l.643.684a.504.504 0 0 1 0 .683l-5.91 6.35a.437.437 0 0 1-.642 0"></path>
+				</svg></span></span></span></span><span class="Polaris-Choice__Label">Loading</span></label>
+			</div>
+			<div class="Polaris-Stack__Item">
+				<div class="Polaris-Stack Polaris-Stack--spaceTight">
+					<div class="Polaris-Stack__Item">
+						<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+							<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
+						</span>
+					</div>
+					<div class="Polaris-Stack__Item">
+						<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	`
 	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
@@ -1389,8 +1449,10 @@ $(document).ready(function(e){
 	})
 
 	$(".ProductSelectionModalClose").click(function(){
+		$(".ProductSelectionModalItemContainer").remove()
+		$("#ProductsModalListDecoy").after(productLoadingStr)
 		$("#ProductSelectionModal").addClass("disappear")
-		console.log("Clicked")
+		//console.log("Clicked")
 	})
 	
 	$("#LogoutButton").click(function(e){
@@ -1938,15 +2000,18 @@ $(document).ready(function(e){
 			contentType: "application/json",
 			success: function(data){
 				if(data.length > 0){
+					$(".ProductSelectionModalSketch").remove()
 					data.forEach(function(item){
 						const giv = item.node
+						const id = giv.id.split("/")[4]
+						console.log(id)
 						$("#ProductsModalListDecoy").after(`
-							<div class="Polaris-Stack Polaris-Stack--alignmentCenter" style="padding: 1.5em;">
+							<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalItemContainer" style="padding: 1.5em;">
 								<div class="Polaris-Stack__Item">
-									<label class="Polaris-Choice Polaris-Choice--labelHidden" for="PolarisCheckbox2">
+									<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
 										<span class="Polaris-Choice__Control">
 											<span class="Polaris-Checkbox">
-												<input id="PolarisCheckbox2" type="checkbox" class="Polaris-Checkbox__Input" aria-invalid="false" role="checkbox" aria-checked="false" value="">
+												<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id}-${giv.title}">
 													<span class="Polaris-Checkbox__Backdrop"></span>
 													<span class="Polaris-Checkbox__Icon">
 														<span class="Polaris-Icon">
@@ -1958,16 +2023,14 @@ $(document).ready(function(e){
 													</span>
 												</span>
 											</span>
-										<span class="Polaris-Choice__Label">Basic checkbox</span>
+										<span class="Polaris-Choice__Label">${giv.title}</span>
 									</label>
 			   					</div>
 								<div class="Polaris-Stack__Item">
 									<div class="Polaris-Stack Polaris-Stack--spaceTight">
 										<div class="Polaris-Stack__Item">
-											<span aria-label="Farrah" role="img" class="Polaris-Avatar Polaris-Avatar--sizeMedium">
-												<span class="Polaris-Avatar__Initials">
-													<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
-												</span>
+											<span aria-label="${giv.featuredImagealtText}" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+												<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
 											</span>
 										</div>
 										<div class="Polaris-Stack__Item">
@@ -1977,6 +2040,8 @@ $(document).ready(function(e){
 								</div>
 							</div>
 						`)
+
+						$(`#${id}`)
 					})
 				}
 			},
@@ -1992,6 +2057,14 @@ $(document).ready(function(e){
 		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")
 
 		$("#ProductSelectionModal").removeClass("disappear")
+	})
+
+	$("#ProductSelectionModalSave").click(function(){
+		let checked = []
+		$(".ProductSelectionModalItem:checked").each(function(i){
+			checked[i] = $(this).val()
+		})
+		console.log(checked)
 	})
 
 	//url === /campaign/long/new/hierarchical
@@ -4375,4 +4448,5 @@ $(document).ready(function(e){
 			}
 		})
 	}
+
 })

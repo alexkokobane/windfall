@@ -54,7 +54,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 		const storeProducts: any = await client.query({
 			data: `
 				{
-					products(first:100 ){
+					products(first:90 ){
 						edges{
 							node{
 								id,
