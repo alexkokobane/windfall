@@ -1985,7 +1985,9 @@ $(document).ready(function(e){
 	$("#AllProductsBtn").click(function(){		
 		$(this).addClass("Polaris-Button--pressed")
 		$("#ChooseCollectionBtn").removeClass("Polaris-Button--pressed")
-		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")		
+		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")	
+		$("#CPCDValue").text("All products qualify as an entry into this giveaway")	
+		$("#ChosenProductsWrapper").remove()
 	})
 
 	$("#ChooseProductsBtn").click(function(){		
@@ -2007,11 +2009,11 @@ $(document).ready(function(e){
 						console.log(id)
 						$("#ProductsModalListDecoy").after(`
 							<div class="Polaris-Stack Polaris-Stack--alignmentCenter ProductSelectionModalItemContainer" style="padding: 1.5em;">
-								<div class="Polaris-Stack__Item">
+								<div id="${id}label" class="Polaris-Stack__Item">
 									<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
 										<span class="Polaris-Choice__Control">
 											<span class="Polaris-Checkbox">
-												<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id}-${giv.title}">
+												<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url}">
 													<span class="Polaris-Checkbox__Backdrop"></span>
 													<span class="Polaris-Checkbox__Icon">
 														<span class="Polaris-Icon">
@@ -2041,14 +2043,18 @@ $(document).ready(function(e){
 							</div>
 						`)
 
-						$(`#${id}`)
+						$(`#${id}label`).click(function(){
+							$(`#${id}`).attr("aria-checked", $(`#${id}`).attr("checked") === "true" ? "true" : "false")
+						})
 					})
 				}
 			},
 			error: function(data){
 
 			}
-		})		
+		})	
+
+		$("#CPCDValue").text("Only the chosen products qualify as an entry into this giveaway")	
 	})
 
 	$("#ChooseCollectionBtn").click(function(){
@@ -2057,6 +2063,8 @@ $(document).ready(function(e){
 		$("#ChooseProductsBtn").removeClass("Polaris-Button--pressed")
 
 		$("#ProductSelectionModal").removeClass("disappear")
+
+		$("#CPCDValue").text("Only products in the chosen collection(s) qualify as an entry into this giveaway")
 	})
 
 	$("#ProductSelectionModalSave").click(function(){
@@ -2064,7 +2072,59 @@ $(document).ready(function(e){
 		$(".ProductSelectionModalItem:checked").each(function(i){
 			checked[i] = $(this).val()
 		})
-		console.log(checked)
+		if(checked.length === 0){
+			return alert("Please select at least one item before you save")
+		}
+
+		$("#ChosenProductsWrapper").remove()
+
+		let parsedData = []
+		checked.forEach(function(giv){
+			parsedData.push(giv.split(","))
+		})
+		$("#ChooseProductsChoiceDescript").after(`
+			<div id="ChosenProductsWrapper" class="Polaris-ResourceList__ResourceListWrapper">
+				<ul class="Polaris-ResourceList">
+					<span id="ChosenProductsDecoy"></span>
+				</ul>
+			</div>
+		`)
+
+		parsedData.forEach(function(giv){
+			const title = giv[1]
+			const id = giv[0]
+			const url = giv[2]
+
+			$("#ChosenProductsDecoy").after(`
+				<li class="Polaris-ResourceItem__ListItem">
+					<div class="Polaris-ResourceItem__ItemWrapper">
+						<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
+							<div class="Polaris-ResourceItem__Container" id="${id.split("/")[4]}">
+								<div class="Polaris-ResourceItem__Owned">
+									<div class="Polaris-ResourceItem__Media">
+										<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+											<img src="${url}" /> 
+										</span>
+									</div>
+								</div>
+								<div class="Polaris-ResourceItem__Content">
+									<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<h3><span class="Polaris-TextStyle--variationStrong">${title}</span></h3>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			`)
+		})
+
+		$(".ProductSelectionModalItemContainer").remove()
+		$("#ProductsModalListDecoy").after(productLoadingStr)
+		$("#ProductSelectionModal").addClass("disappear")
+		
 	})
 
 	//url === /campaign/long/new/hierarchical
