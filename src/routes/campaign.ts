@@ -352,6 +352,9 @@ campaign.post('/long/new/equitable/create', checkApiAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send('Invalid giveaway')
 		}
+		if(isNaN(amount) || parseFloat(amount) <= 0){
+			return res.send("The voucher amount has to be a number greater than zero.")
+		}
 		const ofWinners: number = giveaway.winnersTotal
 		const winnerArray: any = []  
 		for(let i = 0; i < ofWinners; i++){
