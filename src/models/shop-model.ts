@@ -64,6 +64,7 @@ const longEventSchema = new mongoose.Schema({
 	winnersGifted: Boolean,
 	qualifying: String,
 	qualifyingId: [String],
+	qualifyingItems: [Array],
 	entries: [{
 		firstName: String,
 		lastName: String,
@@ -115,6 +116,9 @@ const rapidEventSchema = new mongoose.Schema({
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
 	winnersTotal: Number,
+	qualifying: String,
+	qualifyingId: [String],
+	qualifyingItems: [Array],
 	prizes: {
 		normalPrize: Number,
 		grandPrize: Number
@@ -138,6 +142,9 @@ const rapidChildsSchema = new mongoose.Schema({
 	endDate: Date,
 	winnersChosen: Boolean,
 	winnersGifted: Boolean,
+	qualifying: String,
+	qualifyingId: [String],
+	qualifyingItems: [Array],
 	entries: [{
 		firstName: String,
 		lastName: String,
