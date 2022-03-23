@@ -125,12 +125,13 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					} else if(checkActive.qualifying === "select"){
 						let products: any[] = []
 						obj.line_items.forEach((item: any) => {
-							checkActive.qualifyingId.includes(item.product_id) ? products.push(item.price) : 0
+							checkActive.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
 						})
-
+						console.log(products)
 						subtotal = Math.round(products.reduce((sum: number, num: any) => sum+num, 0))
 						money = products.reduce((sum: number, num: any) => sum+num, 0)
-
+						console.log(subtotal)
+						console.log(money)
 						if(subtotal < 1){
 							return null
 						}
