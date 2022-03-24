@@ -189,42 +189,97 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						}
 					)
 					console.log(participant)
-					if(participant === null) {
-						let con: any = await RapidChild.updateOne(
-							{
-								'shop': shop, 
-								'startDate': {'$lte': new Date(dateNow)},
-								'endDate': {'$gte': new Date(dateNow)}
-							},
-							{
-								'$push': { 
-									'entries' : {
-										'firstName': firstName,
-										'lastName': lastName,
-										'email': email,
-										'points': subtotal,
-										'spent': money
+					// The setting up of chosen priducts rapid events
+					if(checkRapid.qualifying === "all"){
+						if(participant === null) {
+							let con: any = await RapidChild.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)}
+								},
+								{
+									'$push': { 
+										'entries' : {
+											'firstName': firstName,
+											'lastName': lastName,
+											'email': email,
+											'points': subtotal,
+											'spent': money
+										}
 									}
 								}
-							}
-						)
-						console.log("This is on rapid "+con)
-					} else {
-						let peat = await RapidChild.updateOne(
-							{
-								'shop': shop, 
-								'startDate': {'$lte': new Date(dateNow)},
-								'endDate': {'$gte': new Date(dateNow)},
-								'entries.email': email
-							},
-							{
-								'$inc': {
-									'entries.$.points': subtotal,
-									'entries.$.spent': money
+							)
+							console.log("This is on rapid "+con)
+						} else {
+							let peat = await RapidChild.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)},
+									'entries.email': email
+								},
+								{
+									'$inc': {
+										'entries.$.points': subtotal,
+										'entries.$.spent': money
+									}
 								}
-							}
-						)
-						console.log("This is on rapid "+peat)
+							)
+							console.log("This is on rapid "+peat)
+						}
+					} else if(checkRapid.qualifying === "select"){
+
+						let products: any[] = []
+						obj.line_items.forEach((item: any) => {
+							checkActive.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
+						})
+						console.log(products)
+						subtotal = Math.round(products.reduce((sum: number, num: any) => sum+num, 0))
+						money = products.reduce((sum: number, num: any) => sum+num, 0)
+						console.log(subtotal)
+						console.log(money)
+						if(subtotal < 1){
+							return null
+						}
+						
+						if(participant === null) {
+							let con: any = await RapidChild.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)}
+								},
+								{
+									'$push': { 
+										'entries' : {
+											'firstName': firstName,
+											'lastName': lastName,
+											'email': email,
+											'points': subtotal,
+											'spent': money
+										}
+									}
+								}
+							)
+							console.log("This is on rapid "+con)
+						} else {
+							let peat = await RapidChild.updateOne(
+								{
+									'shop': shop, 
+									'startDate': {'$lte': new Date(dateNow)},
+									'endDate': {'$gte': new Date(dateNow)},
+									'entries.email': email
+								},
+								{
+									'$inc': {
+										'entries.$.points': subtotal,
+										'entries.$.spent': money
+									}
+								}
+							)
+							console.log("This is on rapid "+peat)
+						}
 					}
 				}
 			}
