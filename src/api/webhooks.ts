@@ -232,7 +232,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 
 						let products: any[] = []
 						obj.line_items.forEach((item: any) => {
-							checkActive.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
+							checkRapid.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
 						})
 						console.log(products)
 						subtotal = Math.round(products.reduce((sum: number, num: any) => sum+num, 0))
@@ -242,7 +242,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						if(subtotal < 1){
 							return null
 						}
-						
+
 						if(participant === null) {
 							let con: any = await RapidChild.updateOne(
 								{
