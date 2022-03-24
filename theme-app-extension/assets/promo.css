@@ -20,13 +20,14 @@ img {
 }
 
 #windfall-app-tagline {
-	font-size: 1.8em;
+	font-size: 3em;
 	font-weight: bolder;
 }
 
 @media (max-width: 48.0625em){
 	#windfall-app-promo-content {
 	    left: 20%;
+	    top:  40%;
 	    transform: translate(-20%,-30%);
 	}
 	img {
