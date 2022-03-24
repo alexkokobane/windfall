@@ -10,7 +10,28 @@ import getShop from '../utils/get-shop'
 const billing = express.Router()
 
 billing.get('/', checkAuth, async (req, res) => {
-	res.render('pages/billing')
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/billing",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/billing",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/billing",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 billing.get('/plans', checkAuth, async (req, res) => {

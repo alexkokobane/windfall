@@ -733,7 +733,10 @@ data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 			"winnersGifted": event.winnersGifted,
 			"winnersTotal": event.winnersTotal,
 			"prizes": event.prizes,
-			"grandEvent": event.grandEvent
+			"grandEvent": event.grandEvent,
+			'qualifying': event.qualifying,
+			'qualifyingId': event.qualifyingId,
+			'qualifyingItems': event.qualifyingItems
 		}
 		console.log(justOne)
 		res.json(justOne)

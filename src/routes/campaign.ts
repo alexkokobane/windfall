@@ -167,7 +167,8 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 					totalEntries: data.totalEntries
 				},
 				qualifying: data.qualifying,
-				qualifyingId: data.qualifyingId
+				qualifyingId: data.qualifyingId,
+				qualifyingItems: data.qualifyingItems
 			}			
 		).save()
 		
@@ -997,7 +998,10 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			'prizes': {
 				'normalPrize': parseInt(data.normal),
 				'grandPrize': parseInt(data.grand)
-			}
+			},
+			'qualifying': data.qualifying,
+			'qualifyingId': data.qualifyingId,
+			'qualifyingItems': data.qualifyingItems
 		}).save()
 
 		
@@ -1019,7 +1023,10 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 				'winner': {
 					'prizeId': 1,
 					'voucherPrize': parseInt(data.normal)
-				}
+				},
+				'qualifying': data.qualifying,
+				'qualifyingId': data.qualifyingId,
+				'qualifyingItems': data.qualifyingItems
 			}).save()
 
 			childrenEvents.push({

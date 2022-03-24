@@ -4013,6 +4013,9 @@ $(document).ready(function(e){
 				"dates": dates,
 				"totalRevenue": totalRevenue ? totalRevenue : 0,
 				"totalEntries": totalEntries ? totalEntries : 0,
+				"qualifying": qualify.products,
+				"qualifyingId": qualify.products === "all" ? [] : qualifying,
+				"qualifyingItems": qualify.items
 			}
 
 			$(this).addClass("Polaris-Button--loading")
