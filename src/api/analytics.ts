@@ -103,7 +103,7 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 		const stats = {
 			"averageSpent": avgSpent,
 			"revenueGoal": parent.goals.totalRevenue,
-			"revenue": moneyMade,
+			"revenueGross": moneyMade,
 			"revenueProgress": revenueProgress,
 			"averageSpentProjected": projectedAvgSpent,
 			"averageSpentProgress": avgSpentProgress,
@@ -111,6 +111,7 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 			"totalPrizes": totalPrizes,
 			"status": true
 		}
+		console.log(stats)
 		res.json(stats)
 	} catch(err: any){
 		console.log(err)
