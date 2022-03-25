@@ -22,7 +22,7 @@ const newSubs = (plan: string): any[] => {
 			})
 		}
 	} else if( plan === "StarterPlus"){
-		for(let i: number = -5; i > 0; i++){
+		for(let i = -5; i > 0; i++){
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -32,7 +32,7 @@ const newSubs = (plan: string): any[] => {
 			})
 		}	
 	} else if (plan === "Standard"){
-		for(let i: number = -5; i > 0; i++){
+		for(let i = -5; i > 0; i++){
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -42,7 +42,7 @@ const newSubs = (plan: string): any[] => {
 			})
 		}
 	} else if(plan === "Ultimate"){
-		for(let i: number = -5; i > 0; i++){
+		for(let i = -5; i > 0; i++){
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -52,7 +52,7 @@ const newSubs = (plan: string): any[] => {
 			})
 		}
 	} else if(plan === "Enterprise"){
-		for(let i: number = -5; i > 0; i++){
+		for(let i = -5; i > 0; i++){
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),

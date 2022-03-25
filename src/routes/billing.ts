@@ -149,11 +149,13 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			)
 
 			const checkQuota = await Quota.findOne({'shop': session.shop})
+			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
-			if(checkQuota === null){
+			if(checkQuota === null || !checkQuota.entries){
 				new Quota({
 					shop: session.shop,
-					plan: checkShop.chargeDetails.plan
+					plan: checkShop.newChargeDetails.plan,
+					entries: entryQuotas
 				}).save()
 			} else {
 				await Quota.updateOne(
@@ -162,7 +164,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 					},
 					{
 						'$set': {
-							'plan': checkShop.chargeDetails.plan
+							'plan': checkShop.newChargeDetails.plan
 						}
 					}
 				)
@@ -207,11 +209,13 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			)
 
 			const checkQuota = await Quota.findOne({'shop': session.shop})
+			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
-			if(checkQuota === null){
+			if(checkQuota === null || !checkQuota.entries){
 				new Quota({
 					shop: session.shop,
-					plan: checkShop.chargeDetails.plan
+					plan: checkShop.newChargeDetails.plan,
+					entries: entryQuotas
 				}).save()
 			} else {
 				await Quota.updateOne(
@@ -220,7 +224,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 					},
 					{
 						'$set': {
-							'plan': checkShop.chargeDetails.plan
+							'plan': checkShop.newChargeDetails.plan
 						}
 					}
 				)
