@@ -144,4 +144,18 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 	}
 })
 
+analytics.get('/qouta', checkApiAuth, async (req, res) => {
+	try{
+		const dateNow = new Date(Date.now())
+		const priorSix = []
+		for(let i: number = -5, i > 0; i++){
+			const month: number = dateNow.getMonth() + i
+			priorSix.push(new Date(dateNow.setMonth(month)))
+		}
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 export default analytics

@@ -1,5 +1,6 @@
 $(document).ready(function(e){
 	//theme
+	console.log(new Date(new Date(Date.now()).setMonth(0)))
 	function datePicker(){
 		function renderMonth(num){
 
@@ -8,6 +9,8 @@ $(document).ready(function(e){
 				const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 				let dateNow = new Date(Date.now())
 				let theDate = new Date(dateNow.setMonth(num))
+				console.log(num)
+				console.log(theDate)
 				return {
 					"day": days[theDate.getDay()],
 					"month": months[theDate.getMonth()],

@@ -272,13 +272,12 @@ const quotaSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	campaignTemplates: Number,
-	eventCampaigns: {
-		count: Number,
-		days: Number
-	},
-	standaloneCampaigns: Number,
-	grandCampaigns: Number,
+	entries: [{
+		month: String,
+		value: Number,
+		maxValue: Number,
+		plan: String
+	}]
 })
 
 const Shop = mongoose.model('Shop', ShopSchema)

@@ -6,6 +6,7 @@ import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middle
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { divide, renderFor } from '../utils/render-divider'
 import getShop from '../utils/get-shop'
+import { generateDiscountCode, newSubs } from '../utils/functions'
 
 const billing = express.Router()
 
