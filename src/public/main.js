@@ -3958,6 +3958,47 @@ $(document).ready(function(e){
 				}
 			}
 		})
+
+		$.ajax({
+			url: "/analytics/quota/usage",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				let xLabels = []
+				let yData = []
+				data.entries.reverse().forEach(function(giv){
+					xLabels.push(giv.month)
+					yData.push(giv.value)
+				})
+				console.log("Anything")
+				console.log(xLabels)
+				console.log(yData)
+				const usageCtx = $("#QuotaUsage")
+				new Chart(usageCtx, {
+					type: "bar",
+					data: {
+						labels: xLabels,
+						datasets: [
+							{
+								label: "Entries",
+								backgroundColor: "violet",
+								data: yData
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
 	}
 
 	//url === /campaign/rapid/new
@@ -4593,40 +4634,6 @@ $(document).ready(function(e){
 						} else if(data.responseText === "Forbidden"){
 							return location.href="/billing/plans"
 						}
-					}
-				})
-
-				$.ajax({
-					url: "/analytics/quota/usage",
-					type: "GET",
-					contentType: "application/json",
-					success: function(data){
-						let xLabels = []
-						let yData = []
-						data.entries.reverse().forEach(function(giv){
-							xLabels.push(giv.month)
-							yData.push(giv.value)
-						})
-						const usageCtx = $("#QuotaUsage")
-						new Chart(usageCtx, {
-							type: "bar",
-							data: {
-								labels: xLabels,
-								datasets: [
-									{
-										label: "Entries",
-										backgroundColor: "violet",
-										data: yData
-									}
-								]
-							},
-							options: {
-								legend: {display: false}
-							}
-						})
-					},
-					error: function(data){
-
 					}
 				})
 

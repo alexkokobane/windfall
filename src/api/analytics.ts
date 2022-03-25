@@ -6,7 +6,7 @@ import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
-import { generateDiscountCode } from '../utils/functions'
+import { generateDiscountCode, newSubs } from '../utils/functions'
 
 const analytics = express.Router()
 
@@ -144,11 +144,14 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 	}
 })
 
-analytics.get('/qouta/usage', checkApiAuth, async (req, res) => {
+analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 	try{
 		const usage: any = {}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const quota = await Quota.findOne({'shop': session.shop})
+		const shop = await Shop.findOne({'shop': session.shop})
+		const entryQuotas: any[] = newSubs(shop.newChargeDetails.plan)
+		console.log(entryQuotas)
 		usage.entries = quota.entries
 		res.json(usage)
 	} catch(err: any){

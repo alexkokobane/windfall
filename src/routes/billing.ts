@@ -132,7 +132,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			}
 		})
 		console.log(switcher)
-		if(switcher.length = 1){
+		if(switcher.length === 0){
 			await Shop.updateOne(
 				{
 					'shop': session.shop
@@ -151,7 +151,8 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			const checkQuota = await Quota.findOne({'shop': session.shop})
 			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
-			if(checkQuota === null || !checkQuota.entries){
+			console.log(entryQuotas)
+			if(checkQuota === null || checkQuota.entries.length === 0){
 				new Quota({
 					shop: session.shop,
 					plan: checkShop.newChargeDetails.plan,
@@ -170,7 +171,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 				)
 			}
 			return res.redirect('/')
-		} else if(switcher.length > 1){
+		} else if(switcher.length > 0){
 			// Delete prev subscription
 			const deleteCurrentPlan: any = await client.query(
 				{
@@ -211,7 +212,8 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			const checkQuota = await Quota.findOne({'shop': session.shop})
 			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
-			if(checkQuota === null || !checkQuota.entries){
+			console.log(entryQuotas)
+			if(checkQuota === null || checkQuota.entries.length === 0){
 				new Quota({
 					shop: session.shop,
 					plan: checkShop.newChargeDetails.plan,

@@ -8,14 +8,19 @@ const generateDiscountCode = (length: number): string => {
    return result;
 }
 
-const newSubs = (plan: string): any[] => {
-	const dateNow = new Date(Date.now())
-	const priorSix: any[] = []
-	if(plan === "Starter"){		
-		for(let i: number = -5; i > 0; i++){
+const newSubs = (plan: string): any[] => {	
+	console.log(plan)
+	let priorSix: any[] = []
+	if(plan === "Starter"){	
+		for(let i = -5; i <= 0; i++){
+			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
+			console.log(dateNow.getMonth()+" is the month now")
+			console.log(i+ " is the index")
+			console.log(month+" the sum of month now plus index")
+			console.log("-------------------------------")
 			priorSix.push({
-				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
+				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
 				"maxValue": 200,
 				"plan": "Starter"
@@ -23,6 +28,7 @@ const newSubs = (plan: string): any[] => {
 		}
 	} else if( plan === "StarterPlus"){
 		for(let i = -5; i > 0; i++){
+			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -33,6 +39,7 @@ const newSubs = (plan: string): any[] => {
 		}	
 	} else if (plan === "Standard"){
 		for(let i = -5; i > 0; i++){
+			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -43,6 +50,7 @@ const newSubs = (plan: string): any[] => {
 		}
 	} else if(plan === "Ultimate"){
 		for(let i = -5; i > 0; i++){
+			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
@@ -53,6 +61,7 @@ const newSubs = (plan: string): any[] => {
 		}
 	} else if(plan === "Enterprise"){
 		for(let i = -5; i > 0; i++){
+			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 8),
