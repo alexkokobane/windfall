@@ -15,10 +15,6 @@ const newSubs = (plan: string): any[] => {
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
-			console.log(dateNow.getMonth()+" is the month now")
-			console.log(i+ " is the index")
-			console.log(month+" the sum of month now plus index")
-			console.log("-------------------------------")
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
@@ -42,10 +38,6 @@ const newSubs = (plan: string): any[] => {
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
-			console.log(dateNow.getMonth()+" is the month now")
-			console.log(i+ " is the index")
-			console.log(month+" the sum of month now plus index")
-			console.log("-------------------------------")
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,

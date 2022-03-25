@@ -152,6 +152,8 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 		const shop = await Shop.findOne({'shop': session.shop})
 		const entryQuotas: any[] = newSubs(shop.newChargeDetails.plan)
 		console.log(entryQuotas)
+		usage.max = quota.entries[quota.entries.length - 1].maxValue
+		usage.usage = (quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100
 		usage.entries = quota.entries
 		res.json(usage)
 	} catch(err: any){

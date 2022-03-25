@@ -3964,13 +3964,15 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				$("#MonthlyLimit").text(data.max)
+				$("#MonthlyUsage").text(data.usage+"%")
 				let xLabels = []
 				let yData = []
-				data.entries.reverse().forEach(function(giv){
+				data.entries.forEach(function(giv){
 					xLabels.push(giv.month)
 					yData.push(giv.value)
 				})
-				console.log("Anything")
+				//console.log("Anything")
 				console.log(xLabels)
 				console.log(yData)
 				const usageCtx = $("#QuotaUsage")

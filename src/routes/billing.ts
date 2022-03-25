@@ -152,24 +152,61 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
 			console.log(entryQuotas)
-			if(checkQuota === null || checkQuota.entries.length === 0){
+			if(checkQuota === null ){
 				new Quota({
 					shop: session.shop,
 					plan: checkShop.newChargeDetails.plan,
 					entries: entryQuotas
 				}).save()
-			} else {
-				await Quota.updateOne(
+			} else if(checkQuota.entries.length === 0){
+
+				const updateQuota = await Quota.updateOne(
 					{
 						'shop': session.shop
 					},
 					{
 						'$set': {
-							'plan': checkShop.newChargeDetails.plan
+							'plan': checkShop.newChargeDetails.plan,
+							'entries': entryQuotas
 						}
 					}
 				)
+				console.log(updateQuota)
+				console.log("from billing 003")
+			} else {
+				const month = new Date(Date.now()).toISOString().substring(0, 7)
+				const upQuota = await Quota.updateOne(
+					{
+						'shop': session.shop,
+						'entries.month': month
+					},
+					{
+						'$set': {
+							'plan': checkShop.newChargeDetails.plan,
+							'entries.$.maxValue': entryQuotas[entryQuotas.length-1].maxValue,
+							'entries.$.plan': entryQuotas[entryQuotas.length-1].plan
+						}
+					}
+				)
+				console.log(upQuota)
+				console.log("from billing 004")
+				if(upQuota.modifiedCount !== 1){
+					await Quota.updateOne(
+						{
+							'shop': session.shop
+						},
+						{
+							'$set': {
+								'plan': checkShop.newChargeDetails.plan
+							},
+							'$push': {
+								'entries': entryQuotas[entryQuotas.length-1]
+							}
+						}
+					)
+				}
 			}
+
 			return res.redirect('/')
 		} else if(switcher.length > 0){
 			// Delete prev subscription
@@ -213,23 +250,59 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			const entryQuotas: any[] = newSubs(checkShop.newChargeDetails.plan)
 			console.log(checkQuota)
 			console.log(entryQuotas)
-			if(checkQuota === null || checkQuota.entries.length === 0){
+			if(checkQuota === null ){
 				new Quota({
 					shop: session.shop,
 					plan: checkShop.newChargeDetails.plan,
 					entries: entryQuotas
 				}).save()
-			} else {
-				await Quota.updateOne(
+			} else if(checkQuota.entries.length === 0){
+
+				const updateQuota = await Quota.updateOne(
 					{
 						'shop': session.shop
 					},
 					{
 						'$set': {
-							'plan': checkShop.newChargeDetails.plan
+							'plan': checkShop.newChargeDetails.plan,
+							'entries': entryQuotas
 						}
 					}
 				)
+				console.log(updateQuota)
+				console.log("from billing 001")
+			} else {
+				const month = new Date(Date.now()).toISOString().substring(0, 7)
+				const upQuota = await Quota.updateOne(
+					{
+						'shop': session.shop,
+						'entries.month': month
+					},
+					{
+						'$set': {
+							'plan': checkShop.newChargeDetails.plan,
+							'entries.$.maxValue': entryQuotas[entryQuotas.length-1].maxValue,
+							'entries.$.plan': entryQuotas[entryQuotas.length-1].plan
+						}
+					}
+				)
+				console.log(upQuota)
+				console.log("from billing 002")
+				if(upQuota.modifiedCount !== 1){
+					await Quota.updateOne(
+						{
+							'shop': session.shop
+						},
+						{
+							'$set': {
+								'plan': checkShop.newChargeDetails.plan
+							},
+							'$push': {
+								'entries': entryQuotas[entryQuotas.length-1]
+							}
+						}
+					)
+				}
 			}
 			return res.redirect('/')
 		}
