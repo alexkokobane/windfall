@@ -144,9 +144,13 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 	}
 })
 
-analytics.get('/qouta', checkApiAuth, async (req, res) => {
+analytics.get('/qouta/usage', checkApiAuth, async (req, res) => {
 	try{
-		res.send("smiley face")
+		const usage: any = {}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const quota = await Quota.findOne({'shop': session.shop})
+		usage.entries = quota.entries
+		res.json(usage)
 	} catch(err: any){
 		console.log(err)
 		return err
