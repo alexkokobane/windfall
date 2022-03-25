@@ -132,14 +132,74 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 			}
 		})
 		console.log(switcher)
-		if(switcher.length > 0){
+		if(switcher.length = 1){
 			await Shop.updateOne(
 				{
 					'shop': session.shop
 				},
 				{
 					'$set': {
-						'pricePlan': checkShop.chargeDetails.plan,
+						'pricePlan': checkShop.newChargeDetails.plan,
+						'chargeDetails.id': checkShop.newChargeDetails.id,
+						'chargeDetails.plan': checkShop.newChargeDetails.plan,
+						'chargeDetails.confirmed': true,
+						'chargeDetails.confirmedAt': Date.now()
+					}
+				}
+			)
+
+			const checkQuota = await Quota.findOne({'shop': session.shop})
+			console.log(checkQuota)
+			if(checkQuota === null){
+				new Quota({
+					shop: session.shop,
+					plan: checkShop.chargeDetails.plan
+				}).save()
+			} else {
+				await Quota.updateOne(
+					{
+						'shop': session.shop
+					},
+					{
+						'$set': {
+							'plan': checkShop.chargeDetails.plan
+						}
+					}
+				)
+			}
+			return res.redirect('/')
+		} else if(switcher.length > 1){
+			// Delete prev subscription
+			const deleteCurrentPlan: any = await client.query(
+				{
+					data: `mutation{
+						appSubscriptionCancel(id: "${checkShop.chargeDetails.id}"){
+							appSubscription{
+								name
+							},
+							userErrors{
+								field
+							}
+						}
+					}`
+				}
+			)
+			console.log(deleteCurrentPlan.body.data)
+			if(!deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription.name){
+				console.log(deleteCurrentPlan.body.data.appSubscription)
+				console.log("failed to delete subscription")
+				return res.redirect('/billing')
+			}
+
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'pricePlan': checkShop.newChargeDetails.plan,						
+						'chargeDetails.id': checkShop.newChargeDetails.id,
+						'chargeDetails.plan': checkShop.newChargeDetails.plan,
 						'chargeDetails.confirmed': true,
 						'chargeDetails.confirmedAt': Date.now()
 					}
@@ -259,9 +319,8 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Starter',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -318,9 +377,8 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Standard',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -377,9 +435,8 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Ultimate',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -424,26 +481,7 @@ billing.get('/change/subscription', checkAuth, forCommon, async (req, res) => {
 		const checkShop = await Shop.findOne({shop: session.shop})		
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 		console.log(checkShop.chargeDetails.id)
-		const deleteCurrentPlan: any = await client.query(
-			{
-				data: `mutation{
-					appSubscriptionCancel(id: "${checkShop.chargeDetails.id}"){
-						appSubscription{
-							name
-						},
-						userErrors{
-							field
-						}
-					}
-				}`
-			}
-		)
-		console.log(deleteCurrentPlan.body.data)
-		if(!deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription.name){
-			console.log(deleteCurrentPlan.body.data.appSubscription)
-			console.log("failed to delete subscription")
-			return res.redirect('/billing')
-		}
+		
 
 		const plan = checkShop.pricePlan
 
@@ -495,9 +533,8 @@ billing.get('/change/subscription', checkAuth, forCommon, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Standard',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -554,9 +591,8 @@ billing.get('/change/subscription', checkAuth, forCommon, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Standard',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -613,9 +649,8 @@ billing.get('/change/subscription', checkAuth, forCommon, async (req, res) => {
 				},
 				{
 					'$set': {
-						'chargeDetails': {
+						'newChargeDetails': {
 							'plan': 'Ultimate',
-							'confirmed': false,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}

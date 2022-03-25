@@ -18,6 +18,14 @@ const ShopSchema = new mongoose.Schema({
 			default: Date.now()
 		}
 	},
+	newChargeDetails: {
+		plan: String,
+		id: String,
+		createdAt: {
+			type: Date,
+			default: Date.now()
+		}
+	},
 	scope: [String],
 	email: String,
 	entryNotificationTemplates: [{
