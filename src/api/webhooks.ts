@@ -3,6 +3,7 @@ import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
 import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
 import ActiveShop from '../models/session-model'
+import { generateDiscountCode, newSubs } from '../utils/functions' 
 
 const webhooks = express.Router()
 
@@ -82,6 +83,48 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							}
 						}
 					)
+
+					// update usage quota
+					const quota = await Quota.findOne({'shop': shop})
+					const month = new Date(Date.now()).toISOString().substring(0, 7)
+					const maxQuota = quota.entries[quota.entries.length - 1].maxValue
+					const valueQuota = quota.entries[quota.entries.length - 1].value
+					if(valueQuota > maxQuota){
+						return null
+					} else if(valueQuota+1 > maxQuota){
+						return null
+					} else {
+						const upQ = await Quota.updateOne(
+							{
+								'shop': shop,
+								'entries.month': month
+							},
+							{
+								'$inc': {
+									'entries.$.value': 1
+								}
+							}
+						)
+
+						if(upQ.modifiedCount !== 1){
+							const newMonth = newSubs(checkActive.plan)
+							const upQplus = await Quota.updateOne(
+								{
+									'shop': shop
+								},
+								{
+									'$push': {
+										'entries': {
+											'month': newMonth[newMonth.length - 1].month,
+											'value': 1,
+											'maxValue': newMonth[newMonth.length - 1].maxValue,
+											'plan': newMonth[newMonth.length - 1].plan
+										}
+									}
+								}
+							)
+						}
+					}
 					console.log(participant)
 					// check for qualifying products and respond accordingly
 					if(checkActive.qualifying === "all"){
