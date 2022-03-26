@@ -84,50 +84,54 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						}
 					)
 
-					// update usage quota
-					const quota = await Quota.findOne({'shop': shop})
-					const month = new Date(Date.now()).toISOString().substring(0, 7)
-					const maxQuota = quota.entries[quota.entries.length - 1].maxValue
-					const valueQuota = quota.entries[quota.entries.length - 1].value
-					if(valueQuota > maxQuota){
-						return null
-					} else if(valueQuota+1 > maxQuota){
-						return null
-					} else {
-						const upQ = await Quota.updateOne(
-							{
-								'shop': shop,
-								'entries.month': month
-							},
-							{
-								'$inc': {
-									'entries.$.value': 1
-								}
-							}
-						)
-
-						if(upQ.modifiedCount !== 1){
-							const newMonth = newSubs(checkActive.plan)
-							const upQplus = await Quota.updateOne(
-								{
-									'shop': shop
-								},
-								{
-									'$push': {
-										'entries': {
-											'month': newMonth[newMonth.length - 1].month,
-											'value': 1,
-											'maxValue': newMonth[newMonth.length - 1].maxValue,
-											'plan': newMonth[newMonth.length - 1].plan
-										}
-									}
-								}
-							)
-						}
-					}
 					console.log(participant)
 					// check for qualifying products and respond accordingly
 					if(checkActive.qualifying === "all"){
+
+						// update usage quota 
+						const quota = await Quota.findOne({'shop': shop})
+						const month = new Date(Date.now()).toISOString().substring(0, 7)
+						const maxQuota = quota.entries[quota.entries.length - 1].maxValue
+						const valueQuota = quota.entries[quota.entries.length - 1].value
+						if(valueQuota > maxQuota){
+							return null
+						} else if(valueQuota+1 > maxQuota){
+							return null
+						} else {
+							const upQ = await Quota.updateOne(
+								{
+									'shop': shop,
+									'entries.month': month
+								},
+								{
+									'$inc': {
+										'entries.$.value': 1
+									}
+								}
+							)
+
+							if(upQ.modifiedCount !== 1){
+								const newMonth = newSubs(checkActive.plan)
+								const upQplus = await Quota.updateOne(
+									{
+										'shop': shop
+									},
+									{
+										'$push': {
+											'entries': {
+												'month': newMonth[newMonth.length - 1].month,
+												'value': 1,
+												'maxValue': newMonth[newMonth.length - 1].maxValue,
+												'plan': newMonth[newMonth.length - 1].plan
+											}
+										}
+									}
+								)
+							}
+						}
+
+
+						// update event information
 						if(participant === null) {
 							let con: any = await Long.updateOne(
 								{
@@ -166,6 +170,50 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							console.log("This is on long "+peat)
 						}
 					} else if(checkActive.qualifying === "select"){
+
+						// update usage quota
+						const quota = await Quota.findOne({'shop': shop})
+						const month = new Date(Date.now()).toISOString().substring(0, 7)
+						const maxQuota = quota.entries[quota.entries.length - 1].maxValue
+						const valueQuota = quota.entries[quota.entries.length - 1].value
+						if(valueQuota > maxQuota){
+							return null
+						} else if(valueQuota+1 > maxQuota){
+							return null
+						} else {
+							const upQ = await Quota.updateOne(
+								{
+									'shop': shop,
+									'entries.month': month
+								},
+								{
+									'$inc': {
+										'entries.$.value': 1
+									}
+								}
+							)
+
+							if(upQ.modifiedCount !== 1){
+								const newMonth = newSubs(checkActive.plan)
+								const upQplus = await Quota.updateOne(
+									{
+										'shop': shop
+									},
+									{
+										'$push': {
+											'entries': {
+												'month': newMonth[newMonth.length - 1].month,
+												'value': 1,
+												'maxValue': newMonth[newMonth.length - 1].maxValue,
+												'plan': newMonth[newMonth.length - 1].plan
+											}
+										}
+									}
+								)
+							}
+						}
+
+						// update event information
 						let products: any[] = []
 						obj.line_items.forEach((item: any) => {
 							checkActive.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
@@ -234,6 +282,50 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					console.log(participant)
 					// The setting up of chosen priducts rapid events
 					if(checkRapid.qualifying === "all"){
+
+						// update usage quota
+						const quota = await Quota.findOne({'shop': shop})
+						const month = new Date(Date.now()).toISOString().substring(0, 7)
+						const maxQuota = quota.entries[quota.entries.length - 1].maxValue
+						const valueQuota = quota.entries[quota.entries.length - 1].value
+						if(valueQuota > maxQuota){
+							return null
+						} else if(valueQuota+1 > maxQuota){
+							return null
+						} else {
+							const upQ = await Quota.updateOne(
+								{
+									'shop': shop,
+									'entries.month': month
+								},
+								{
+									'$inc': {
+										'entries.$.value': 1
+									}
+								}
+							)
+
+							if(upQ.modifiedCount !== 1){
+								const newMonth = newSubs(checkActive.plan)
+								const upQplus = await Quota.updateOne(
+									{
+										'shop': shop
+									},
+									{
+										'$push': {
+											'entries': {
+												'month': newMonth[newMonth.length - 1].month,
+												'value': 1,
+												'maxValue': newMonth[newMonth.length - 1].maxValue,
+												'plan': newMonth[newMonth.length - 1].plan
+											}
+										}
+									}
+								)
+							}
+						}
+
+						// update event information
 						if(participant === null) {
 							let con: any = await RapidChild.updateOne(
 								{
@@ -273,6 +365,50 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 						}
 					} else if(checkRapid.qualifying === "select"){
 
+						// update usage quota
+						const quota = await Quota.findOne({'shop': shop})
+						const month = new Date(Date.now()).toISOString().substring(0, 7)
+						const maxQuota = quota.entries[quota.entries.length - 1].maxValue
+						const valueQuota = quota.entries[quota.entries.length - 1].value
+						if(valueQuota > maxQuota){
+							return null
+						} else if(valueQuota+1 > maxQuota){
+							return null
+						} else {
+							const upQ = await Quota.updateOne(
+								{
+									'shop': shop,
+									'entries.month': month
+								},
+								{
+									'$inc': {
+										'entries.$.value': 1
+									}
+								}
+							)
+
+							if(upQ.modifiedCount !== 1){
+								const newMonth = newSubs(checkActive.plan)
+								const upQplus = await Quota.updateOne(
+									{
+										'shop': shop
+									},
+									{
+										'$push': {
+											'entries': {
+												'month': newMonth[newMonth.length - 1].month,
+												'value': 1,
+												'maxValue': newMonth[newMonth.length - 1].maxValue,
+												'plan': newMonth[newMonth.length - 1].plan
+											}
+										}
+									}
+								)
+							}
+						}
+
+
+						// update event information
 						let products: any[] = []
 						obj.line_items.forEach((item: any) => {
 							checkRapid.qualifyingId.includes(item.product_id) ? products.push(parseFloat(item.price)*item.quantity) : 0
