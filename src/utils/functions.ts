@@ -52,7 +52,7 @@ const newSubs = (plan: string): any[] => {
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
-				"maxValue": 200000,
+				"maxValue": 1000000,
 				"plan": "Ultimate"
 			})
 		}

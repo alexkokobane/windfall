@@ -9,11 +9,22 @@ shopInfo.get('/', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({shop: session.shop})
-
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const data: any = await client.query(
+			{
+				data: `{
+					shop {
+						currencyCode
+					}
+				}`
+			}
+		)
+		console.log(data)
 		res.json({
 			'shop': shop.shop, 
 			'user': session.onlineAccessInfo.associated_user.first_name,
-			'plan': shop.pricePlan
+			'plan': shop.pricePlan,
+			'currency': data.body.data.shop.currencyCode
 		})
 	} catch(err: any){
 		console.log(err)
