@@ -972,7 +972,9 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 		if(clashingDates.length !== 0){
 			return res.status(403).send("Clashing dates have been found, please use the provided validator to check.")
 		}
-
+		if(data.currencyCode.length !== 3){
+			return res.status(403).send("No currency code detected, please reload this page.")
+		}
 		// The creation of a rapid event
 		const rapidId = Math.floor(Math.random() * 1000000000)
 		const grandId = Math.floor(Math.random() * 1000000000)
@@ -1001,7 +1003,8 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			},
 			'qualifying': data.qualifying,
 			'qualifyingId': data.qualifyingId,
-			'qualifyingItems': data.qualifyingItems
+			'qualifyingItems': data.qualifyingItems,
+			'currencyCode': data.currencyCode
 		}).save()
 
 		
@@ -1026,7 +1029,8 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 				},
 				'qualifying': data.qualifying,
 				'qualifyingId': data.qualifyingId,
-				'qualifyingItems': data.qualifyingItems
+				'qualifyingItems': data.qualifyingItems,
+				'currencyCode': data.currencyCode
 			}).save()
 
 			childrenEvents.push({
@@ -1047,7 +1051,8 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 				'prizeId': 1,
 				'voucherPrize': parseInt(data.grand)
 			}],
-			'childrenEvents': childrenEvents
+			'childrenEvents': childrenEvents,
+			'currencyCode': data.currencyCode
 		}).save()
 
 		res.send(`/campaign/rapid/${rapidId}`)

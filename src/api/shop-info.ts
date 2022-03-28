@@ -19,7 +19,7 @@ shopInfo.get('/', checkApiAuth, async (req, res) => {
 				}`
 			}
 		)
-		console.log(data)
+		console.log(data.body.data.shop.currencyCode)
 		res.json({
 			'shop': shop.shop, 
 			'user': session.onlineAccessInfo.associated_user.first_name,

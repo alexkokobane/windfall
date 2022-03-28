@@ -1,6 +1,6 @@
 $(document).ready(function(e){
 	//theme
-	console.log(new Date(new Date(Date.now()).setMonth(0)))
+	
 	function datePicker(){
 		function renderMonth(num){
 
@@ -1579,6 +1579,7 @@ $(document).ready(function(e){
 
 		return quantity
 	}
+
 	////////////
 	$("#BurgerMenu").click(function(){
 		$("#AppFrameNav").toggle()
@@ -2157,7 +2158,7 @@ $(document).ready(function(e){
 			render.unshift(i)
 		}
 		let vouchers = {}
-
+		getCurrencyCode()
 		$(".WinnerPlaceholder").remove()
 		render.forEach((val) => {
 			val++
@@ -2181,7 +2182,7 @@ $(document).ready(function(e){
 						<div id="VoucherFIeldContainer${val}" class="Polaris-Stack__Item">
 							<div class="Polaris-Labelled">
 								<div class="Polaris-Labelled__LabelWrapper">
-									<div class="Polaris-Label"><label id="VoucherInputLabel${val}" for="VoucherInputField${val}" class="Polaris-Label__Text">Voucher amount</label></div>
+									<div class="Polaris-Label"><label id="VoucherInputLabel${val}" for="VoucherInputField${val}" class="Polaris-Label__Text">Voucher amount <span class="CurrencyCode"></span></label></div>
 								</div>
 								<div class="Polaris-Connected">
 									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
@@ -2200,7 +2201,7 @@ $(document).ready(function(e){
 
 			$(`#VoucherInputField${val}`).on("input", function(){
 				vouchers[val] = $(this).val()
-				console.log(vouchers)
+				//console.log(vouchers)
 			})
 		})
 		$("#HCreate").click(function(e){
@@ -2253,7 +2254,6 @@ $(document).ready(function(e){
 		if(voucher === "" && parseInt(voucher) == null){
 			return alert("Enter voucher amount and make sure they are number")
 		}
-
 
 		$(this).addClass("Polaris-Button--loading")
 		$("#ECreateText").before(`
@@ -4008,6 +4008,24 @@ $(document).ready(function(e){
 
 		let chosenDays = datePicker()
 		let qualify = chooseProducts()
+		let code
+		$.ajax({
+			url: "/shop",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".CCSketch").remove()
+				$(".CurrencyCode").text(data.currency)
+				code = data.currency
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
 
 		$("#RValidateBtn").click(function(){
 			let dates = []
@@ -4095,8 +4113,12 @@ $(document).ready(function(e){
 				return alert("Please fill all fields.")
 			}
 
+			if(code.length !== 3){
+				return alert("No currency code detected, please reload this page.")
+			}
+
 			if(qualify.products === "select" && qualify.items.length === 0){
-				return alret("Please select at least one qualifying product")
+				return alert("Please select at least one qualifying product")
 			}
 
 			let qualifying = []
@@ -4126,7 +4148,8 @@ $(document).ready(function(e){
 				"totalEntries": totalEntries ? totalEntries : 0,
 				"qualifying": qualify.products,
 				"qualifyingId": qualify.products === "all" ? [] : qualifying,
-				"qualifyingItems": qualify.items
+				"qualifyingItems": qualify.items,
+				"currencyCode": code
 			}
 
 			$(this).addClass("Polaris-Button--loading")
