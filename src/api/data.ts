@@ -108,7 +108,8 @@ data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 			"winners": giveaway.winners,
 			'qualifying': giveaway.qualifying,
 			'qualifyingId': giveaway.qualifyingId,
-			'qualifyingItems': giveaway.qualifyingItems
+			'qualifyingItems': giveaway.qualifyingItems,
+			"currencyCode": giveaway.currencyCode
 		}
 		console.log(justOne)
 		res.json(justOne)

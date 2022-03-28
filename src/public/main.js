@@ -2053,6 +2053,24 @@ $(document).ready(function(e){
 		$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 		$("#EndDate").attr("min", new Date().toISOString().split('T')[0])
 		$("#ValidateBtn").click(function(){validateLong()})
+		let code
+		$.ajax({
+			url: "/shop",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".CCSketch").remove()
+				$(".CurrencyCode").text(data.currency)
+				code = data.currency
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
 
 		let qualify = chooseProducts()
 		$("#ContinueButton").click(function(e){
@@ -2075,6 +2093,10 @@ $(document).ready(function(e){
 			}
 			if(qualify.products === "select" && qualify.items.length === 0){
 				return alret("Please select at least one qualifying product")
+			}
+
+			if(code.length !== 3){
+				return alert("No currency code detected, please reload this page.")
 			}
 
 			let qualifying = []
@@ -2104,7 +2126,8 @@ $(document).ready(function(e){
 				"totalEntries": totalEntries ? totalEntries : 0,
 				"qualifying": qualify.products,
 				"qualifyingId": qualify.products === "all" ? [] : qualifying,
-				"qualifyingItems": qualify.items
+				"qualifyingItems": qualify.items,
+				"currencyCode": code
 			}
 			//console.log(form)
 
@@ -2158,11 +2181,11 @@ $(document).ready(function(e){
 			render.unshift(i)
 		}
 		let vouchers = {}
-		getCurrencyCode()
+
 		$(".WinnerPlaceholder").remove()
 		render.forEach((val) => {
 			val++
-			console.log(val)
+			//console.log(val)
 			$("#EachWinnerHeader").after(
 				`<div class="Polaris-Card__Section">
 					<div class="Polaris-Stack Polaris-Stack--vertical">
@@ -2182,12 +2205,11 @@ $(document).ready(function(e){
 						<div id="VoucherFIeldContainer${val}" class="Polaris-Stack__Item">
 							<div class="Polaris-Labelled">
 								<div class="Polaris-Labelled__LabelWrapper">
-									<div class="Polaris-Label"><label id="VoucherInputLabel${val}" for="VoucherInputField${val}" class="Polaris-Label__Text">Voucher amount <span class="CurrencyCode"></span></label></div>
+									<div class="Polaris-Label"><label id="VoucherInputLabel${val}" for="VoucherInputField${val}" class="Polaris-Label__Text">Voucher amount</label></div>
 								</div>
 								<div class="Polaris-Connected">
 									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
 										<div class="Polaris-TextField Polaris-TextField--hasValue">
-											<div class="Polaris-TextField__Prefix" id="VoucherInputFieldPrefix${val}">$</div>
 											<input id="VoucherInputField${val}" autocomplete="off" class="Polaris-TextField__Input" type="number" aria-labelledby="VoucherInputField${val} VoucherInputFieldPrefix${val}" aria-invalid="false" value="">
 											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
@@ -2303,7 +2325,7 @@ $(document).ready(function(e){
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				
-
+				let code = data.currencyCode
 				dates = []
 				let startDate = Number(new Date(data.startDate))
 				let endDate = Number(new Date(data.endDate))
@@ -2518,7 +2540,7 @@ $(document).ready(function(e){
 				$("#ForType").text(data.type)
 				data.winners.reverse().forEach(function(item){
 					$("#GiveawayWinnerListDecoy").after(`
-						<li class="Polaris-List__Item">Number ${item.prizeId} - $${item.voucherPrize} store voucher</li>
+						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} ${code}</li>
 					`)
 				})
 				$(".Add-Giveaway-Template").click(function(){
@@ -4643,7 +4665,7 @@ $(document).ready(function(e){
 								labels: ["Projected Avg Spent", "Average Spent"],
 								datasets: [
 									{
-										label: "Money (in"+code+")",
+										label: "Money (in "+code+")",
 										backgroundColor: ["violet", "indigo"],
 										data: [data.averageSpentProjected, data.averageSpent]
 									}

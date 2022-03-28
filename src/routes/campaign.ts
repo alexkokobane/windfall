@@ -89,8 +89,12 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 		} else if(plan ==="Ultimate" && count > 1000){
 			return res.status(403).send("Sorry, you have reached your quota")
 		}
-		if(parseInt(data.ofWinners) > 10 || parseInt(data.ofWinners) <= 0){
+		if(parseInt(data.ofWinners) > 50 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
+		}
+
+		if(data.currencyCode.length !== 3){
+			return res.status(403).send("No currency code detected, please reload this page.")
 		}
 
 		let keyValue: any[] = []
@@ -168,7 +172,8 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 				},
 				qualifying: data.qualifying,
 				qualifyingId: data.qualifyingId,
-				qualifyingItems: data.qualifyingItems
+				qualifyingItems: data.qualifyingItems,
+				currencyCode: data.currencyCode
 			}			
 		).save()
 		
