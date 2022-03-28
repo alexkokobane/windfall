@@ -4197,13 +4197,14 @@ $(document).ready(function(e){
 			success: function(data){
 				$(".FirstSketch").remove()
 				eventCalendar(data.dates)
+				let code = data.currencyCode
 				$("#RapidName").text(data.title)
 				$("#TotalWinners").text(data.winnersTotal+" prizes up for grabs, plus a single Grand prize.")
 				$("#RegularPrize").text(`
-					${data.prizes.normalPrize} USD
+					${data.prizes.normalPrize} ${code}
 				`)
 				$("#GrandPrize").text(`
-					${data.prizes.grandPrize} USD
+					${data.prizes.grandPrize} ${code}
 				`)
 
 				$("#DeleteRapidBtn").click(function(){
@@ -4622,7 +4623,7 @@ $(document).ready(function(e){
 								labels: ["Revenue Goal", "Gross Revenue", "Net Revenue"],
 								datasets: [
 									{
-										label: "Revenue (in ZAR)",
+										label: "Revenue (in "+code+")",
 										backgroundColor: ["blue", "green", "orange"],
 										data: [data.revenueGoal, data.revenueGross, data.revenueNet]
 									}
@@ -4642,7 +4643,7 @@ $(document).ready(function(e){
 								labels: ["Projected Avg Spent", "Average Spent"],
 								datasets: [
 									{
-										label: "Money (in ZAR)",
+										label: "Money (in"+code+")",
 										backgroundColor: ["violet", "indigo"],
 										data: [data.averageSpentProjected, data.averageSpent]
 									}
