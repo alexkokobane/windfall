@@ -44,4 +44,8 @@ $(document).ready(function(){
 	$("#Starter").click(function(){
 		location.href="/billing/plans/subscribe?plan=Starter"
 	})
+
+	if(window.location.pathname === "/auth/callback/error"){
+		location.href="/"
+	}
 })

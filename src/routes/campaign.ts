@@ -564,7 +564,7 @@ campaign.post('/long/delete/all', checkApiAuth, async (req, res) => {
 
 campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 	try{
-		console.log("at least here")
+		//console.log("at least here")
 		const giveawayId = parseInt(req.params.id)
 		if(isNaN(giveawayId) === true){
 			return res.status(404).send("This giveaway does not exist")

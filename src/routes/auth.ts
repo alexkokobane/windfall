@@ -78,7 +78,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		if(!ordersPaid['ORDERS_PAID'].success){
 			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
 		}
-		console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
+		//console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
 
 		// Check bills and db saved shops
 		if(checkShop == null){
@@ -88,12 +88,12 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				email: session.onlineAccessInfo.associated_user.email,
 			})
 			storeShop.save()
-			console.log("check point 1")
+			//console.log("check point 1")
 			return res.redirect("/billing/plans")
 		}
 		
 		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
-			console.log("check point 2")
+			//console.log("check point 2")
 			return res.redirect(`/`)
 		}
 
@@ -101,8 +101,12 @@ auth.get('/callback', async (req: Request, res: Response) => {
 	} catch (error) {
 		console.error(error);
 		console.log("THE ERROR IS ON auth/callback")
-		res.status(501).render('pages/501')  
+		res.redirect("/auth/callback/error")  
 	}
+})
+
+auth.get('/callback/error', async (req, res) => {
+	res.render('pages/oauth-error')
 })
 /*
 Other webhook topics to subscribe to
