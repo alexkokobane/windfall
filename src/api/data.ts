@@ -482,7 +482,10 @@ data.get('/template/:id', checkApiAuth, async (req, res) => {
 				'id': 1,
 				'name': 1,
 				'active': 1,
-				'winners': 1
+				'winners': 1,
+				'qualifyingItems': 1,
+				'qualifying': 1,
+				'currencyCode': 1
 			}
 		)
 		console.log(template)

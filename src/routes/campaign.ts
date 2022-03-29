@@ -2008,9 +2008,9 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
-					decoyId = req.query.id
+			decoyId = req.query.id
 		} else {
-					return undefined
+			return undefined
 		}
 		if(decoyId === undefined) {
 			return res.status(404).send("Giveaway ID not defined")
@@ -2027,21 +2027,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 		if(giveaway === null){
 			return res.status(404).send("Did not save, giveaway does not exist")
 		}
-		// check for the quota
-		//templateGate(req, res, session.shop)
-		const templates: any = await SavedLong.find({'shop': session.shop})
-		const shopper: any = await Shop.findOne({'shop': session.shop})
-		let count = templates.length
-		let plan = shopper.pricePlan
-		console.log("It runs and the count is "+count+" on a "+plan+" plan")
-		if(plan === "Starter" && count > 2) {
-			console.log("It passes here")
-			return res.status(403).send("Sorry, you have reached your quota")
-		} else if(plan === "Standard" && count > 6){
-			return res.status(403).send("Sorry, you have reached your quota")
-		} else if(plan ==="Ultimate" && count > 1000){
-			return res.status(403).send("Sorry, you have reached your quota")
-		}
+		
 		// check weather it already has a template from which it was made.
 		if(giveaway.templateId){
 			const checker = await SavedLong.findOne({
@@ -2080,7 +2066,11 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 				active: false,
 				distributionType: giveaway.distributionType,
 				winnersTotal: giveaway.winnersTotal,
-				winners: prizes
+				winners: prizes,
+				qualifying: giveaway.qualifying,
+				qualifyingId: giveaway.qualifyingId,
+				qualifyingItems: giveaway.qualifyingItems,
+				currencyCode: giveaway.currencyCode
 			}
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)

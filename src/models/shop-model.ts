@@ -219,11 +219,19 @@ const longEventTemplateSchema = new mongoose.Schema({
 	id: Number,
 	name: String,
 	type: String,
+	eventType: String,
 	distributionType: String,
 	duration: Number,
 	winnersTotal: Number,
+	qualifying: String,
+	qualifyingId: [String],
+	qualifyingItems: [Array],
 	toSuper: [String],
 	winners: [Object],
+	goals: {
+		totalRevenue: Number,
+		totalEntries: Number
+	},
 	active: Boolean,
 	createdAt: {
 		type: Date,
