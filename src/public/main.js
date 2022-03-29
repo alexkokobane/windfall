@@ -2487,7 +2487,20 @@ $(document).ready(function(e){
 						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} ${code}</li>
 					`)
 				})
-				$(".Add-Giveaway-Template").click(function(){
+				$("#AGTBtn").click(function(){
+					$(this).addClass("Polaris-Button--loading")
+					$("#AGTBtnText").before(`
+						<span id="AGTBtnSpinner" class="Polaris-Button__Spinner">
+							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+								</svg>
+							</span>
+							<span role="status">
+								<span class="Polaris-VisuallyHidden">Loading</span>
+							</span>
+						</span>
+					`)
 					$.ajax({
 						url: `/campaign/store?id=${data.id}`,
 						type: "POST",
@@ -2500,12 +2513,27 @@ $(document).ready(function(e){
 							} else if(data.responseText === "Forbidden"){
 								return location.href="/billing/plans"
 							}
+							$("#AGTBtn").removeClass("Polaris-Button--loading")
+							$("#AGTBtnSpinner").remove()
 							alert(data.responseText)
 						}
 					})
 				})
 				$("#DeleteGiveawayBtn").click(function(){
 					let consent = confirm("Are you sure?")
+					$(this).addClass("Polaris-Button--loading")
+					$("#DeleteGiveawayBtnText").before(`
+						<span id="DeleteGiveawayBtnSpinner" class="Polaris-Button__Spinner">
+							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+									<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+								</svg>
+							</span>
+							<span role="status">
+								<span class="Polaris-VisuallyHidden">Loading</span>
+							</span>
+						</span>
+					`)
 					if(consent){
 						$.ajax({
 							url: `/campaign/${data.id}/delete`,
@@ -2520,6 +2548,8 @@ $(document).ready(function(e){
 								} else if(data.responseText === "Forbidden"){
 									return location.href="/billing/plans"
 								}
+								$("#DeleteGiveawayBtn").removeClass("Polaris-Button--loading")
+								$("#DeleteGiveawayBtnSpinner").remove()
 								alert(data.responseText)
 							}
 						})
@@ -4505,24 +4535,24 @@ $(document).ready(function(e){
 										<span id="sendVoucher${giv.id}spinner" class="Polaris-Button__Spinner">
 											<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
 												<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-																						<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
-																				</svg>
-																			</span>
-																			<span role="status">
-																				<span class="Polaris-VisuallyHidden">Loading</span>
-																			</span>
-																		</span>
-																	`)
-																	$.ajax({
-																		url: `/campaign/rapid/${giv.id}/gift`,
-																		type: "GET",
-																		contentType: "application/json",
-																		success: function(data){
-																			alert(data)
-																			location.reload()
-																		},
-																		error: function(data){
-																			if(data.responseText === "Unauthorized"){
+														<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+												</svg>
+											</span>
+											<span role="status">
+												<span class="Polaris-VisuallyHidden">Loading</span>
+											</span>
+										</span>
+									`)
+									$.ajax({
+										url: `/campaign/rapid/${giv.id}/gift`,
+										type: "GET",
+										contentType: "application/json",
+										success: function(data){
+											alert(data)
+											location.reload()
+										},
+										error: function(data){
+											if(data.responseText === "Unauthorized"){
 												return location.href="/"
 											} else if(data.responseText === "Forbidden"){
 												return location.href="/billing/plans"
@@ -4530,8 +4560,8 @@ $(document).ready(function(e){
 											$(`#sendVoucher${giv.id}`).removeClass("Polaris-Button--loading")
 											$(`#sendVoucher${giv.id}spinner`).remove()
 											alert(data.responseText)
-																		}
-																	})
+										}
+									})
 								})
 							}							
 						})
