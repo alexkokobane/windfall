@@ -410,6 +410,7 @@ campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 			for (let i = 0; i < goodMeasure.winnersTotal; i++){
 				iter.push(i)
 			}
+			//console.log(iter)
 			const entries: any[] = await Long.aggregate([
 				{'$match': {'shop': session.shop}},
 				{'$match': {'id': giveawayId}},
@@ -419,6 +420,7 @@ campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 					'entries': 1
 				}}
 			])
+			//console.log(entries)
 			if(entries.length === 0){
 				return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
 			}
@@ -437,6 +439,9 @@ campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 				}
 			})
 			//console.log(allCombined)
+			if(allCombined.length === 0){
+				return res.status(403).send("It appears none of your entrants have any points.")
+			}
 
 			let shuffle = (entries: any[]): any[] => {
 				let currentIndex = entries.length
@@ -531,8 +536,8 @@ campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 			displayWinners.push(what)
 		})
 
-		console.log(displayWinners)
-		res.json(displayWinners)
+		//console.log(displayWinners)
+		res.send("You have successfully picked winners.")
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -1368,7 +1373,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 		)
 
 		const displayWinner = anotherMeasure.winner
-		console.log(displayWinner)
+		//console.log(displayWinner)
 		//console.log(prizedWinners)
 		res.send("You have successfully picked a winner!")
 	} catch(err: any) {

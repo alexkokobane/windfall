@@ -2454,70 +2454,14 @@ $(document).ready(function(e){
 							type: "POST",
 							contentType: "application/json",
 							success: function(data){
-								// Gift winners
-								$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
-								$("#GiftBtn").click(function(){
-									$.ajax({
-										url: `/campaign/${data.id}/gift`,
-										type: "POST",
-										contentType: "application/json",
-										success: function(data){
-											alert(data)
-										},
-										error: function(data){
-											if(data.responseText === "Unauthorized"){
-												return location.href="/"
-											} else if(data.responseText === "Forbidden"){
-												return location.href="/billing/plans"
-											}
-											alert(data.responseText)
-										}
-									})
-								})
+								
 								//Display results
-								if(data.length === 0){
-									return (
-										$("#WinnerBody").html(`
-											<p class="Polaris-TextStyle--variationStrong" >No winners found!</p>
-										`)
-									)
-								}
 								$("#WinnerBody").html(`
-									<div class="Polaris-ResourceList__ResourceListWrapper">
-										<ul class="Polaris-ResourceList">
-											<span id="WinnerDecoy"></span>
-										</ul>
-									</div>
+									<p id="WinnerSuccess" class="Polaris-TextStyle--variationStrong" style="color: green;"></p>
 								`)
-								data.reverse().forEach(function(winner){
-									const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${15 + 10 * Math.random()}%)`
-									$("#WinnerDecoy").after(`
-										<li class="Polaris-ResourceItem__ListItem">
-											<div class="Polaris-ResourceItem__ItemWrapper">
-												<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling">
-													<div class="Polaris-ResourceItem__Container" id="${winner.prizeId}">
-														<div class="Polaris-ResourceItem__Owned">
-															<div class="Polaris-ResourceItem__Media">
-																<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-																	<div style="color: ${colour}; font-size: 5em; display: flex; flex-direction: row; align-items: center">${winner.prizeId}</div>
-																</span>
-															</div>
-														</div>
-														<div class="Polaris-ResourceItem__Content">
-															<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-																<div class="Polaris-Stack__Item">
-																	<h3><span class="Polaris-TextStyle--variationStrong">${winner.entrantName}</span></h3>
-																	<div><span class="Polaris-TextStyle--variationStrong">Email:</span> ${winner.entrantEmail}</div>
-																	<div><span class="Polaris-TextStyle--variationStrong">Voucher amount:</span> ${winner.voucherPrize}</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</li>
-									`)
-								})
+								$("#WinnerSuccess").text(data.responseText)
+								location.reload()
+
 							},
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
@@ -4525,24 +4469,24 @@ $(document).ready(function(e){
 										<span id="chooseWinner${giv.id}spinner" class="Polaris-Button__Spinner">
 											<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
 												<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-																						<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
-																				</svg>
-																			</span>
-																			<span role="status">
-																				<span class="Polaris-VisuallyHidden">Loading</span>
-																			</span>
-																		</span>
-																	`)
-																	$.ajax({
-																		url: `/campaign/rapid/${giv.id}/choose-winners`,
-																		type: "POST",
-																		contentType: "application/json",
-																		success: function(data){
-																			alert(data)
-																			location.reload()
-																		},
-																		error: function(data){
-																			if(data.responseText === "Unauthorized"){
+														<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+												</svg>
+											</span>
+											<span role="status">
+												<span class="Polaris-VisuallyHidden">Loading</span>
+											</span>
+										</span>
+									`)
+									$.ajax({
+										url: `/campaign/rapid/${giv.id}/choose-winners`,
+										type: "POST",
+										contentType: "application/json",
+										success: function(data){
+											alert(data)
+											location.reload()
+										},
+										error: function(data){
+											if(data.responseText === "Unauthorized"){
 												return location.href="/"
 											} else if(data.responseText === "Forbidden"){
 												return location.href="/billing/plans"
@@ -4550,8 +4494,8 @@ $(document).ready(function(e){
 											$(`#chooseWinner${giv.id}`).removeClass("Polaris-Button--loading")
 											$(`#chooseWinner${giv.id}spinner`).remove()
 											alert(data.responseText)
-																		}
-																	})
+										}
+									})
 								})
 							}
 							if(giv.winnersChosen === true && giv.winnersGifted === false){
