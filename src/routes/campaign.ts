@@ -1219,6 +1219,9 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				}
 			})
 
+			if(allCombined.length === 0){
+				return res.status(403).send("It appears none of your entrants have any points.")
+			}
 			//console.log(allCombined)
 
 			let shuffle = (entries: any[]): any[] => {
