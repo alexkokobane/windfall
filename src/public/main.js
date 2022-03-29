@@ -1855,10 +1855,18 @@ $(document).ready(function(e){
 					)
 				}
 				const obj = data[0]
-				console.log(obj)
+				//console.log(obj)
+
 				$(".HAGSkeleton").remove()
+				$("#HomeActiveGiveaways").html(`
+					<p>Name: <span id="HAGName" class="Polaris-TextStyle--variationStrong"></span></p>
+					<p>Event type: <span id="HAGType" class="Polaris-TextStyle--variationStrong"></span></p>
+					<p>Started: <span id="HAGStarted" class="Polaris-TextStyle--variationStrong"></span></p>
+					<p>Ends: <span id="HAGEnds" class="Polaris-TextStyle--variationStrong"></span></p>
+					<p>Entries: <span id="HAGEntries" class="Polaris-TextStyle--variationStrong"></span></p>
+				`)
 				$("#HAGName").text(obj.name)
-				$("#HAGType").text(obj.type)
+				$("#HAGType").text(obj.eventType)
 				$("#HAGStarted").text(new Date(obj.startDate).toDateString())
 				$("#HAGEnds").text(new Date(obj.endDate).toDateString())
 				$("#HAGEntries").text(obj.entriesTotal)
