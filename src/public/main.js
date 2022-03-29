@@ -3349,7 +3349,7 @@ $(document).ready(function(e){
 					$("#ActivatorBody").html(`
 						<p>Press any of the buttons below to schedule your giveaway.</p>
 					`)
-					$("#GT0Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--primary")
+					$("#GT0Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GT1Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GT3Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GT7Btn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
@@ -3386,7 +3386,7 @@ $(document).ready(function(e){
 								} else if(data.responseText === "Forbidden"){
 									return location.href="/billing/plans"
 								}
-								const decider = data instanceof Array
+								const decider = data.responseJSON
 								if(decider) {
 									$("#ActivatorBody").html(`
 										<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>

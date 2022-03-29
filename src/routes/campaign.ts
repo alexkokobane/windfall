@@ -2078,7 +2078,8 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 				qualifying: giveaway.qualifying,
 				qualifyingId: giveaway.qualifyingId,
 				qualifyingItems: giveaway.qualifyingItems,
-				currencyCode: giveaway.currencyCode
+				currencyCode: giveaway.currencyCode,
+				goals: giveaway.goals
 			}
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)
@@ -2247,9 +2248,15 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 				winnersGifted: false,
 				startDate: newStart,
 				endDate: newEnd,
+				eventType: template.eventType,
 				distributionType: template.distributionType,
 				winnersTotal: template.winnersTotal,
-				winners: template.winners
+				winners: template.winners,
+				qualifying: template.qualifying,
+				qualifyingId: template.qualifyingId,
+				qualifyingItems: template.qualifyingItems,
+				currencyCode: template.currencyCode,
+				goals: template.goals
 			}
 			
 		).save()
