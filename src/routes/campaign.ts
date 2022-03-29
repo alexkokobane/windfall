@@ -531,7 +531,7 @@ campaign.post('/long/:id/choose-winners', checkApiAuth, async (req, res) => {
 			displayWinners.push(what)
 		})
 
-		//console.log(prizedWinners)
+		console.log(displayWinners)
 		res.json(displayWinners)
 	} catch(err: any) {
 		console.log(err)
