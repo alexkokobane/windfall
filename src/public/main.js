@@ -1495,7 +1495,7 @@ $(document).ready(function(e){
 										<div class="Polaris-Stack Polaris-Stack--spaceTight">
 											<div class="Polaris-Stack__Item">
 												<span aria-label="${giv.featuredImagealtText}" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText}" />
+													<img src="${giv.featuredImage.url}" alt="${giv.featuredImagealtText} loading="lazy" />
 												</span>
 											</div>
 											<div class="Polaris-Stack__Item">
@@ -4863,6 +4863,73 @@ $(document).ready(function(e){
 				$("#RapidTDeleteBtn").click(function(){
 
 				})
+
+				let time = []
+				data.dates.forEach(function(item){
+					time.push(item.durationFrom)
+				})
+				// Quick scheduling buttons
+				$.ajax({
+					url: "/data/all-event-dates",
+					type: "GET",
+					contentType: "application/json",
+					success: function(data){
+						let oldTime = []
+						let filteredTime = []
+						data.forEach((giv) => {
+							const now = new Date(Date.now())
+							if(new Date(giv) >= now && !filteredTime.includes(giv)){
+								filteredTime.push(giv)
+							}
+						})
+						const todayTime =  Number(new Date(new Date().toLocaleDateString('en-ZA')))
+						filteredTime.sort((a, b) => new Date(a) - new Date(b)).forEach((giv) => {
+							let otChild =  Number(new Date(giv)) - todayTime
+							oldTime.push(otChild)
+						})
+						oldTime.sort((a, b) => new Date(a) - new Date(b))
+						let everyDay = []
+						let numOne = 0
+						for(let i = 0; numOne <= oldTime[oldTime.length - 1]; i++){
+							everyDay.push(numOne)
+							numOne+=1000*60*60*24
+						}
+						let crawler = [0, 3, 7, 14, 30] // days into the future
+						let final = []	// an array of non clashing full arrays w/o duplicates
+						everyDay.sort((a, b) => a - b)
+						crawler.forEach((crawl) => {
+							everyDay.forEach((item) => {
+								item+=1000*60*60*24*crawl // add days into the future to each day
+								// only check for days that aren't already obviously clashing
+								if(!oldTime.includes(item)){
+									let watcher = []
+									time.forEach((timer) => {
+										let day = timer+item
+										if(!oldTime.includes(day)){
+											watcher.push(day)
+										}
+									})
+									console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
+									console.log(watcher)
+									// check weather it's a full array and it isn't a duplicate
+									if(watcher.length === time.length && !final.includes(watcher)){
+										final.push(watcher)
+									}
+								}
+							})
+						})
+
+						console.log(final)
+					},
+					error: function(data){
+						if(data.responseText === "Unauthorized"){
+							return location.href="/"
+						} else if(data.responseText === "Forbidden"){
+							return location.href="/billing/plans"
+						}
+					}
+				})
+
 				// Qualifying products
 				if(data.qualifyingItems.length > 0){
 					$("#QPSketch").remove()
@@ -4886,7 +4953,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
 													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-														<img src="${url}" /> 
+														<img src="${url}" loading="lazy" /> 
 													</span>
 												</div>
 											</div>

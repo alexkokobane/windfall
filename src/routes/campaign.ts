@@ -2229,7 +2229,7 @@ campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
 			}
 		)
 		console.log(fromInUse)
-		if(fromInUse !== null){Long
+		if(fromInUse !== null){
 			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
 		}
 		// Check active campaigns this template was created from
