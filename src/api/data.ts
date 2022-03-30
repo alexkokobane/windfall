@@ -486,7 +486,8 @@ data.get('/template/:id', checkApiAuth, async (req, res) => {
 				'winners': 1,
 				'qualifyingItems': 1,
 				'qualifying': 1,
-				'currencyCode': 1
+				'currencyCode': 1,
+				'eventType': 1
 			}
 		)
 		console.log(template)
@@ -899,6 +900,41 @@ data.get('/campaign/rapid/:id/active',  checkApiAuth, async (req, res) => {
 		res.json(active)
 	} catch(err: any) {
 		console.log(err)
+	}
+})
+
+data.get('/campaign/rapid/template/:id', checkApiAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("This template does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+
+		const template = await SavedRapid.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			},
+			{
+				'_id': 0,
+				'id': 1,
+				'name': 1,
+				'active': 1,
+				'winners': 1,
+				'qualifyingItems': 1,
+				'qualifying': 1,
+				'currencyCode': 1,
+				'eventType': 1,
+				'prizes': 1,
+				'goals': 1,
+				'dates': 1
+			}
+		)
+		res.json(template)
+	} catch(err: any){
+		console.log(err)
+		return err
 	}
 })
 

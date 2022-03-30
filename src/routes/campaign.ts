@@ -1726,18 +1726,60 @@ campaign.post('/rapid/store', checkApiAuth, async (req, res) => {
 			'id': parent.id,
 			'dates': datePointers,
 			'goals': parent.goals,
+			'active': false,
 			'qualifying': parent.qualifying,
 			'qualifyingId': parent.qualifyingId,
 			'qualifyingItems': parent.qualifyingItems,
 			'currencyCode': parent.currencyCode,
 			'eventType': parent.eventType,
 			'name': parent.name,
-			'prizeId': parent.prizes
+			'prizes': parent.prizes
 		}).save()
-		res.send("Saved")
+		res.send(`/campaign/rapid/template/${parent.id}`)
 	} catch(err: any){
 		console.log(err)
 		return err
+	}
+})
+
+campaign.get('/rapid/template/:id', checkAuth, forCommon, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).render('pages/404')
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await SavedRapid.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			}
+		)
+		console.log(template)
+		if(template === null){
+			return res.status(404).render('pages/404')
+		}
+
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/rapidevent-template",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/rapidevent-template",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/rapidevent-template",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
 	}
 })
 
@@ -2415,6 +2457,9 @@ campaign.post('/template/delete/all', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		await SavedLong.deleteMany({
+			'shop': session.shop
+		})
+		await SavedRapid.deleteMany({
 			'shop': session.shop
 		})
 		res.send("Successfully deleted every event template.")
