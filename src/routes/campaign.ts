@@ -1675,6 +1675,72 @@ campaign.post('/rapid/:id/delete', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.post('/rapid/store', checkApiAuth, async (req, res) => {
+	try{
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+			decoyId = req.query.id
+		} else {
+			return undefined
+		}
+		if(decoyId === undefined) {
+			return res.status(404).send("Giveaway ID not defined")
+		}
+
+		const eventId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const parent: any = await Rapid.findOne(
+			{
+				'id': eventId,
+				'shop': session.shop
+			}
+		)
+		
+		if(parent === null){
+			return res.status(404).send("Did not save, giveaway does not exist")
+		}
+
+		// check forr duplication
+		const doesExist = await SavedRapid.findOne(
+			{
+				'id': eventId,
+				'shop': session.shop
+			}
+		)
+		console.log(doesExist)
+		if(doesExist !== null){
+			return res.status(403).send("This giveaway template already exist")
+		}
+
+		let datePointers: any[] = []
+		const pointerRef: number = Number(new Date(parent.dates[0])) 
+		parent.dates.forEach((item: any, index: number) => {
+			const timeFromOrigin: number = Number(new Date(item)) - pointerRef
+			datePointers.push({
+				"durationFrom": timeFromOrigin
+			})
+		})
+		console.log(datePointers)
+		new SavedRapid({
+			'shop': session.shop,
+			'id': parent.id,
+			'dates': datePointers,
+			'goals': parent.goals,
+			'qualifying': parent.qualifying,
+			'qualifyingId': parent.qualifyingId,
+			'qualifyingItems': parent.qualifyingItems,
+			'currencyCode': parent.currencyCode,
+			'eventType': parent.eventType,
+			'name': parent.name,
+			'prizeId': parent.prizes
+		}).save()
+		res.send("Saved")
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 
 // Grand events
 
@@ -1969,53 +2035,6 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/grand/store', checkApiAuth, async (req, res) => {
-	try{
-		let decoyId: string
-		if (req.query.id && typeof req.query.id === 'string') {
-			decoyId = req.query.id
-		} else {
-			return undefined
-		}
-		if(decoyId === undefined) {
-			return res.status(404).send("Giveaway ID not defined")
-		}
-
-		const eventId: number = parseInt(decoyId)
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const parent: any = await Rapid.findOne(
-			{
-				'id': eventId,
-				'shop': session.shop
-			}
-		)
-		
-		if(event === null){
-			return res.status(404).send("Did not save, giveaway does not exist")
-		}
-
-		// check forr duplication
-		const doesExist = await SavedRapid.findOne(
-			{
-				'id': eventId,
-				'shop': session.shop
-			}
-		)
-		console.log(doesExist)
-		if(doesExist !== null){
-			return res.status(403).send("This giveaway template already exist")
-		}
-
-		new SavedRapid({
-			'shop': session.shop,
-			'id': parent.id
-		})
-	} catch(err: any){
-		console.log(err)
-		return err
-	}
-})
-
 
 // An event
 
@@ -2126,7 +2145,8 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 				qualifyingId: giveaway.qualifyingId,
 				qualifyingItems: giveaway.qualifyingItems,
 				currencyCode: giveaway.currencyCode,
-				goals: giveaway.goals
+				goals: giveaway.goals,
+				eventType: giveaway.eventType
 			}
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)

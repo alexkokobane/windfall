@@ -249,8 +249,6 @@ const rapidEventTemplateSchema = new mongoose.Schema({
 	name: String,
 	eventType: String,
 	dates: [{
-		day: Number,
-		index: Number,
 		durationFrom: Number
 	}],
 	goals: {
