@@ -1,6 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
-import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
@@ -1966,6 +1966,53 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 		res.send("Successfully sent gifts")
 	} catch(err: any){
 		console.log(err)
+	}
+})
+
+campaign.post('/grand/store', checkApiAuth, async (req, res) => {
+	try{
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+			decoyId = req.query.id
+		} else {
+			return undefined
+		}
+		if(decoyId === undefined) {
+			return res.status(404).send("Giveaway ID not defined")
+		}
+
+		const eventId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const parent: any = await Rapid.findOne(
+			{
+				'id': eventId,
+				'shop': session.shop
+			}
+		)
+		
+		if(event === null){
+			return res.status(404).send("Did not save, giveaway does not exist")
+		}
+
+		// check forr duplication
+		const doesExist = await SavedRapid.findOne(
+			{
+				'id': eventId,
+				'shop': session.shop
+			}
+		)
+		console.log(doesExist)
+		if(doesExist !== null){
+			return res.status(403).send("This giveaway template already exist")
+		}
+
+		new SavedRapid({
+			'shop': session.shop,
+			'id': parent.id
+		})
+	} catch(err: any){
+		console.log(err)
+		return err
 	}
 })
 
