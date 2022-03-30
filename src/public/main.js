@@ -9,8 +9,8 @@ $(document).ready(function(e){
 				const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 				let dateNow = new Date(Date.now())
 				let theDate = new Date(dateNow.setMonth(num))
-				console.log(num)
-				console.log(theDate)
+				//console.log(num)
+				//console.log(theDate)
 				return {
 					"day": days[theDate.getDay()],
 					"month": months[theDate.getMonth()],
@@ -68,7 +68,7 @@ $(document).ready(function(e){
 						one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 					}
 					data
-					console.log(data)
+					//console.log(data)
 					weeks[0].forEach(function(item){
 						//console.log(data.includes(item.date))
 						//console.log(item.date)
@@ -1461,7 +1461,10 @@ $(document).ready(function(e){
 				type: "GET",
 				contentType: "application/json",
 				success: function(data){
-					if(data.length > 0){
+
+					const isModalOpen = $("#ProductSelectionModal").hasClass("disappear")
+
+					if(data.length > 0 && !isModalOpen){
 						$(".ProductSelectionModalSketch").remove()
 						data.forEach(function(item){
 							const giv = item.node
@@ -1577,6 +1580,13 @@ $(document).ready(function(e){
 			$("#ProductSelectionModal").addClass("disappear")		
 		})
 
+		$(".ProductSelectionModalClose").click(function(){
+			$(".ProductSelectionModalItemContainer").remove()
+			$("#ProductsModalListDecoy").after(productLoadingStr)
+			$("#ProductSelectionModal").addClass("disappear")
+			//console.log("Clicked")
+		})
+
 		return quantity
 	}
 
@@ -1595,13 +1605,6 @@ $(document).ready(function(e){
 		$("#AppFrameNav").toggle()
 		$("#AppFrameNavBackdrop").toggle()
 		$("#AppFrameNavDismissButton").toggle()
-	})
-
-	$(".ProductSelectionModalClose").click(function(){
-		$(".ProductSelectionModalItemContainer").remove()
-		$("#ProductsModalListDecoy").after(productLoadingStr)
-		$("#ProductSelectionModal").addClass("disappear")
-		//console.log("Clicked")
 	})
 	
 	$("#LogoutButton").click(function(e){
