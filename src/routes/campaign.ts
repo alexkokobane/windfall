@@ -1812,7 +1812,7 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
 		}
 		// Check active campaigns this template was created from
-		const forParent = await Long.findOne(
+		const forParent = await Rapid.findOne(
 			{
 				'shop': session.shop,
 				'id': templateId,
