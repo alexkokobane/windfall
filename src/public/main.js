@@ -4909,17 +4909,34 @@ $(document).ready(function(e){
 											watcher.push(day)
 										}
 									})
-									console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
-									console.log(watcher)
+									//console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
+									//console.log(watcher)
 									// check weather it's a full array and it isn't a duplicate
-									if(watcher.length === time.length && !final.includes(watcher)){
+
+									
+									if(watcher.length === time.length){
+										console.log(final.includes(watcher))
+										console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
+										console.log(watcher)
 										final.push(watcher)
 									}
 								}
 							})
 						})
-
+						// mutate and remove more duplicates
+						final = Array.from(new Set(final.map(JSON.stringify)), JSON.parse)
 						console.log(final)
+						$(".RapidTPHBtn").remove()
+						final.reverse().forEach((item) => {
+							const start = item[0]
+							$("#RapidTActivatorBody").after(`
+								<button id="${start}" class="Polaris-Button Polaris-Button--outline" aria-label="Schedule to ${new Date(Date.now()+start).toDateString()}" type="button">
+									<span class="Polaris-Button__Content">
+										<span class="Polaris-Button__Text">${new Date(Date.now()+start).toDateString()}</span>
+									</span>
+								</button>
+							`)
+						})
 					},
 					error: function(data){
 						if(data.responseText === "Unauthorized"){
