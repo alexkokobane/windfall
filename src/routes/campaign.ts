@@ -1894,7 +1894,8 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 			'qualifying': template.qualifying,
 			'qualifyingId': template.qualifyingId,
 			'qualifyingItems': template.qualifyingItems,
-			'currencyCode': template.currencyCode
+			'currencyCode': template.currencyCode,
+			'eventType': 'Rapid'
 		}).save()
 
 		let childrenEvents: any[] = []
@@ -1957,6 +1958,32 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 		)
 		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newDates[0]).toDateString()}.`)
 	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+campaign.post('/rapid/template/:id/delete', checkApiAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("This giveaway does not exist")
+		}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const template = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			}
+		)
+		if(template === null){
+			return res.status(404).send("Giveaway does not exist")
+		}
+		await SavedRapid.deleteOne({
+			'shop': session.shop,
+			'id': templateId
+		})
+		res.send("/")
+	} catch(err: any){
 		console.log(err)
 	}
 })

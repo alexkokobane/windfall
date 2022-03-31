@@ -223,12 +223,12 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
-		}).limit(3)
+		})
 		const rapidEvents = await RapidChild.find({
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(dateNow)},
 			'endDate': {'$gte': new Date(dateNow)}
-		}).limit(3)
+		})
 		let upcoming: any = []
 		longEvents.forEach((item: any) => {
 			upcoming.push({
