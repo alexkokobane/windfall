@@ -1840,20 +1840,25 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 
 		const long = await Long.find({'shop': session.shop})		
 		if(long.length !== 0){
-			long.forEach((item) => {
-				allEventsEver.push(item)
+			long.forEach((item: any) => {
+				let start = Number(new Date(item.startDate))
+				let end = Number(new Date(item.endDate))
+				for(let i = 0; start <= end; i++){
+					start = Number(new Date(item.startDate))+(1000*60*60*24*i)
+					allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+				}
 			})		
 		}
 
 		const rapid = await RapidChild.find({'shop': session.shop})
 		if(rapid.length !== 0){
-			rapid.forEach((item: any) => {
-				allEventsEver.push(item)
+			rapid.forEach((item: any) => {				
+				allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
 			})
 		}
 
 		if(allEventsEver.length !== 0){
-			allEventsEver.forEach((item: string) => {
+			allEventsEver.forEach((item: any) => {
 				if(newDates.includes(item) && !keyValue.includes(item)){
 					keyValue.push(item)
 				}
@@ -1866,12 +1871,16 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 		// finally create the event
 		const rapidId = Math.floor(Math.random() * 1000000000)
 		const grandId = Math.floor(Math.random() * 1000000000)
+		const formattedDates: any[] = []
+		newDates.forEach((item: string) => {
+			formattedDates.push(new Date(item))
+		})
 
 		new Rapid({
 			'shop': session.shop,
 			'id': rapidId,
 			'name': template.name,
-			'dates': newDates,
+			'dates': formattedDates,
 			'grandEvent': {
 				'id': grandId
 			},
@@ -1879,7 +1888,7 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 			'goals': template.goals,
 			'winnersChosen': false,
 			'winnersGifted': false,
-			'winnersTotal': newDates.length,
+			'winnersTotal': formattedDates.length,
 			'prizes': template.prizes,
 			'qualifying': template.qualifying,
 			'qualifyingId': template.qualifyingId,
@@ -1887,12 +1896,57 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => 
 			'currencyCode': template.currencyCode
 		}).save()
 
+		let childrenEvents: any[] = []
+		formattedDates.forEach(async (item: any) => {
+			const childId = Math.floor(Math.random() * 1000000000)
+			new RapidChild({
+				'shop': session.shop,
+				'id': childId,
+				'name': template.name,
+				'eventType': 'Rapid',
+				'parentId': rapidId,
+				'startDate': item,
+				'endDate': new Date(Number(new Date(item))+(1000*60*60*23)),
+				'winnersChosen': false,
+				'winnersGifted': false,
+				'winnersTotal': 1,
+				'winner': {
+					'prizeId': 1,
+					'voucherPrize': parseInt(template.prizes.normalPrize)
+				},
+				'qualifying': template.qualifying,
+				'qualifyingId': template.qualifyingId,
+				'qualifyingItems': template.qualifyingItems,
+				'currencyCode': template.currencyCode
+			}).save()
+
+			childrenEvents.push({
+				'id': childId,
+				'name': template.name,
+				'eventType': 'Rapid'
+			})
+		})
+
+		new Grand({
+			'shop': session.shop,
+			'id': grandId,
+			'name': template.name,
+			'awaiting': false,
+			'winnersChosen': false,
+			'winnersGifted': false,
+			'winners': [{
+				'prizeId': 1,
+				'voucherPrize': template.prizes.grandPrize
+			}],
+			'childrenEvents': childrenEvents,
+			'currencyCode': template.currencyCode
+		}).save()
 
 		// update the state of the template
 		await SavedRapid.updateOne(
 			{
 				'shop': session.shop,
-				'id': templateId
+				'id': template.id
 			},
 			{
 				'$set': {
