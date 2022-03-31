@@ -441,19 +441,33 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const template = await SavedLong.find({
+		const long = await SavedLong.find({
+			'shop': session.shop,
+			'active': false
+		})
+
+		const rapid =  await SavedRapid.find({
 			'shop': session.shop,
 			'active': false
 		})
 
 		let templates: any = []
-		template.forEach((item: any) => {
+		long.forEach((item: any) => {
 			templates.push({
 				"id": item.id,
 				"name": item.name,
 				"active": item.active,
-				"type": item.distributionType,
+				"type": item.eventType,
 				"winnersTotal": item.winnersTotal,
+			})
+		})
+		rapid.forEach((item: any) => {
+			templates.push({
+				"id": item.id,
+				"name": item.name,
+				"active": item.active,
+				"type": item.eventType,
+				"winnersTotal": item.dates.length,
 			})
 		})
 		console.log(templates)

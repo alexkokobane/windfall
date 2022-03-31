@@ -7,10 +7,12 @@ $(document).ready(function(e){
 			function scheduler(num){
 				const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 				const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-				let dateNow = new Date(Date.now())
-				let theDate = new Date(dateNow.setMonth(num))
-				//console.log(num)
-				//console.log(theDate)
+				const dayNow = toISOLocal(new Date(Date.now()))
+				const dayOne = dayNow.substring(0,8)+"01"
+				let dater = new Date(dayOne)
+				let theDate = new Date(dater.setMonth(num))
+				console.log(num)
+				console.log(theDate)
 				return {
 					"day": days[theDate.getDay()],
 					"month": months[theDate.getMonth()],
@@ -577,6 +579,7 @@ $(document).ready(function(e){
 			renderMonth(total)
 		})
 		
+		//console.log(dayOne)
 		renderMonth(new Date(Date.now()).getMonth())
 
 		$("#DDays").click(function(){
@@ -590,8 +593,10 @@ $(document).ready(function(e){
 		function scheduler(num){
 			const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 			const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-			let dateNow = new Date(Date.now())
-			let theDate = new Date(dateNow.setMonth(num))
+			const dayNow = toISOLocal(new Date(Date.now()))
+			const dayOne = dayNow.substring(0,8)+"01"
+			let dater = new Date(dayOne)
+			let theDate = new Date(dater.setMonth(num))
 			//console.log(theDate)
 			return {
 				"day": days[theDate.getDay()],
@@ -1228,10 +1233,10 @@ $(document).ready(function(e){
 	}
 
 	function toISOLocal(d) {
-		var z  = n =>  ('0' + n).slice(-2);
-		var zz = n => ('00' + n).slice(-3);
-		var off = d.getTimezoneOffset();
-		var sign = off > 0? '-' : '+';
+		let z  = n =>  ('0' + n).slice(-2);
+		let zz = n => ('00' + n).slice(-3);
+		let off = d.getTimezoneOffset();
+		let sign = off > 0? '-' : '+';
 		off = Math.abs(off);
 
 		return d.getFullYear() + '-'
@@ -4949,7 +4954,7 @@ $(document).ready(function(e){
 										</div>
 									`)
 									$.ajax({
-										url: `/campaign/rapid/template/${data.id}/activate`,
+										url: `/campaign/rapid/template/${idForRapidTemplate}/activate`,
 										type: "POST",
 										data: JSON.stringify({"future": item}),
 										contentType: "application/json",
@@ -4970,16 +4975,16 @@ $(document).ready(function(e){
 											console.log(data)
 											if(decider) {
 												let arr = data.responseJSON
-												$("#ActivatorBody").html(`
+												$("#RapidTActivatorBody").html(`
 													<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
 													<ul class="Polaris-List">
-														<span id="ActivatorDecoy"></span>
+														<span id="RapidTActivatorDecoy"></span>
 													</ul>
 												`)
 												arr.forEach(function(item){
 													const begin = new Date(item.startDate).toISOString().split('T')
 													const finish = new Date(item.endDate).toISOString().split('T')
-													$("#ActivatorDecoy").after(`
+													$("#RapidTActivatorDecoy").after(`
 														<li class="Polaris-List__Item" aria-label="${item.name}">
 															<span class="Polaris-TextStyle--variationStrong">
 																${item.name}
@@ -4990,7 +4995,7 @@ $(document).ready(function(e){
 													`)
 												})
 											} else {
-												$("#ActivatorBody").html(`
+												$("#RapidTActivatorBody").html(`
 													<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
 													<p class="Polaris-InlineError">${data.responseText}</p>
 												`)
@@ -5012,6 +5017,7 @@ $(document).ready(function(e){
 					$("#RapidTActivatorBody").html(`
 						<p>This template currently has a giveaway that is either active, upcoming or awaiting the picking of winners.</p>
 					`)
+					$(".RapidTPHBtn").remove()
 				}
 
 				// Qualifying products
