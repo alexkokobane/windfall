@@ -4868,84 +4868,151 @@ $(document).ready(function(e){
 				data.dates.forEach(function(item){
 					time.push(item.durationFrom)
 				})
-				// Quick scheduling buttons
-				$.ajax({
-					url: "/data/all-event-dates",
-					type: "GET",
-					contentType: "application/json",
-					success: function(data){
-						let oldTime = []
-						let filteredTime = []
-						data.forEach((giv) => {
-							const now = new Date(Date.now())
-							if(new Date(giv) >= now && !filteredTime.includes(giv)){
-								filteredTime.push(giv)
-							}
-						})
-						const todayTime =  Number(new Date(new Date().toLocaleDateString('en-ZA')))
-						filteredTime.sort((a, b) => new Date(a) - new Date(b)).forEach((giv) => {
-							let otChild =  Number(new Date(giv)) - todayTime
-							oldTime.push(otChild)
-						})
-						oldTime.sort((a, b) => new Date(a) - new Date(b))
-						let everyDay = []
-						let numOne = 0
-						for(let i = 0; numOne <= oldTime[oldTime.length - 1]; i++){
-							everyDay.push(numOne)
-							numOne+=1000*60*60*24
-						}
-						let crawler = [0, 3, 7, 14, 30] // days into the future
-						let final = []	// an array of non clashing full arrays w/o duplicates
-						everyDay.sort((a, b) => a - b)
-						crawler.forEach((crawl) => {
-							everyDay.forEach((item) => {
-								item+=1000*60*60*24*crawl // add days into the future to each day
-								// only check for days that aren't already obviously clashing
-								if(!oldTime.includes(item)){
-									let watcher = []
-									time.forEach((timer) => {
-										let day = timer+item
-										if(!oldTime.includes(day)){
-											watcher.push(day)
-										}
-									})
-									//console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
-									//console.log(watcher)
-									// check weather it's a full array and it isn't a duplicate
+				// Smart scheduling buttons
+				if(data.active === false){
+					$("#RapidTActivatorBody").html(`
+						<p>Choose any of the dates below to schedule your giveaway.</p>
+					`)
 
-									
-									if(watcher.length === time.length){
-										console.log(final.includes(watcher))
-										console.log(new Date(Date.now()+item).toLocaleDateString('en-ZA'))
-										console.log(watcher)
-										final.push(watcher)
-									}
+					$.ajax({
+						url: "/data/all-event-dates",
+						type: "GET",
+						contentType: "application/json",
+						success: function(data){
+							let oldTime = [], filteredTime = []
+							data.forEach((giv) => {
+								const now = new Date(Date.now())
+								if(new Date(giv) >= now && !filteredTime.includes(giv)){
+									filteredTime.push(giv)
 								}
 							})
-						})
-						// mutate and remove more duplicates
-						final = Array.from(new Set(final.map(JSON.stringify)), JSON.parse)
-						console.log(final)
-						$(".RapidTPHBtn").remove()
-						final.reverse().forEach((item) => {
-							const start = item[0]
-							$("#RapidTActivatorBody").after(`
-								<button id="${start}" class="Polaris-Button Polaris-Button--outline" aria-label="Schedule to ${new Date(Date.now()+start).toDateString()}" type="button">
-									<span class="Polaris-Button__Content">
-										<span class="Polaris-Button__Text">${new Date(Date.now()+start).toDateString()}</span>
-									</span>
-								</button>
-							`)
-						})
-					},
-					error: function(data){
-						if(data.responseText === "Unauthorized"){
-							return location.href="/"
-						} else if(data.responseText === "Forbidden"){
-							return location.href="/billing/plans"
+							const todayTime =  Number(new Date(new Date().toLocaleDateString('en-ZA')))
+							filteredTime.sort((a, b) => new Date(a) - new Date(b)).forEach((giv) => {
+								let otChild =  Number(new Date(giv)) - todayTime
+								oldTime.push(otChild)
+							})
+							oldTime.sort((a, b) => new Date(a) - new Date(b))
+							let everyDay = []
+							let numOne = 0
+							for(let i = 0; numOne <= oldTime[oldTime.length - 1]; i++){
+								everyDay.push(numOne)
+								numOne+=1000*60*60*24
+							}
+							let crawler = [0, 3, 7, 14, 30] // days into the future
+							let final = []	// an array of non clashing full arrays w/o duplicates
+							everyDay.sort((a, b) => a - b)
+							crawler.forEach((crawl) => {
+								everyDay.forEach((item) => {
+									item+=1000*60*60*24*crawl // add days into the future to each day
+									// only check for days that aren't already obviously clashing
+									if(!oldTime.includes(item)){
+										let watcher = []
+										time.forEach((timer) => {
+											let day = timer+item
+											if(!oldTime.includes(day)){
+												watcher.push(day)
+											}
+										})
+										// check weather it's a full array and it isn't a duplicate									
+										if(watcher.length === time.length){
+											final.push(watcher)
+										}
+									}
+								})
+							})
+							// mutate and remove more duplicates
+							final = Array.from(new Set(final.map(JSON.stringify)), JSON.parse)
+							console.log(final)
+							$(".RapidTPHBtn").remove()
+							final.reverse().forEach((item) => {
+								const start = item[0]
+								$("#RapidTActivatorBody").after(`
+									<button id="${start}" class="Polaris-Button Polaris-Button--outline" aria-label="Schedule to ${new Date(Date.now()+start).toDateString()}" type="button">
+										<span class="Polaris-Button__Content">
+											<span class="Polaris-Button__Text">${new Date(Date.now()+start).toDateString()}</span>
+										</span>
+									</button>
+								`)
+
+								$(`#${start}`).click((giv) => {
+									location.href=`/campaign/rapid/template/${idForRapidTemplate}#RapidTActivatorHeading`
+									$("#RapidTActivatorBody").html(`
+										<div>
+											<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
+												<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+													<path d="M15.542 1.487A21.507 21.507 0 00.5 22c0 11.874 9.626 21.5 21.5 21.5 9.847 0 18.364-6.675 20.809-16.072a1.5 1.5 0 00-2.904-.756C37.803 34.755 30.473 40.5 22 40.5 11.783 40.5 3.5 32.217 3.5 22c0-8.137 5.3-15.247 12.942-17.65a1.5 1.5 0 10-.9-2.863z"></path>
+												</svg>
+											</span>
+											<span role="status">
+												<span class="Polaris-VisuallyHidden">Spinner</span>
+											</span>
+										</div>
+									`)
+									$.ajax({
+										url: `/campaign/template/${data.id}/activate`,
+										type: "POST",
+										data: JSON.stringify({"future": start}),
+										contentType: "application/json",
+										success: function(data){
+											$("#RapidTActivatorBody").html(`
+												<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+												<p>${data}</p>
+											`)
+										},
+										error: function(data){
+											if(data.responseText === "Unauthorized"){
+												return location.href="/"
+											} else if(data.responseText === "Forbidden"){
+												return location.href="/billing/plans"
+											}
+											let decider = data.responseJSON
+											console.log(decider)
+											console.log(data)
+											if(decider) {
+												let arr = data.responseJSON
+												$("#ActivatorBody").html(`
+													<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+													<ul class="Polaris-List">
+														<span id="ActivatorDecoy"></span>
+													</ul>
+												`)
+												arr.forEach(function(item){
+													const begin = new Date(item.startDate).toISOString().split('T')
+													const finish = new Date(item.endDate).toISOString().split('T')
+													$("#ActivatorDecoy").after(`
+														<li class="Polaris-List__Item" aria-label="${item.name}">
+															<span class="Polaris-TextStyle--variationStrong">
+																${item.name}
+															</span>, active from
+															<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+															<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+														</li>
+													`)
+												})
+											} else {
+												$("#ActivatorBody").html(`
+													<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+													<p class="Polaris-InlineError">${data.responseText}</p>
+												`)
+											}
+										}
+									})
+								})
+							})
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
 						}
-					}
-				})
+					})
+				} else {
+					$("#RapidTActivatorBody").html(`
+						<p>This template currently has a giveaway that is either active, upcoming or awaiting the picking of winners.</p>
+					`)
+				}
 
 				// Qualifying products
 				if(data.qualifyingItems.length > 0){
