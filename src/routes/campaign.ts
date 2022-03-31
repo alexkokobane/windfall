@@ -1783,6 +1783,129 @@ campaign.get('/rapid/template/:id', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
+campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => {
+	try{
+		const templateId = parseInt(req.params.id)
+		if(isNaN(templateId) === true){
+			return res.status(404).send("Error, template does not exist.")
+		}
+		const starter: number[] = req.body.future
+		console.log(starter)
+		
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const doesExist = await SavedRapid.findOne({'shop': session.shop, 'id': templateId, 'active': true})
+		//console.log(`Logging doesExist: ${doesExist}`)
+		if(doesExist !== null){
+			return res.status(403).send("This template is currently active")
+		}
+		// Check for active campaigns created from this template
+		const fromInUse = await Rapid.findOne(
+			{
+				'shop': session.shop,
+				'templateId': templateId,
+				'winnersGifted': false
+			}
+		)
+		console.log(fromInUse)
+		if(fromInUse !== null){
+			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
+		}
+		// Check active campaigns this template was created from
+		const forParent = await Long.findOne(
+			{
+				'shop': session.shop,
+				'id': templateId,
+				'winnersGifted': false
+			}
+		)
+		console.log(forParent)
+		if(forParent !== null){
+			return res.status(403).send("This template currently has a giveaway that is either active, upcoming or awaiting the picking and gifting of winners")
+		}
+		const template = await SavedRapid.findOne({'shop': session.shop, 'id': templateId})
+		if(template === null){
+			return res.status(404).send("This template was not found")
+		}
+
+		// assign real dates
+		const dateNow = Date.now()
+		let newDates: string[] = []
+		starter.forEach((pointer: number) => {
+			newDates.push(new Date(dateNow+pointer).toLocaleDateString('en-ZA'))
+		})
+		console.log(newDates)
+		// Check for scheduling conflict
+		let keyValue: any[] = []
+		let allEventsEver: any[] = []
+
+		const long = await Long.find({'shop': session.shop})		
+		if(long.length !== 0){
+			long.forEach((item) => {
+				allEventsEver.push(item)
+			})		
+		}
+
+		const rapid = await RapidChild.find({'shop': session.shop})
+		if(rapid.length !== 0){
+			rapid.forEach((item: any) => {
+				allEventsEver.push(item)
+			})
+		}
+
+		if(allEventsEver.length !== 0){
+			allEventsEver.forEach((item: string) => {
+				if(newDates.includes(item) && !keyValue.includes(item)){
+					keyValue.push(item)
+				}
+			})
+		}
+
+		if(keyValue.length !== 0) {
+			return res.status(403).json(keyValue)
+		}
+		// finally create the event
+		const rapidId = Math.floor(Math.random() * 1000000000)
+		const grandId = Math.floor(Math.random() * 1000000000)
+
+		new Rapid({
+			'shop': session.shop,
+			'id': rapidId,
+			'name': template.name,
+			'dates': newDates,
+			'grandEvent': {
+				'id': grandId
+			},
+			'templateId': template.id,
+			'goals': template.goals,
+			'winnersChosen': false,
+			'winnersGifted': false,
+			'winnersTotal': newDates.length,
+			'prizes': template.prizes,
+			'qualifying': template.qualifying,
+			'qualifyingId': template.qualifyingId,
+			'qualifyingItems': template.qualifyingItems,
+			'currencyCode': template.currencyCode
+		}).save()
+
+
+		// update the state of the template
+		await SavedRapid.updateOne(
+			{
+				'shop': session.shop,
+				'id': templateId
+			},
+			{
+				'$set': {
+					'active': true
+				}
+			}
+		)
+		res.send(`You have successfully scheduled ${template.name} to run from ${new Date(newDates[0]).toDateString()}.`)
+	} catch(err: any) {
+		console.log(err)
+	}
+})
+
 
 // Grand events
 

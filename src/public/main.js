@@ -4949,9 +4949,9 @@ $(document).ready(function(e){
 										</div>
 									`)
 									$.ajax({
-										url: `/campaign/template/${data.id}/activate`,
+										url: `/campaign/rapid/template/${data.id}/activate`,
 										type: "POST",
-										data: JSON.stringify({"future": start}),
+										data: JSON.stringify({"future": item}),
 										contentType: "application/json",
 										success: function(data){
 											$("#RapidTActivatorBody").html(`
