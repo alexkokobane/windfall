@@ -453,6 +453,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 
 		let templates: any = []
 		long.forEach((item: any) => {
+			console.log(item)
 			templates.push({
 				"id": item.id,
 				"name": item.name,
@@ -462,6 +463,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 			})
 		})
 		rapid.forEach((item: any) => {
+			console.log(item)
 			templates.push({
 				"id": item.id,
 				"name": item.name,

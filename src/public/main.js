@@ -11,8 +11,8 @@ $(document).ready(function(e){
 				const dayOne = dayNow.substring(0,8)+"01"
 				let dater = new Date(dayOne)
 				let theDate = new Date(dater.setMonth(num))
-				console.log(num)
-				console.log(theDate)
+				//console.log(num)
+				//console.log(theDate)
 				return {
 					"day": days[theDate.getDay()],
 					"month": months[theDate.getMonth()],

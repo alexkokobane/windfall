@@ -1014,7 +1014,8 @@ campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
 			'qualifying': data.qualifying,
 			'qualifyingId': data.qualifyingId,
 			'qualifyingItems': data.qualifyingItems,
-			'currencyCode': data.currencyCode
+			'currencyCode': data.currencyCode,
+			'eventType': 'Rapid'
 		}).save()
 
 		
