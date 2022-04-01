@@ -2020,7 +2020,7 @@ $(document).ready(function(e){
 						<li class="Polaris-ResourceItem__ListItem">
 							<div class="Polaris-ResourceItem__ItemWrapper">
 								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
-									<a id="TempLink${giv.id}"  class="Polaris-ResourceItem__Link" tabindex="0" id="" href="/campaign/long/${giv.id}" data-polaris-unstyled="true"></a>
+									<a id="TempLink${giv.id}"  class="Polaris-ResourceItem__Link" tabindex="0" data-polaris-unstyled="true"></a>
 									<div class="Polaris-ResourceItem__Container" id="Temp${giv.id}">
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
@@ -2033,7 +2033,7 @@ $(document).ready(function(e){
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 												<div class="Polaris-Stack__Item">
 													<h3><span class="Polaris-TextStyle--variationStrong Polaris-Subheading" id="TempName${giv.id}"></span></h3>
-													<div><span class="Polaris-TextStyle--variationStrong">Prize distribution type :</span> ${giv.type}</div>
+													<div><span class="Polaris-TextStyle--variationStrong">Event type :</span> ${giv.type}</div>
 													<div><span class="Polaris-TextStyle--variationStrong">Total winners :</span> ${giv.winnersTotal}</div>
 												</div>
 											</div>
@@ -2046,9 +2046,18 @@ $(document).ready(function(e){
 
 					$(`#TempName${giv.id}`).text(giv.name)
 					$(`#TempLink${giv.id}`).attr("aria-label", `A link to template ${giv.name}`)
-					$(`#Temp${giv.id}`).click(function(){
-						location=href=`/campaign/template/${giv.id}`
-					})
+					
+					if(giv.eventType === "Rapid"){
+						$(`#Temp${giv.id}`).click(function(){
+							location=href=`/campaign/rapid/template/${giv.id}`
+						})
+						$(`#TempLink${giv.id}`).attr("href", `/campaign/rapid/template/${giv.id}`)
+					} else {
+						$(`#Temp${giv.id}`).click(function(){
+							location=href=`/campaign/template/${giv.id}`
+						})
+						$(`#TempLink${giv.id}`).attr("href", `/campaign/template/${giv.id}`)
+					}
 				})
 			},
 			error: function(data){
