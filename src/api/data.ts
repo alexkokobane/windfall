@@ -458,7 +458,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 				"id": item.id,
 				"name": item.name,
 				"active": item.active,
-				"type": item.eventType,
+				"eventType": item.eventType,
 				"winnersTotal": item.winnersTotal,
 			})
 		})
@@ -468,7 +468,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 				"id": item.id,
 				"name": item.name,
 				"active": item.active,
-				"type": item.eventType,
+				"eventType": item.eventType,
 				"winnersTotal": item.dates.length,
 			})
 		})

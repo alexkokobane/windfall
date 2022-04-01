@@ -2033,7 +2033,7 @@ $(document).ready(function(e){
 											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 												<div class="Polaris-Stack__Item">
 													<h3><span class="Polaris-TextStyle--variationStrong Polaris-Subheading" id="TempName${giv.id}"></span></h3>
-													<div><span class="Polaris-TextStyle--variationStrong">Event type :</span> ${giv.type}</div>
+													<div><span class="Polaris-TextStyle--variationStrong">Event type :</span> ${giv.eventType}</div>
 													<div><span class="Polaris-TextStyle--variationStrong">Total winners :</span> ${giv.winnersTotal}</div>
 												</div>
 											</div>
