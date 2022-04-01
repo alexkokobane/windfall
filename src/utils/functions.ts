@@ -9,7 +9,7 @@ const generateDiscountCode = (length: number): string => {
 }
 
 const newSubs = (plan: string): any[] => {	
-	console.log(plan+ " from the func")
+	//console.log(plan+ " from the func")
 	let priorSix: any[] = []
 	if(plan === "Starter"){	
 		for(let i = -5; i <= 0; i++){
@@ -22,7 +22,7 @@ const newSubs = (plan: string): any[] => {
 				"plan": "Starter"
 			})
 		}
-	} else if( plan === "Growth"){
+	} else if( plan === "Basic"){
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
@@ -30,7 +30,7 @@ const newSubs = (plan: string): any[] => {
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
 				"maxValue": 5000,
-				"plan": "Growth"
+				"plan": "Basic"
 			})
 		}	
 	} else if (plan === "Standard"){

@@ -3855,6 +3855,9 @@ $(document).ready(function(e){
 		$("#ChangePlan").click(function(){
 			location.href="/billing/change"
 		})
+		$("#EmailTemplate").click(function(){
+			location.href="/settings/email"
+		})
 		$("#DeleteAllRapidBtn").click(function(){
 			$(this).addClass("Polaris-Button--loading")
 			$("#DeleteAllRapidBtnText").before(`
@@ -4042,7 +4045,6 @@ $(document).ready(function(e){
 				}
 			}
 		})
-
 		$.ajax({
 			url: "/analytics/quota/usage",
 			type: "GET",
