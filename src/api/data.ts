@@ -764,7 +764,7 @@ data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 			'qualifyingItems': event.qualifyingItems,
 			'currencyCode': event.currencyCode
 		}
-		console.log(justOne)
+		//console.log(justOne)
 		res.json(justOne)
 	} catch(err: any) {
 		console.log(err)

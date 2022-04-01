@@ -115,6 +115,7 @@ const rapidEventSchema = new mongoose.Schema({
 	name: String,
 	templateId: Number,
 	dates: [Date],
+	eventType: String,
 	grandEvent: {
 		id: Number
 	},
