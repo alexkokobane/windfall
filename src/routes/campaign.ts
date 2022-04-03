@@ -699,6 +699,7 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 				})
 				console.log(ph)
 				if(doesExist === null){
+					console.log("a creation of "+item.email)
 					new Customers({
 						'shop': session.shop,
 						'email': item.email,
@@ -722,7 +723,7 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 							}
 						}
 					)
-
+					console.log("an update of "+item.email)
 					console.log(updateCustomers)
 				}
 			} catch(err: any){
@@ -1325,7 +1326,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				}
 			)
 
-			console.log(updateGrand)
+			//console.log(updateGrand)
 
 			const isLast = await RapidChild.find(
 				{
@@ -1551,8 +1552,9 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			//console.log(item)
 			let ph: number
 			giveaway.winner.entrantEmail === item.email ? ph = 1 : ph = 0
-			
+			console.log(ph)
 			if(doesExist === null){
+				console.log("a creation of "+item.email)
 				new Customers({
 					'shop': session.shop,
 					'email': item.email,
@@ -1563,6 +1565,7 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 					'totalCampaignsWon': ph
 				}).save()
 			} else {
+				console.log("an update of "+item.email)
 				await Customers.updateOne(
 					{
 						'shop': session.shop,
@@ -1621,7 +1624,7 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 		}
 
 		if(giveaway.templateId){
-			await SavedLong.findOne(
+			await SavedRapid.findOne(
 				{
 					'shop': session.shop,
 					'id': giveaway.templateId
