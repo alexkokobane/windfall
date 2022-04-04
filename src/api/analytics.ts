@@ -4,15 +4,33 @@ import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } fro
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
-import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { forCommon, forStarter, forStandard, forUltimate, forStandardApi } from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 import { generateDiscountCode, newSubs } from '../utils/functions'
 
 const analytics = express.Router()
 
-analytics.get('/', checkApiAuth, async (req, res) => {
+analytics.get('/', checkApiAuth, forStandard, async (req, res) => {
 	try{
-		res.send("Ha ha ha! Gotcha, this is a dummy URL.")
+		//res.send("Ha ha ha! Gotcha, this is a dummy URL.")
+		const render: renderFor = [
+			{
+				"plan": "Ultimate",
+				"page": "pages/home",
+				"layer": "layouts/main-ultimate"
+			},
+			{
+				"plan": "Standard",
+				"page": "pages/standard/analytics-standard",
+				"layer": "layouts/main-standard"
+			},
+			{
+				"plan": "Starter",
+				"page": "pages/starter/home-starter",
+				"layer": "layouts/main-starter"
+			}
+		]
+		divide(req, res, render)
 	} catch(err: any){
 		console.log(err)
 		return err
@@ -216,6 +234,96 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 	} catch(err: any){
 		console.log(err)
 		return err
+	}
+})
+
+analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, res) => {
+	try{
+		let results: any = {}
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const hierarchical = await Long.find({
+			'shop': session.shop,
+			'distributionType': "Hierarchical"
+		})
+		const equitable = await Long.find({
+			'shop': session.shop,
+			'distributionType': "Equitable"
+		})
+		console.log(hierarchical.length)
+		// goal success rate
+		let hiGoalSuccess: number = 0, eqGoalSuccess: number = 0
+		hierarchical.forEach((item) => {
+			if(item.goals.totalRevenue < item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)){
+				hiGoalSuccess+=1
+			}
+
+			if(item.goals.totalEntries < item.entries.length){
+				hiGoalSuccess+=1
+			}
+		})
+		equitable.forEach((item) => {
+			if(item.goals.totalRevenue < item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)){
+				eqGoalSuccess+=1
+			}
+
+			if(item.goals.totalEntries < item.entries.length){
+				eqGoalSuccess+=1
+			}
+		})
+		results.goalSuccess = {
+			'hiRate': (hiGoalSuccess/hierarchical.length)*100,
+			'eqRate': (eqGoalSuccess/equitable.length)*100
+		}
+
+		// profitability rate
+		let hiNetRevenue: number = 0, eqNetRevenue: number = 0
+		hierarchical.forEach((item) => {
+			const moneyMade: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+			const budget: number = item.winners.reduce((sum: number, num: any) => sum+num.voucherPrize, 0)
+			if(moneyMade > budget*2){
+				hiNetRevenue+=1
+			}
+		})
+		equitable.forEach((item) => {
+			const moneyMade: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+			const budget: number = item.winners.reduce((sum: number, num: any) => sum+num.voucherPrize, 0)
+			if(moneyMade > budget*2){
+				eqNetRevenue+=1
+			}
+		})
+		results.revenueSuccess = {
+			'hiRate': (hiNetRevenue/hierarchical.length)*100,
+			'eqRate': (eqNetRevenue/equitable.length)*100
+		}
+
+		// spending rate
+		let hiMoney: number = 0, eqMoney: number = 0, hiEntries: number = 0, eqEntries: number = 0
+		hierarchical.forEach((item) => {
+			hiMoney+=item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)
+			hiEntries+=item.entries.length
+		})
+		equitable.forEach((item) => {
+			eqMoney+=item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)
+			eqEntries+=item.entries.length
+		})
+		console.log(`${hiMoney} divided by ${hiEntries}`)
+		results.spendingAverage = {
+			'hiRate': hiMoney/hiEntries,
+			'eqRate': eqMoney/eqEntries
+		}
+
+		// overall performance
+		const hiTotal = ((hiGoalSuccess/hierarchical.length)*100) + ((hiNetRevenue/hierarchical.length)*100) + (hiMoney/hiEntries)
+		const eqTotal = ((eqGoalSuccess/equitable.length)*100) + ((eqGoalSuccess/equitable.length)*100) + (eqMoney/eqEntries)
+		results.totalPerformance = {
+			hiTotal,
+			eqTotal
+		}
+
+		res.json(results)
+	} catch(err: any){
+		console.log(err)
+		return err	
 	}
 })
 

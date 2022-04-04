@@ -109,4 +109,4 @@ const forUltimateApi = async (req: Request, res: Response, next: NextFunction) =
 	}
 }
 
-export { forCommon, forStarter, forStandard, forUltimate }
+export { forCommon, forStarter, forStandard, forUltimate, forStandardApi }
