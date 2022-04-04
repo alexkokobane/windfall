@@ -4390,6 +4390,17 @@ $(document).ready(function(e){
 								`)
 							)
 						}
+
+						$("#RActiveSection").html(`
+							<div class="Polaris-TextContainer">
+								<div>Ends at : 
+									<span id="RAEnds" class="Polaris-TextStyle--variationStrong"></span>
+								</div>
+								<div>Entries so far : 
+									<span id="RAEntries" class="Polaris-TextStyle--variationStrong"></span>
+								</div>
+							</div>
+						`)
 						$("#RAEnds").text(new Date(data.endDate).toDateString())
 						$("#RAEntries").text(data.entriesTotal)
 					},
@@ -4641,6 +4652,17 @@ $(document).ready(function(e){
 					contentType: "application/json",
 					success: function(data){
 						$(".GrandSketch").remove()
+						$("#RGrandButtonSelection").after(`
+							<div>Winner : 
+								<span id="RGrandWinner" class="Polaris-TextStyle--variationStrong"></span>
+							</div>
+							<div>Voucher status : 
+								<span id="RVoucherStatus" class="Polaris-TextStyle--variationStrong"></span>
+							</div>
+							<div>Child events complete : 
+								<span id="RChildEvents" class="Polaris-TextStyle--variationStrong"></span>
+							</div>
+						`)
 						$("#RGrandWinner").text(data.winnersChosen === true ? data.winner.entrantEmail : "Not yet chosen")
 						$("#RVoucherStatus").text(data.winnersGifted === true ? "Sent" : "Not sent")
 						$("#RChildEvents").text(`${data.completedEvents} of ${data.allEvents} completed participating events`)

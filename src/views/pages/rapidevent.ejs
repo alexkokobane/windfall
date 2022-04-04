@@ -33,7 +33,7 @@
 							<h3 class="Polaris-Subheading">Total prizes</h3>
 						</div>
 						<div class="Polaris-TextContainer">
-							<p id="TotalWinners"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+							<p id="TotalWinners"><div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall FirstSketch"></div></p>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -47,7 +47,7 @@
 							<h3 class="Polaris-Subheading">Regular prizes</h3>
 						</div>
 						<div class="Polaris-TextContainer">
-							<p id="RegularPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+							<p id="RegularPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall FirstSketch"></div></p>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
@@ -55,7 +55,7 @@
 							<h3 class="Polaris-Subheading">Grand prize</h3>
 						</div>
 						<div class="Polaris-TextContainer">
-							<p id="GrandPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText FirstSketch"></div></p>
+							<p id="GrandPrize" class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall FirstSketch"></div></p>
 						</div>
 					</div>
 				</div>
@@ -65,16 +65,10 @@
 					</div>
 					<div id="AwaitingSketch" class="Polaris-Card__Section">
 						<div class="Polaris-TextContainer">
-							<div>Winner : 
-								<span id="" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText"></div>
-								</span>
-							</div>
-							<div>Total : 
-								<span id="" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText"></div>
-								</span>
-							</div>
+							<div class="Polaris-SkeletonBodyText"></div>
+							<div class="Polaris-SkeletonBodyText"></div>
+							<div class="Polaris-SkeletonBodyText"></div>
+							<div class="Polaris-SkeletonBodyText"></div>
 						</div>
 					</div>
 				</div>
@@ -84,7 +78,7 @@
 					</div>
 					<div class="Polaris-Card__Section">
 						<div class="Polaris-TextContainer">
-							<div class="Polaris-ButtonGroup">
+							<div id="RGrandButtonSelection" class="Polaris-ButtonGroup">
 								<div class="Polaris-ButtonGroup__Item">
 									<button id="GchooseWinner" class="Polaris-Button Polaris-Button--disabled" type="button">
 										<span class="Polaris-Button__Content">
@@ -100,20 +94,11 @@
 									</button>
 								</div>
 							</div>
-							<div>Winner : 
-								<span id="RGrandWinner" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText GrandSketch"></div>
-								</span>
-							</div>
-							<div>Voucher status : 
-								<span id="RVoucherStatus" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText GrandSketch"></div>
-								</span>
-							</div>
-							<div>Child events complete : 
-								<span id="RChildEvents" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText GrandSketch"></div>
-								</span>
+							<div>
+								<div class="Polaris-SkeletonBodyText GrandSketch"></div>
+								<div class="Polaris-SkeletonBodyText GrandSketch"></div>
+								<div class="Polaris-SkeletonBodyText GrandSketch"></div>
+								<div class="Polaris-SkeletonBodyText GrandSketch"></div>
 							</div>
 						</div>
 					</div>
@@ -138,22 +123,15 @@
 					</div>
 					<div id="RActiveSection" class="Polaris-Card__Section">
 						<div class="Polaris-TextContainer">
-							<div>Ends at : 
-								<span id="RAEnds" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText ActiveSketch"></div>
-								</span>
-							</div>
-							<div>Entries so far : 
-								<span id="RAEntries" class="Polaris-TextStyle--variationStrong">
-									<div class="Polaris-SkeletonBodyText ActiveSketch"></div>
-								</span>
-							</div>
+							<div class="Polaris-SkeletonBodyText ActiveSketch"></div>
+							<div class="Polaris-SkeletonBodyText ActiveSketch"></div>
+							<div class="Polaris-SkeletonBodyText ActiveSketch"></div>
 						</div>
 					</div>
 				</div>
 				<div class="Polaris-Card">
 					<div class="Polaris-Card__Header">
-						<h2 class="Polaris-Heading">Upcoming 3 events</h2>
+						<h2 class="Polaris-Heading">Upcoming events</h2>
 					</div>
 					<div id="RU" class="Polaris-Card__Section">
 						<div id="RUListWrapper" class="Polaris-ResourceList__ResourceListWrapper">
@@ -167,16 +145,12 @@
 												<div class="Polaris-ResourceItem__Owned">
 													<div class="Polaris-ResourceItem__Media">
 														<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium HUGSkeleton"></div>
+															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
 														</span>
 													</div>
 												</div>
 												<div class="Polaris-ResourceItem__Content">
-													<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-														<div class="Polaris-Stack__Item Polaris-TextContainer">
-															<h3><span class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText HUGSkeleton"></div></span></h3>
-															<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> <div class="Polaris-SkeletonBodyText HUGSkeleton"></div></div>
-													</div>
+													<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall HUGSkeleton"></div>
 												</div>
 											</div>
 										</div>
@@ -190,16 +164,12 @@
 												<div class="Polaris-ResourceItem__Owned">
 													<div class="Polaris-ResourceItem__Media">
 														<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium HUGSkeleton"></div>
+															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
 														</span>
 													</div>
 												</div>
 												<div class="Polaris-ResourceItem__Content">
-													<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-														<div class="Polaris-Stack__Item Polaris-TextContainer">
-															<h3><span class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText HUGSkeleton"></div></span></h3>
-															<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> <div class="Polaris-SkeletonBodyText HUGSkeleton"></div></div>
-													</div>
+													<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall HUGSkeleton"></div>
 												</div>
 											</div>
 										</div>
@@ -213,16 +183,12 @@
 												<div class="Polaris-ResourceItem__Owned">
 													<div class="Polaris-ResourceItem__Media">
 														<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium HUGSkeleton"></div>
+															<div class="Polaris-SkeletonThumbnail Polaris-SkeletonThumbnail--sizeMedium"></div>
 														</span>
 													</div>
 												</div>
 												<div class="Polaris-ResourceItem__Content">
-													<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
-														<div class="Polaris-Stack__Item Polaris-TextContainer">
-															<h3><span class="Polaris-TextStyle--variationStrong"><div class="Polaris-SkeletonBodyText HUGSkeleton"></div></span></h3>
-															<div><span class="Polaris-TextStyle--variationStrong">Begins on</span> <div class="Polaris-SkeletonBodyText HUGSkeleton"></div></div>
-													</div>
+													<div class="Polaris-SkeletonDisplayText__DisplayText Polaris-SkeletonDisplayText--sizeSmall HUGSkeleton"></div>
 												</div>
 											</div>
 										</div>
