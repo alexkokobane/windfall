@@ -249,6 +249,10 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 			'shop': session.shop,
 			'distributionType': "Equitable"
 		})
+		//const shop = await Shop.findOne({'shop': session.shop})
+
+		// This must be fixed ASAP
+		results.currencyCode = hierarchical[hierarchical.length - 1].currencyCode
 		console.log(hierarchical.length)
 		// goal success rate
 		let hiGoalSuccess: number = 0, eqGoalSuccess: number = 0

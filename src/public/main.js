@@ -5162,4 +5162,112 @@ $(document).ready(function(e){
 		})
 	}
 
+
+	//url === /analytics
+	if(window.location.pathname === "/analytics"){
+		$.ajax({
+			url: `/analytics/long-distribution`,
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				const revCtx = $("#RevGoal")
+				const spentCtx = $("#SpreeCount")
+				const totalCtx = $("#HvETotal")
+				const goalsCtx = $("#HvEGoals")
+				const revenueCtx = $("#HvERevenue")
+				const spendingCtx = $("#HvESpending")
+				new Chart(totalCtx, {
+					type: "bar",
+					data: {
+						labels: ["Hierarchical", "Equitable"],
+						datasets: [
+							{
+								label: "Points",
+								backgroundColor: ["violet", "indigo"],
+								data: [data.totalPerformance.hiTotal, data.totalPerformance.eqTotal]
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+
+				new Chart(goalsCtx, {
+					type: "bar",
+					data: {
+						labels: ["Hierarchical", "Equitable"],
+						datasets: [
+							{
+								label: "Percentage ( % )",
+								backgroundColor: ["violet", "indigo"],
+								data: [data.goalSuccess.hiRate, data.goalSuccess.eqRate]
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+
+				new Chart(revenueCtx, {
+					type: "bar",
+					data: {
+						labels: ["Hierarchical", "Equitable"],
+						datasets: [
+							{
+								label: "Percentage ( % )",
+								backgroundColor: ["violet", "indigo"],
+								data: [data.revenueSuccess.hiRate, data.revenueGross.eqRate]
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+
+				new Chart(spendingCtx, {
+					type: "bar",
+					data: {
+						labels: ["Hierarchical", "Equitable"],
+						datasets: [
+							{
+								label: "Money per customer ("+data.currencyCode+")",
+								backgroundColor: ["violet", "indigo"],
+								data: [data.spendingaverage.hiRate, data.spendingAverage.eqRate]
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+				new Chart(spentCtx, {
+					type: "bar",
+					data: {
+						labels: ["Projected Avg Spent", "Average Spent"],
+						datasets: [
+							{
+								label: "Money (in "+code+")",
+								backgroundColor: ["violet", "indigo"],
+								data: [data.averageSpentProjected, data.averageSpent]
+							}
+						]
+					},
+					options: {
+						legend: {display: false}
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+	}
+
 })
