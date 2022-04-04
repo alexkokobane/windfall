@@ -148,29 +148,66 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 	try{
 		const usage: any = {}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const quota = await Quota.findOne({'shop': session.shop})
+		const quotaFind = await Quota.findOne({'shop': session.shop})
 		const shop = await Shop.findOne({'shop': session.shop})
 		// update usage quota
 		const month = new Date(Date.now()).toISOString().substring(0, 7)			
-
-		if(1 == 1){
-			const newMonth = newSubs(shop.plan)
-			const upQplus = await Quota.updateOne(
+		if(quotaFind === null){
+			const entryQuotas: any[] = newSubs(shop.pricePlan)
+			new Quota({
+				shop: session.shop,
+				plan: shop.pricePlan,
+				entries: entryQuotas
+			}).save()
+		} else if(quotaFind.entries.length === 0){
+			const entryQuotas: any[] = newSubs(shop.pricePlan)
+			const updateEntries = await Quota.updateOne(
 				{
-					'shop': shop
+					'shop': session.shop
 				},
 				{
-					'$push': {
-						'entries': {
-							'month': newMonth[newMonth.length - 1].month,
-							'value': 0,
-							'maxValue': newMonth[newMonth.length - 1].maxValue,
-							'plan': newMonth[newMonth.length - 1].plan
-						}
+					'$set': {
+						'plan': shop.pricePlan,
+						'entries': entryQuotas
 					}
 				}
 			)
+		} else {
+			const newbie = await Quota.findOne({
+				'shop': session.shop,
+				'entries.month': month
+			})
+			console.log(newbie)
+			
+			if(newbie === null){
+				const newMonth = newSubs(shop.pricePlan)
+				console.log(newMonth)
+				console.log({
+					'month': newMonth[newMonth.length - 1].month,
+					'value': 0,
+					'maxValue': newMonth[newMonth.length - 1].maxValue,
+					'plan': newMonth[newMonth.length - 1].plan
+				})
+				const upQplus = await Quota.updateOne(
+					{
+						'shop': session.shop
+					},
+					{
+						'$push': {
+							'entries': {
+								'month': newMonth[newMonth.length - 1].month,
+								'value': 0,
+								'maxValue': newMonth[newMonth.length - 1].maxValue,
+								'plan': newMonth[newMonth.length - 1].plan
+							}
+						}
+					}
+				)
+				console.log(upQplus)
+			}
 		}
+
+		const quota = await Quota.findOne({'shop': session.shop})
 
 		usage.max = quota.entries[quota.entries.length - 1].maxValue
 		usage.usage = (quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100
