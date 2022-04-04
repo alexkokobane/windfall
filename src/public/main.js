@@ -3160,7 +3160,7 @@ $(document).ready(function(e){
 							</ul>
 						</div>
 					`)
-					data.forEach(function(giv){
+					data.reverse().forEach(function(giv){
 						const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
 						$("#UpcomingContentDataDecoy").after(`
 							<li class="Polaris-ResourceItem__ListItem">

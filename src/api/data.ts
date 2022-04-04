@@ -159,6 +159,9 @@ data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 				})
 			}
 		})
+		expired.sort((a: any, b: any) => { 
+			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
+		})
 		console.log(expired)
 		res.json(expired)
 	} catch(err: any) {
