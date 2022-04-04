@@ -211,7 +211,7 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 
 		usage.max = quota.entries[quota.entries.length - 1].maxValue
 		usage.usage = (quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100
-		usage.entries = quota.entries
+		usage.entries = quota.entries.slice(quota.entries.length - 6)
 		res.json(usage)
 	} catch(err: any){
 		console.log(err)
