@@ -2902,7 +2902,7 @@ $(document).ready(function(e){
 										<div class="Polaris-ResourceItem__Owned">
 											<div class="Polaris-ResourceItem__Media">
 												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-													<div style="background: ${colour};"></div>
+													<div class="dp" style="background: ${colour};color:black;">${giv.name.substring(0,1)}</div>
 												</span>
 											</div>
 										</div>
@@ -3036,7 +3036,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
 													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-														<div style="background: ${colour};"></div>
+														<div class="dp" style="background: ${colour};color:black;">${giv.name.substring(0,1)}</div>
 													</span>
 												</div>
 											</div>
@@ -3171,7 +3171,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
 													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-														<div style="background: ${colour};"></div>
+														<div class="dp" style="background: ${colour};color:black;">${giv.name.substring(0,1)}</div>
 													</span>
 												</div>
 											</div>
@@ -3307,7 +3307,7 @@ $(document).ready(function(e){
 											<div class="Polaris-ResourceItem__Owned">
 												<div class="Polaris-ResourceItem__Media">
 													<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
-														<div style="background: ${colour};"></div>
+														<div class="dp" style="background: ${colour};color:black;">${giv.name.substring(0,1)}</div>
 													</span>
 												</div>
 											</div>
