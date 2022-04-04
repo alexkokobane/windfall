@@ -1637,6 +1637,9 @@ $(document).ready(function(e){
 	$("#GiveawaysBtn").click(function(){
 		location.href="/campaign/giveaways"
 	})
+	$("#AnalyticsBtn").click(function(){
+		location.href="/analytics"
+	})
 	$("#ToShopifyLinkBtn").click(function(){
 		$.ajax({
 			url: '/shop',

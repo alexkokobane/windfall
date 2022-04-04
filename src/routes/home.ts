@@ -17,7 +17,7 @@ home.get('/', checkAuth, async (req, res) => {
 			},
 			{
 				"plan": "Standard",
-				"page": "pages/home",
+				"page": "pages/standard/home-standard",
 				"layer": "layouts/main-standard"
 			},
 			{
