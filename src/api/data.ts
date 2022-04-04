@@ -256,7 +256,10 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 				})
 			}
 		})
-		console.log(upcoming)
+		upcoming.sort((a: any, b: any) => { 
+			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
+		})
+		//console.log(upcoming)
 		res.json(upcoming)
 	} catch(err: any) {
 		console.log(err)

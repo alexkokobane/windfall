@@ -1934,7 +1934,7 @@ $(document).ready(function(e){
 					)
 				}
 				$(".HUGDecoyItem").remove()
-				data.forEach(function(giv){
+				data.reverse().forEach(function(giv){
 					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
 					$("#HUGDataDecoy").after(`
 						<li class="Polaris-ResourceItem__ListItem">
