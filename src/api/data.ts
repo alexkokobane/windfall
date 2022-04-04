@@ -132,6 +132,7 @@ data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 			expired.push({
 				"id": item.id,
 				"name": item.name,
+				"eventType": item.eventType,
 				"type": item.distributionType,
 				"startDate": item.startDate,
 				"endDate": item.endDate,
@@ -237,6 +238,7 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 			upcoming.push({
 				"id": item.id,
 				"name": item.name,
+				"eventType": item.eventType,
 				"type": item.distributionType,
 				"startDate": item.startDate,
 				"endDate": item.endDate,

@@ -2910,7 +2910,7 @@ $(document).ready(function(e){
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
-														<div>${giv.type} distribution</div>
+														<div>${giv.eventType} event</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
 													<div class="Polaris-Stack__Item">
@@ -3044,7 +3044,7 @@ $(document).ready(function(e){
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
-														<div>${giv.type} distribution</div>
+														<div>${giv.eventType} event</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
 													<div class="Polaris-Stack__Item">
@@ -3179,7 +3179,7 @@ $(document).ready(function(e){
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
-														<div>${giv.type} distribution</div>
+														<div>${giv.eventType} event</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
 													<div class="Polaris-Stack__Item">
@@ -3315,7 +3315,7 @@ $(document).ready(function(e){
 												<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
 													<div class="Polaris-Stack__Item">
 														<h3><span class="Polaris-TextStyle--variationStrong" id="Name${giv.id}"></span></h3>
-														<div>${giv.type} distribution</div>
+														<div>${giv.eventType} event</div>
 														<div>Received <span class="Polaris-TextStyle--variationStrong">${giv.entriesTotal}</span> entries</div>
 													</div>
 													<div class="Polaris-Stack__Item">
