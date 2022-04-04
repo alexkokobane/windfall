@@ -111,7 +111,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							)
 
 							if(upQ.modifiedCount !== 1){
-								const newMonth = newSubs(checkActive.plan)
+								const newMonth = newSubs(shopExist.plan)
 								const upQplus = await Quota.updateOne(
 									{
 										'shop': shop
@@ -194,7 +194,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 							)
 
 							if(upQ.modifiedCount !== 1){
-								const newMonth = newSubs(checkActive.plan)
+								const newMonth = newSubs(shopExist.plan)
 								const upQplus = await Quota.updateOne(
 									{
 										'shop': shop

@@ -150,8 +150,28 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const quota = await Quota.findOne({'shop': session.shop})
 		const shop = await Shop.findOne({'shop': session.shop})
-		const entryQuotas: any[] = newSubs(shop.newChargeDetails.plan)
-		console.log(entryQuotas)
+		// update usage quota
+		const month = new Date(Date.now()).toISOString().substring(0, 7)			
+
+		if(1 == 1){
+			const newMonth = newSubs(shop.plan)
+			const upQplus = await Quota.updateOne(
+				{
+					'shop': shop
+				},
+				{
+					'$push': {
+						'entries': {
+							'month': newMonth[newMonth.length - 1].month,
+							'value': 0,
+							'maxValue': newMonth[newMonth.length - 1].maxValue,
+							'plan': newMonth[newMonth.length - 1].plan
+						}
+					}
+				}
+			)
+		}
+
 		usage.max = quota.entries[quota.entries.length - 1].maxValue
 		usage.usage = (quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100
 		usage.entries = quota.entries
