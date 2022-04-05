@@ -146,7 +146,11 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 											'lastName': lastName,
 											'email': email,
 											'points': subtotal,
-											'spent': money
+											'spent': money,
+											'metadata': {
+												'spent': money,
+												'timestamp': Date.now()
+											}
 										}
 									}
 								}
@@ -164,6 +168,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 									'$inc': {
 										'entries.$.points': subtotal,
 										'entries.$.spent': money
+									},
+									'$push': {
+										'entries.$.metadata': {
+											'spent': money,
+											'timestamp': Date.now()
+										}
 									}
 								}
 							)
@@ -241,7 +251,11 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 											'lastName': lastName,
 											'email': email,
 											'points': subtotal,
-											'spent': money
+											'spent': money,
+											'metadata': {
+												'spent': money,
+												'timestamp': Date.now()
+											}
 										}
 									}
 								}
@@ -259,6 +273,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 									'$inc': {
 										'entries.$.points': subtotal,
 										'entries.$.spent': money
+									},
+									'$push': {
+										'entries.$.metadata': {
+											'spent': money,
+											'timestamp': Date.now()
+										}
 									}
 								}
 							)
@@ -340,7 +360,11 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 											'lastName': lastName,
 											'email': email,
 											'points': subtotal,
-											'spent': money
+											'spent': money,
+											'metadata': {
+												'spent': money,
+												'timestamp': Date.now()
+											}
 										}
 									}
 								}
@@ -358,6 +382,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 									'$inc': {
 										'entries.$.points': subtotal,
 										'entries.$.spent': money
+									},
+									'$push': {
+										'entries.$.metadata': {
+											'spent': money,
+											'timestamp': Date.now()
+										}
 									}
 								}
 							)
@@ -436,7 +466,11 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 											'lastName': lastName,
 											'email': email,
 											'points': subtotal,
-											'spent': money
+											'spent': money,
+											'metadata': {
+												'spent': money,
+												'timestamp': Date.now()
+											}
 										}
 									}
 								}
@@ -454,6 +488,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 									'$inc': {
 										'entries.$.points': subtotal,
 										'entries.$.spent': money
+									},
+									'$push': {
+										'entries.$.metadata': {
+											'spent': money,
+											'timestamp': Date.now()
+										}
 									}
 								}
 							)
