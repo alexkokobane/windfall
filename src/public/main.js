@@ -5190,9 +5190,10 @@ $(document).ready(function(e){
 					options: {
 						legend: {display: false},
 						plugins: {
-								title: {
+							title: {
 								display: true,
-								text: 'Distribution models performance'
+								text: 'Distribution models performance',
+								color: "#000000"
 							}
 						}
 					}
@@ -5211,11 +5212,11 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
-						legend: {display: false},
 						plugins: {
-								title: {
+							title: {
 								display: true,
-								text: 'Goal achievement success rate ( % )'
+								text: 'Goal achievement success rate ( % )',
+								color: "#000000"
 							}
 						}
 					}
@@ -5236,9 +5237,10 @@ $(document).ready(function(e){
 					options: {
 						legend: {display: false},
 						plugins: {
-								title: {
+							title: {
 								display: true,
-								text: 'Outstanding net revenue rate ( % )'
+								text: 'Outstanding net revenue rate ( % )',
+								color: "#000000"
 							}
 						}
 					}
@@ -5258,9 +5260,10 @@ $(document).ready(function(e){
 					},
 					options: {
 						plugins: {
-								title: {
+							title: {
 								display: true,
-								text: 'The average customer spending'
+								text: 'The average customer spending',
+								color: "#000000"
 							}
 						}
 					}
