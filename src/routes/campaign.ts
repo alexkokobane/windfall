@@ -81,6 +81,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 		let count = longEvents.length
 		let plan = store.pricePlan
 		console.log("It runs and the count is "+count+" on a "+plan+" plan")
+		/*
 		if(plan === "Starter" && count > 15) {
 			console.log("It passes here")
 			return res.status(403).send("Sorry, you have reached your quota")
@@ -88,7 +89,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 			return res.status(403).send("Sorry, you have reached your quota")
 		} else if(plan ==="Ultimate" && count > 1000){
 			return res.status(403).send("Sorry, you have reached your quota")
-		}
+		}*/
 		if(parseInt(data.ofWinners) > 50 || parseInt(data.ofWinners) <= 0){
 			return res.status(403).send("You cannot have more than 10 winners or a zero (0) winner")
 		}
