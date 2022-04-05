@@ -5170,8 +5170,6 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				const revCtx = $("#RevGoal")
-				const spentCtx = $("#SpreeCount")
 				const totalCtx = $("#HvETotal")
 				const goalsCtx = $("#HvEGoals")
 				const revenueCtx = $("#HvERevenue")
@@ -5236,22 +5234,6 @@ $(document).ready(function(e){
 								label: "Money per customer ("+data.currencyCode+")",
 								backgroundColor: ["violet", "indigo"],
 								data: [data.spendingAverage.hiRate, data.spendingAverage.eqRate]
-							}
-						]
-					},
-					options: {
-						legend: {display: false}
-					}
-				})
-				new Chart(spentCtx, {
-					type: "bar",
-					data: {
-						labels: ["Projected Avg Spent", "Average Spent"],
-						datasets: [
-							{
-								label: "Money (in "+code+")",
-								backgroundColor: ["violet", "indigo"],
-								data: [data.averageSpentProjected, data.averageSpent]
 							}
 						]
 					},
