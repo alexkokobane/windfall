@@ -5218,7 +5218,7 @@ $(document).ready(function(e){
 							{
 								label: "Percentage ( % )",
 								backgroundColor: ["violet", "indigo"],
-								data: [data.revenueSuccess.hiRate, data.revenueGross.eqRate]
+								data: [data.revenueSuccess.hiRate, data.revenueSuccess.eqRate]
 							}
 						]
 					},
@@ -5235,7 +5235,7 @@ $(document).ready(function(e){
 							{
 								label: "Money per customer ("+data.currencyCode+")",
 								backgroundColor: ["violet", "indigo"],
-								data: [data.spendingaverage.hiRate, data.spendingAverage.eqRate]
+								data: [data.spendingAverage.hiRate, data.spendingAverage.eqRate]
 							}
 						]
 					},
