@@ -28,6 +28,7 @@ const ShopSchema = new mongoose.Schema({
 	},
 	scope: [String],
 	email: String,
+	currencyCode: String,
 	entryNotificationTemplates: [{
 		id: Number,
 		name: String,
@@ -79,7 +80,11 @@ const longEventSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		points: Number,
-		spent: Number
+		spent: Number,
+		metadata: [{
+			spent: Number,
+			timestamp: Date
+		}]
 	}],
 	winnersTotal: Number,
 	winners: [{
@@ -162,7 +167,11 @@ const rapidChildsSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		points: Number,
-		spent: Number
+		spent: Number,
+		metadata: [{
+			spent: Number,
+			timestamp: Date
+		}]
 	}],
 	winnersTotal: Number,
 	winner: {
