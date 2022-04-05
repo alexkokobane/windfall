@@ -253,6 +253,7 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 
 		// This must be fixed ASAP
 		results.currencyCode = hierarchical[hierarchical.length - 1].currencyCode
+		console.log(hierarchical[hierarchical.length - 1].currencyCode)
 		console.log(hierarchical.length)
 		// goal success rate
 		let hiGoalSuccess: number = 0, eqGoalSuccess: number = 0
