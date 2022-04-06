@@ -61,7 +61,7 @@ const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Standard" || "Ultimate"){
+		if(checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Ultimate"){
 			return res.status(403).redirect("/billing/plans")
 		}
 		next()
@@ -74,7 +74,7 @@ const forStandardApi = async (req: Request, res: Response, next: NextFunction) =
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Standard" || "Ultimate"){
+		if(checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Ultimate"){
 			return res.status(403).send("Forbidden")
 		}
 		next()
