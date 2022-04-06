@@ -7,6 +7,7 @@ import { templateGate } from '../utils/quotas'
 import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 import { generateDiscountCode } from '../utils/functions'
+import { quota, quotaApi } from '../utils/middlewares/quota'
 
 const campaign = express.Router()
 
@@ -37,7 +38,7 @@ campaign.get('/giveaways', checkAuth, async (req, res) => {
 
 // Long events
 
-campaign.get('/long/new', checkAuth, async (req, res) => {
+campaign.get('/long/new', checkAuth, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
@@ -62,7 +63,7 @@ campaign.get('/long/new', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/long/new', checkApiAuth, async (req, res) => {
+campaign.post('/long/new', checkApiAuth, quotaApi, async (req, res) => {
 	try {
 		const data = req.body.form
 		console.log(req.body.form)
@@ -191,7 +192,7 @@ campaign.post('/long/new', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.get('/long/new/equitable', checkAuth, forCommon, async (req, res) => {
+campaign.get('/long/new/equitable', checkAuth, forCommon, quota, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -231,7 +232,7 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-campaign.get('/long/new/hierarchical', checkAuth, forCommon, async (req, res) => {
+campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, res) => {
 	try {
 		let decoyId: string
 		let decoyWinners: string
@@ -313,7 +314,7 @@ campaign.get('/long/:id', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/long/new/hierarchical/create', checkApiAuth, async (req, res) => {
+campaign.post('/long/new/hierarchical/create', checkApiAuth, quotaApi, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
 		const giveawayId = req.body.id
@@ -343,7 +344,7 @@ campaign.post('/long/new/hierarchical/create', checkApiAuth, async (req, res) =>
 	}
 })
 
-campaign.post('/long/new/equitable/create', checkApiAuth, async (req, res) => {
+campaign.post('/long/new/equitable/create', checkApiAuth, quotaApi, async (req, res) => {
 	try {
 		const amount = req.body.amounts
 		const giveawayId = req.body.id
@@ -925,7 +926,7 @@ campaign.post('/long/:id/edit', checkApiAuth, async (req, res) => {
 
 // Rapid events
 
-campaign.get('/rapid/new', checkAuth, async (req, res) => {
+campaign.get('/rapid/new', checkAuth, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
@@ -950,7 +951,7 @@ campaign.get('/rapid/new', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/rapid/new', checkApiAuth, async (req, res) => {
+campaign.post('/rapid/new', checkApiAuth, quotaApi, async (req, res) => {
 	try{
 		const data = req.body.event
 		const giveawayId = Math.floor(Math.random() * 1000000000)
@@ -1788,7 +1789,7 @@ campaign.get('/rapid/template/:id', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-campaign.post('/rapid/template/:id/activate', checkApiAuth, async (req, res) => {
+campaign.post('/rapid/template/:id/activate', checkApiAuth, quotaApi, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -2409,7 +2410,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 
 // Templates
 
-campaign.post('/template/:id/activate', checkApiAuth, async (req, res) => {
+campaign.post('/template/:id/activate', checkApiAuth, quotaApi, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
