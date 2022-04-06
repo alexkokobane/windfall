@@ -332,4 +332,77 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 	}
 })
 
+analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
+	try{
+		let sun = 0, mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.find({'shop': session.shop})
+		const rapid = await RapidChild.find({'shop': session.shop})
+		let transactions: any[] = []
+		let metadata: any[] = []
+		long.forEach((item: any) => {
+			item.entries.forEach((person: any) => {
+				metadata.push(person.metadata)
+			})
+		})
+		rapid.forEach((item: any) => {
+			item.entries.forEach((person: any) => {
+				metadata.push(person.metadata)
+			})
+		})
+		metadata.forEach((item: any) => {
+			item.forEach((arr: any) => {
+				transactions.push(arr)
+			})
+		})
+
+		//const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+		transactions.forEach((item: any) => {
+			let day: number = new Date(item.timestamp).getDay()
+			console.log(day)
+			switch(day){
+				case 0:
+					sun+=item.spent
+					break;
+				case 1:
+					mon+=item.spent
+					break;
+				case 2:
+					tue+=item.spent
+					break;
+				case 3:
+					wed+=item.spent
+					break;
+				case 4:
+					thu+=item.spent
+					break;
+				case 5:
+					fri+=item.spent
+					break;
+				case 6:
+					sat+=item.spent
+					break;
+				default:
+					return null
+					break;
+			}
+		})
+
+		const results = {
+			"Sunday": sun,
+			"Monday": mon,
+			"Tuesday": tue,
+			"Wednesday": wed,
+			"Thursday": thu,
+			"Friday": fri,
+			"Saturday": sat
+		}
+
+		res.json(results)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 export default analytics
