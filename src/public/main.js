@@ -1853,6 +1853,9 @@ $(document).ready(function(e){
 					$("#UpgradePlan").click(function(){
 						location.href="/billing/change"
 					})
+
+					$(".CreateLong").addClass("Polaris-Button--disabled").removeClass("CreateLong")
+					$(".CreateRapid").addClass("Polaris-Button--disabled").removeClass("CreateRapid")
 				}
 			},
 			error: function(data){
