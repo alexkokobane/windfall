@@ -5401,6 +5401,45 @@ $(document).ready(function(e){
 				}
 			}
 		})
+		$.ajax({
+			url: "/analytics/lucky-days",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				const revCtx = $("#RevenueByWeekDays")
+
+				new Chart(revCtx, {
+					type: "bar",
+					data: {
+						labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+						datasets: [
+							{
+								label: "Money ("+data.currencyCode+")",
+								backgroundColor: ["violet"],
+								data: [data.Sunday, data.Monday, data.Tuesday, data.Wednesday, data.Thursday, data.Friday, data.Saturday]
+							}
+						]
+					},
+					options: {
+						legend: {display: false},
+						plugins: {
+							title: {
+								display: true,
+								text: 'Total revenue by days of the week',
+								color: "#000000"
+							}
+						}
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
 	}
 
 })
