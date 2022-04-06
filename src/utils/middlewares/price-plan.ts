@@ -61,10 +61,10 @@ const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Ultimate"){
-			return res.status(403).redirect("/billing/plans")
+		if(checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Ultimate"){
+			return next()
 		}
-		next()
+		res.status(403).redirect("/billing/plans")
 	} catch (err: any){
 		console.log(err)
 	}
@@ -74,10 +74,10 @@ const forStandardApi = async (req: Request, res: Response, next: NextFunction) =
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Standard" || checkShop.pricePlan !== "Ultimate"){
-			return res.status(403).send("Forbidden")
+		if(checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Ultimate"){
+			return next()
 		}
-		next()
+		return res.status(403).send("Forbidden")
 	} catch (err: any){
 		console.log(err)
 	}
