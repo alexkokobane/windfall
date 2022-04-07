@@ -332,6 +332,7 @@ const transactionSchema = new mongoose.Schema({
 	country: String,
 	city: String,
 	spent: Number,
+	currencyCode: String,
 	createdAt: {
 		type: Date,
 		default: Date.now()

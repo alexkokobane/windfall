@@ -44,6 +44,7 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 			const tip = parseFloat(obj.total_tip_received)
 			const country = obj.billing_address.country
 			const city = obj.billing_address.city
+			const moneyCode = obj.currency
 			let subtotal = Math.round(parseFloat(obj.subtotal_price))
 			let money = parseFloat(obj.subtotal_price)
 
@@ -77,7 +78,8 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					'shop': shop,
 					'country': country,
 					'city': city,
-					'spent': money
+					'spent': money,
+					'currencyCode': moneyCode
 				}).save()
 				//console.log(checkActive)
 				//console.log(checkRapid)
