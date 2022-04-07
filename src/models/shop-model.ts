@@ -81,6 +81,10 @@ const longEventSchema = new mongoose.Schema({
 		email: String,
 		points: Number,
 		spent: Number,
+		tip: Number,
+		marketing: Boolean,
+		city: String,
+		country: String,
 		metadata: [{
 			spent: Number,
 			timestamp: Date
@@ -170,6 +174,7 @@ const rapidChildsSchema = new mongoose.Schema({
 		spent: Number,
 		tip: Number,
 		marketing: Boolean,
+		city: String,
 		country: String,
 		metadata: [{
 			spent: Number,
@@ -319,13 +324,18 @@ const quotaSchema = new mongoose.Schema({
 	}]
 })
 
-const transaction = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
 	shop: {
 		type: String,
 		required: true,
 	},
 	country: String,
-	city: String
+	city: String,
+	spent: Number,
+	createdAt: {
+		type: Date,
+		default: Date.now()
+	}
 })
 
 const Shop = mongoose.model('Shop', ShopSchema)
@@ -337,5 +347,6 @@ const Quota = mongoose.model('Quota', quotaSchema)
 const Rapid = mongoose.model('Rapid',  rapidEventSchema)
 const RapidChild = mongoose.model('RapidChild', rapidChildsSchema)
 const SavedRapid = mongoose.model('SavedRapid', rapidEventTemplateSchema)
+const Purchase = mongoose.model('Transaction', transactionSchema)
 
-export { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid }
+export { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid, Purchase }

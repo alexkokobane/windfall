@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, Purchase } from '../models/shop-model'
 import ActiveShop from '../models/session-model'
 import { generateDiscountCode, newSubs } from '../utils/functions' 
 
@@ -40,8 +40,13 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 			const firstName = obj.customer.first_name
 			const lastName = obj.customer.last_name
 			const email = obj.customer.email
-			let subtotal = Math.round(obj.subtotal_price)
-			let money = obj.subtotal_price
+			const marketing = obj.customer.accepts_marketing
+			const tip = parseFloat(obj.total_tip_received)
+			const country = obj.billing_address.country
+			const city = obj.billing_address.city
+			let subtotal = Math.round(parseFloat(obj.subtotal_price))
+			let money = parseFloat(obj.subtotal_price)
+
 			const shopExist = await Shop.findOne({
 				'shop': shop
 			})
@@ -66,8 +71,18 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 					'startDate': {'$lte': new Date(dateNow)},
 					'endDate': {'$gte': new Date(dateNow)}
 				})
-				console.log(checkActive)
-				console.log(checkRapid)
+
+				// keep record of transaction
+				new Purchase({
+					'shop': shop,
+					'country': country,
+					'city': city,
+					'spent': money
+				}).save()
+				//console.log(checkActive)
+				//console.log(checkRapid)
+
+				// check and process the event type available, if any
 				if(checkActive !== null){
 					// update entries
 					const participant = await Long.findOne(
