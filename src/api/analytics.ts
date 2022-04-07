@@ -335,6 +335,7 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 	try{
 		let sun = 0, mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0
+		let jan = 0, feb = 0, mar = 0, apr = 0, may = 0, jun = 0, jul = 0, aug = 0, sep = 0, oct = 0, nov = 0, dec = 0
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const long = await Long.find({'shop': session.shop})
 		const rapid = await RapidChild.find({'shop': session.shop})
@@ -388,7 +389,53 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 			}
 		})
 
-		const results = {
+		transactions.forEach((item: any) => {
+			let day: number = new Date(item.timestamp).getMonth()
+			console.log(day)
+			switch(day){
+				case 0:
+					jan+=item.spent
+					break;
+				case 1:
+					feb+=item.spent
+					break;
+				case 2:
+					mar+=item.spent
+					break;
+				case 3:
+					apr+=item.spent
+					break;
+				case 4:
+					may+=item.spent
+					break;
+				case 5:
+					jun+=item.spent
+					break;
+				case 6:
+					jul+=item.spent
+					break;
+				case 7:
+					aug+=item.spent
+					break;
+				case 8:
+					sep+=item.spent
+					break;
+				case 9:
+					oct+=item.spent
+					break;
+				case 10:
+					nov+=item.spent
+					break;
+				case 11:
+					dec+=item.spent
+					break;
+				default:
+					return null
+					break;
+			}
+		})
+
+		const days = {
 			"Sunday": sun,
 			"Monday": mon,
 			"Tuesday": tue,
@@ -396,6 +443,26 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 			"Thursday": thu,
 			"Friday": fri,
 			"Saturday": sat
+		}
+
+		const months = {
+			jan,
+			feb,
+			mar,
+			apr,
+			may,
+			jun,
+			jul,
+			aug,
+			sep,
+			oct,
+			nov,
+			dec
+		}
+
+		const results = {
+			days,
+			months
 		}
 
 		res.json(results)
