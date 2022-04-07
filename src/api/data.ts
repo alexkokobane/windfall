@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import cors from 'cors'
-import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid, Purchase } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
 
@@ -1053,6 +1053,7 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 		const rapidEvents = await Rapid.find({'shop': session.shop})
 		const rapidChildEvents = await RapidChild.find({'shop': session.shop})
 		const rapidTemplates = await SavedRapid.find({'shop': session.shop})
+		const transactions = await Purchase.find({'shop': session.shop})
 
 		const allData = {
 			shop,
@@ -1064,6 +1065,7 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 			longTemplate: templates,
 			rapidTemplates,
 			customers,
+			transactions
 		}
 		res.json(allData)
 	} catch(err: any) {
