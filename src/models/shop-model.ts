@@ -168,6 +168,9 @@ const rapidChildsSchema = new mongoose.Schema({
 		email: String,
 		points: Number,
 		spent: Number,
+		tip: Number,
+		marketing: Boolean,
+		country: String,
 		metadata: [{
 			spent: Number,
 			timestamp: Date
@@ -314,6 +317,15 @@ const quotaSchema = new mongoose.Schema({
 		maxValue: Number,
 		plan: String
 	}]
+})
+
+const transaction = new mongoose.Schema({
+	shop: {
+		type: String,
+		required: true,
+	},
+	country: String,
+	city: String
 })
 
 const Shop = mongoose.model('Shop', ShopSchema)
