@@ -5406,9 +5406,10 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				const revCtx = $("#RevenueByWeekDays")
+				const daysCtx = $("#TotalRevenueByWeekDays")
+				const monthsCtx = $("#TotalRevenueByMonths")
 
-				new Chart(revCtx, {
+				new Chart(daysCtx, {
 					type: "bar",
 					data: {
 						labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -5416,7 +5417,7 @@ $(document).ready(function(e){
 							{
 								label: "Money ("+data.currencyCode+")",
 								backgroundColor: ["violet"],
-								data: [data.Sunday, data.Monday, data.Tuesday, data.Wednesday, data.Thursday, data.Friday, data.Saturday]
+								data: [data.days.Sunday, data.days.Monday, data.days.Tuesday, data.days.Wednesday, data.days.Thursday, data.days.Friday, data.days.Saturday]
 							}
 						]
 					},
@@ -5426,6 +5427,43 @@ $(document).ready(function(e){
 							title: {
 								display: true,
 								text: 'Total revenue by days of the week',
+								color: "#000000"
+							}
+						}
+					}
+				})
+
+				new Chart(monthsCtx, {
+					type: "bar",
+					data: {
+						labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						datasets: [
+							{
+								label: "Money ("+data.currencyCode+")",
+								backgroundColor: ["violet"],
+								data: [
+									data.months.jan,
+									data.months.feb,
+									data.months.mar,
+									data.months.apr,
+									data.months.may,
+									data.months.jun,
+									data.months.jul,
+									data.months.aug,
+									data.months.sep,
+									data.months.oct,
+									data.months.nov,
+									data.months.dec
+								]
+							}
+						]
+					},
+					options: {
+						legend: {display: false},
+						plugins: {
+							title: {
+								display: true,
+								text: 'Total revenue by months of the year',
 								color: "#000000"
 							}
 						}
