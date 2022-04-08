@@ -472,4 +472,41 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 	}
 })
 
+analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const dateNow = Date.now()
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'winnersGifted': true
+		})
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'winnersGifted': true
+		})
+
+		let prizes: any[] = []
+		long.forEach((item: any) => {
+			item.winners.forEach((prize: any) => {
+				prizes.push({
+					"prizeId": prize.prizeId,
+					"voucherPrize": prize.voucherPrize,
+					"entrantName": prize.entrantName,
+					"entrantEmail": prize.entrantEmail,
+					"date": item.endDate
+				})
+			})
+		})
+		// Do some wild things with this data
+		res.json(prizes)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 export default analytics
