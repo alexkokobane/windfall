@@ -61,7 +61,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		
 		// GDPR webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/delete-shop',
+			path: '/webhooks/shop-redact',
 			topic: 'SHOP_REDACT',
 			accessToken: session.accessToken,
 			shop: session.shop,
@@ -141,20 +141,32 @@ auth.get('/callback', async (req: Request, res: Response) => {
 auth.get('/callback/error', async (req, res) => {
 	res.render('pages/oauth-error')
 })
-/*
-Other webhook topics to subscribe to
-CUSTOMERS_DELETE
-ORDERS_PAID
-*/
 
-Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-	path: "/webhooks",
+
+// Register webhook handlers
+Shopify.Webhooks.Registry.addHandler("SHOP_REDACT", {
+	path: "/webhooks/shop-redact",
+	webhookHandler: handleAppUninstall,
+})
+
+Shopify.Webhooks.Registry.addHandler("CUSTOMERS_DATA_REQUEST", {
+	path: "/webhooks/customers-data-request",
+	webhookHandler: handleAppUninstall,
+})
+
+Shopify.Webhooks.Registry.addHandler("CUSTOMERS_REDACT", {
+	path: "/webhooks/customers-redact",
 	webhookHandler: handleAppUninstall,
 })
 
 Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
-	path: "/webhooks",
+	path: "/webhooks/orders-paid",
 	webhookHandler: handleOrdersPaid,
+})
+
+Shopify.Webhooks.Registry.addHandler("SHOP_UPDATE", {
+	path: "/webhooks/shop-update",
+	webhookHandler: handleAppUninstall,
 })
 
 export default auth

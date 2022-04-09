@@ -545,7 +545,42 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 	}
 }
 
-webhooks.post('/', async (req, res) => {
+// Functional
+webhooks.post('/orders-paid', async (req, res) => {
+	try{
+		await Shopify.Webhooks.Registry.process(req, res)		
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+webhooks.post('/shop-update', async (req, res) => {
+	try{
+		await Shopify.Webhooks.Registry.process(req, res)		
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+
+// GDPR
+webhooks.post('/shop-redact', async (req, res) => {
+	try{
+		await Shopify.Webhooks.Registry.process(req, res)		
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+webhooks.post('/customers-data-request', async (req, res) => {
+	try{
+		await Shopify.Webhooks.Registry.process(req, res)		
+	} catch(err: any){
+		console.log(err)
+	}
+})
+
+webhooks.post('/customers-redact', async (req, res) => {
 	try{
 		await Shopify.Webhooks.Registry.process(req, res)		
 	} catch(err: any){
