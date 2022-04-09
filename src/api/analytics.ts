@@ -1,5 +1,6 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
+import axios from 'axios'
 import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
@@ -520,7 +521,8 @@ analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) 
 		let payoutAllTime = 0
 		let winnersThisYear = 0
 		let payoutThisYear = 0
-		
+		const money: any = await axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.EXCHANGE_ID}`)
+		console.log(money.data.rates)
 		prizes.forEach((item: any) => {
 			payoutAllTime+=item.voucherPrize
 			const thisYear = new Date(Date.now()).getFullYear()
@@ -539,7 +541,7 @@ analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) 
 		res.json(results)
 	} catch(err: any){
 		console.log(err)
-		return err
+		return res.status(403).json(err)
 	}
 })
 

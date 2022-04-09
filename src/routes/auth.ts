@@ -59,19 +59,40 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		
-		// Webhooks
+		// GDPR webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({
-			path: '/webhooks',
-			topic: 'APP_UNINSTALLED',
+			path: '/webhooks/delete-shop',
+			topic: 'SHOP_REDACT',
 			accessToken: session.accessToken,
 			shop: session.shop,
 		})
+		const reqCustomer =  await Shopify.Webhooks.Registry.register({
+			path: '/webhooks/request-customer',
+			topic: 'CUSTOMERS_DATA_REQUEST',
+			accessToken: session.accessToken,
+			shop: session.shop
+		})
+		const delCustomer =  await Shopify.Webhooks.Registry.register({
+			path: '/webhooks/delete-customer',
+			topic: 'CUSTOMERS_REDACT',
+			accessToken: session.accessToken,
+			shop: session.shop
+		})
+
+		// Functional webhooks
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks',
 			topic: 'ORDERS_PAID',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
+		const shopUpdate =  await Shopify.Webhooks.Registry.register({
+			path: '/webhooks/shop-update',
+			topic: 'SHOP_UPDATE',
+			accessToken: session.accessToken,
+			shop: session.shop
+		})
+
 		if(!delShop['APP_UNINSTALLED'].success){
 			console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
 		}
@@ -82,10 +103,22 @@ auth.get('/callback', async (req: Request, res: Response) => {
 
 		// Check bills and db saved shops
 		if(checkShop == null){
+			const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+			const data: any = await client.query(
+				{
+					data: `{
+						shop {
+							currencyCode
+						}
+					}`
+				}
+			)
+			//console.log(data.body.data.shop.currencyCode)
 			const storeShop = new Shop({
 				shop: session.shop,
 				scope: [session.scope],
 				email: session.onlineAccessInfo.associated_user.email,
+				currencyCode: data.body.data.shop.currencyCode
 			})
 			storeShop.save()
 			//console.log("check point 1")
