@@ -67,13 +67,13 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			shop: session.shop,
 		})
 		const reqCustomer =  await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/request-customer',
+			path: '/webhooks/customers-data-request',
 			topic: 'CUSTOMERS_DATA_REQUEST',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
 		const delCustomer =  await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/delete-customer',
+			path: '/webhooks/customers-redact',
 			topic: 'CUSTOMERS_REDACT',
 			accessToken: session.accessToken,
 			shop: session.shop
@@ -81,7 +81,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 
 		// Functional webhooks
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
-			path: '/webhooks',
+			path: '/webhooks/orders-paid',
 			topic: 'ORDERS_PAID',
 			accessToken: session.accessToken,
 			shop: session.shop
