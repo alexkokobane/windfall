@@ -497,12 +497,46 @@ analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) 
 					"voucherPrize": prize.voucherPrize,
 					"entrantName": prize.entrantName,
 					"entrantEmail": prize.entrantEmail,
-					"date": item.endDate
+					"date": item.endDate,
+					"currencyCode": item.currencyCode
 				})
 			})
 		})
+
+		rapid.forEach((item: any) => {
+			const prize = item.winner
+			prizes.push({
+				"prizeId": prize.prizeId,
+				"voucherPrize": prize.voucherPrize,
+				"entrantName": prize.entrantName,
+				"entrantEmail": prize.entrantEmail,
+				"date": item.endDate,
+				"currencyCode": item.currencyCode
+			})
+		})
+
 		// Do some wild things with this data
-		res.json(prizes)
+		const winnersAllTime = prizes.length
+		let payoutAllTime = 0
+		let winnersThisYear = 0
+		let payoutThisYear = 0
+		
+		prizes.forEach((item: any) => {
+			payoutAllTime+=item.voucherPrize
+			const thisYear = new Date(Date.now()).getFullYear()
+			const thatYear = new Date(item.date).getFullYear()
+			if(thisYear === thatYear){
+				winnersThisYear+=1
+				payoutThisYear+=item.voucherPrize
+			}
+		})
+		const results = {
+			winnersAllTime,
+			winnersThisYear,
+			payoutAllTime,
+			payoutThisYear
+		}
+		res.json(results)
 	} catch(err: any){
 		console.log(err)
 		return err
