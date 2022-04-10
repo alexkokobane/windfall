@@ -11,19 +11,19 @@ home.get('/', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
-				"page": "pages/home",
-				"layer": "layouts/main-ultimate"
+				"plan": "Main",
+				"page": "pages/main/home-main",
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
-				"page": "pages/standard/home-standard",
-				"layer": "layouts/main-standard"
+				"plan": "Appetizer",
+				"page": "pages/appetizer/home-appetizer",
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
-				"page": "pages/starter/home-starter",
-				"layer": "layouts/main-starter"
+				"plan": "Freebie",
+				"page": "pages/freebie/home-freebie",
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)

@@ -10,19 +10,19 @@ participants.get('/', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/participants",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/participants",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/participants",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
