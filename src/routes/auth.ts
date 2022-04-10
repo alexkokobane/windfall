@@ -64,11 +64,16 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		
+		console.log({
+			path: '/webhooks/shop-redact',
+			topic: 'shop/redact',
+			accessToken: session.accessToken,
+			shop: session.shop,
+		})
 		// GDPR webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/shop-redact',
-			topic: 'APP_UNINSTALL',
+			topic: 'shop/redact',
 			accessToken: session.accessToken,
 			shop: session.shop,
 		})
@@ -155,7 +160,7 @@ auth.get('/callback/error', async (req, res) => {
 
 
 // Register webhook handlers
-Shopify.Webhooks.Registry.addHandler("SHOP_REDACT", {
+Shopify.Webhooks.Registry.addHandler("shop/redact", {
 	path: "/webhooks/shop-redact",
 	webhookHandler: handleAppUninstall,
 })

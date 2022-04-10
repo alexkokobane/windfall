@@ -196,7 +196,7 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 				'shop': session.shop,
 				'entries.month': month
 			})
-			console.log(newbie)
+			//console.log(newbie)
 			
 			if(newbie === null){
 				const newMonth = newSubs(shop.pricePlan)
@@ -222,7 +222,7 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 						}
 					}
 				)
-				console.log(upQplus)
+				//console.log(upQplus)
 			}
 		}
 
