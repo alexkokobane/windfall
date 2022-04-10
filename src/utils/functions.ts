@@ -11,18 +11,18 @@ const generateDiscountCode = (length: number): string => {
 const newSubs = (plan: string): any[] => {	
 	//console.log(plan+ " from the func")
 	let priorSix: any[] = []
-	if(plan === "Starter"){	
+	if(plan === "Freebie"){	
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
-				"maxValue": 300,
-				"plan": "Starter"
+				"maxValue": 350,
+				"plan": "Freebie"
 			})
 		}
-	} else if( plan === "Basic"){
+	} else if( plan === "Appetizer"){
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
@@ -30,11 +30,11 @@ const newSubs = (plan: string): any[] => {
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
 				"maxValue": 5000,
-				"plan": "Basic"
+				"plan": "Appetizer"
 			})
 		}	
-	} else if (plan === "Standard"){
-		console.log("hi")
+	} else if (plan === "Main"){
+		//console.log("hi")
 		for(let i = -5; i <= 0; i++){
 			const dateNow = new Date(Date.now())
 			const month: number = dateNow.getMonth() + i
@@ -42,29 +42,7 @@ const newSubs = (plan: string): any[] => {
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
 				"maxValue": 100000,
-				"plan": "Standard"
-			})
-		}
-	} else if(plan === "Ultimate"){
-		for(let i = -5; i <= 0; i++){
-			const dateNow = new Date(Date.now())
-			const month: number = dateNow.getMonth() + i
-			priorSix.push({
-				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
-				"value": 0,
-				"maxValue": 1000000,
-				"plan": "Ultimate"
-			})
-		}
-	} else if(plan === "Enterprise"){
-		for(let i = -5; i <= 0; i++){
-			const dateNow = new Date(Date.now())
-			const month: number = dateNow.getMonth() + i
-			priorSix.push({
-				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
-				"value": 0,
-				"maxValue": 10000000,
-				"plan": "Enterprise"
+				"plan": "Main"
 			})
 		}
 	}
