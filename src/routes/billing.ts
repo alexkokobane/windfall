@@ -14,19 +14,19 @@ billing.get('/', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/billing",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/billing",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/billing",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -327,30 +327,9 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
-			const deleteCurrentPlan: any = await client.query(
-				{
-					data: `mutation{
-						appSubscriptionCancel(id: "${checkShop.chargeDetails.id}"){
-							appSubscription{
-								name
-							},
-							userErrors{
-								field
-							}
-						}
-					}`
-				}
-			)
-			console.log(deleteCurrentPlan.body.data)
-			if(!deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription.name){
-				console.log(deleteCurrentPlan.body.data.appSubscriptionCancel.appSubscription)
-				console.log("failed to delete subscription")
-				return res.redirect('/billing')
-			}
-		}
+		
 		console.log(plan)
-		if(plan === "Starter"){
+		if(plan === "Freebie"){
 			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
@@ -366,7 +345,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 						}
 					}`,
 					"variables": {
-						"name": "Robosale Starter Recurring Plan",
+						"name": "Windfall Freebie free plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
 						"trialDays": 7,
@@ -399,7 +378,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 				{
 					'$set': {
 						'newChargeDetails': {
-							'plan': 'Starter',
+							'plan': plan,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -408,7 +387,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
 		}
 
-		if(plan === "Standard"){
+		if(plan === "Appetizer"){
 			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
@@ -424,10 +403,68 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 						}
 					}`,
 					"variables": {
-						"name": "Robosale Standard Recurring Plan",
+						"name": "Windfall Appetizer Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
 						"test": true,
-						"trialDays": 7,
+						"trialDays": 14,
+						"lineItems": [
+							{
+								"plan": {
+									"appRecurringPricingDetails": {
+										"price": {
+											"amount": 14.0,
+											"currencyCode": "USD"
+										},
+										"interval": "EVERY_30_DAYS"
+									}
+								}
+							}
+						]
+					},
+				},
+			})
+
+			console.log(selected.body.data.appSubscriptionCreate)
+			let returned: any = selected.body.data
+			if(returned === undefined){
+				return res.status(403).render('pages/503')
+			}
+			await Shop.updateOne(
+				{
+					'shop': session.shop
+				},
+				{
+					'$set': {
+						'newChargeDetails': {
+							'plan': plan,
+							'id': returned.appSubscriptionCreate.appSubscription.id
+						}
+					}
+				}
+			)
+			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+		}
+
+		if(plan === "Main"){
+			const selected: any =  await client.query({
+				data: {
+					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+							userErrors {
+								field
+								message
+							}
+							appSubscription {
+								id
+							}
+							confirmationUrl
+						}
+					}`,
+					"variables": {
+						"name": "Windfall Main Recurring Plan",
+						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+						"test": true,
+						"trialDays": 14,
 						"lineItems": [
 							{
 								"plan": {
@@ -457,65 +494,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 				{
 					'$set': {
 						'newChargeDetails': {
-							'plan': 'Standard',
-							'id': returned.appSubscriptionCreate.appSubscription.id
-						}
-					}
-				}
-			)
-			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
-		}
-
-		if(plan === "Ultimate"){
-			const selected: any =  await client.query({
-				data: {
-					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
-						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-							userErrors {
-								field
-								message
-							}
-							appSubscription {
-								id
-							}
-							confirmationUrl
-						}
-					}`,
-					"variables": {
-						"name": "Robosale Ultimate Recurring Plan",
-						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
-						"test": true,
-						"trialDays": 7,
-						"lineItems": [
-							{
-								"plan": {
-									"appRecurringPricingDetails": {
-										"price": {
-											"amount": 69.0,
-											"currencyCode": "USD"
-										},
-										"interval": "EVERY_30_DAYS"
-									}
-								}
-							}
-						]
-					},
-				},
-			})
-
-			console.log(selected.body.data.appSubscriptionCreate)
-			let returned: any = selected.body.data
-			if(returned === undefined){
-				return res.status(403).render('pages/503')
-			}
-			await Shop.updateOne(
-				{
-					'shop': session.shop
-				},
-				{
-					'$set': {
-						'newChargeDetails': {
-							'plan': 'Ultimate',
+							'plan': plan,
 							'id': returned.appSubscriptionCreate.appSubscription.id
 						}
 					}
@@ -533,19 +512,19 @@ billing.get('/change', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
-				"page": "pages/ultimate/plans-ultimate",
-				"layer": "layouts/main-ultimate"
+				"plan": "Main",
+				"page": "pages/main/plans-main",
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
-				"page": "pages/standard/plans-standard",
-				"layer": "layouts/main-standard"
+				"plan": "Appetizer",
+				"page": "pages/appetizer/plans-appetizer",
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
-				"page": "pages/starter/plans-starter",
-				"layer": "layouts/main-starter"
+				"plan": "Freebie",
+				"page": "pages/freebie/plans-freebie",
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
