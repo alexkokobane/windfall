@@ -545,6 +545,36 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 	}
 }
 
+export const handleShopUpdate = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
+	try {
+		const obj = JSON.parse(webhookRequestBody)
+		console.log(obj)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+}
+
+export const handleCustomersDataRequest = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
+	try {
+		const obj = JSON.parse(webhookRequestBody)
+		console.log(obj)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+}
+
+export const handleCustomersRedact = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
+	try {
+		const obj = JSON.parse(webhookRequestBody)
+		console.log(obj)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+}
+
 // Functional
 webhooks.post('/orders-paid', async (req, res) => {
 	try{

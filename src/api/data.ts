@@ -43,10 +43,6 @@ data.get('/customers/counter', checkApiAuth, async (req, res) => {
 
 // Various
 
-data.get('/total-revenue', checkApiAuth, async (req, res) => {
-	res.send("Revenue counter")
-})
-
 data.get('/products', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -212,7 +208,7 @@ data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.winnersTotal 
 			})
 		})
-		console.log(active)
+		//console.log(active)
 		res.json(active)
 	} catch(err: any) {
 		console.log(err)
@@ -461,7 +457,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 
 		let templates: any = []
 		long.forEach((item: any) => {
-			console.log(item)
+			//console.log(item)
 			templates.push({
 				"id": item.id,
 				"name": item.name,
@@ -471,7 +467,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 			})
 		})
 		rapid.forEach((item: any) => {
-			console.log(item)
+			//console.log(item)
 			templates.push({
 				"id": item.id,
 				"name": item.name,
@@ -480,7 +476,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.dates.length,
 			})
 		})
-		console.log(templates)
+		//console.log(templates)
 		res.json(templates)
 	} catch(err: any){
 		console.log(err)
@@ -1033,7 +1029,7 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 		rapid.forEach((item: any) => {
 			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
 		})
-		console.log(allEventsEver)
+		//console.log(allEventsEver)
 		res.json(allEventsEver)
 	} catch(err: any){
 		console.log(err)

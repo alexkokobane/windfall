@@ -3,7 +3,13 @@ import Shopify, { ApiVersion, AuthQuery, SessionInterface } from '@shopify/shopi
 import cors from 'cors'
 import getShop from '../utils/get-shop'
 import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-session'
-import { handleOrdersPaid, handleAppUninstall } from '../api/webhooks'
+import { 
+	handleOrdersPaid, 
+	handleAppUninstall, 
+	handleCustomersRedact,
+	handleCustomersDataRequest,
+	handleShopUpdate
+} from '../api/webhooks'
 import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import sessionContext from '../utils/middlewares/session-context'
 import loggedInCtx from '../utils/middlewares/loggedInCtx'
@@ -62,23 +68,26 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		// GDPR webhooks
 		const delShop = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/shop-redact',
-			topic: 'SHOP_REDACT',
+			topic: 'APP_UNINSTALL',
 			accessToken: session.accessToken,
 			shop: session.shop,
 		})
+		console.log(delShop)
+		/*
 		const reqCustomer =  await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/customers-data-request',
 			topic: 'CUSTOMERS_DATA_REQUEST',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
+		console.log(reqCustomer)
 		const delCustomer =  await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/customers-redact',
 			topic: 'CUSTOMERS_REDACT',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
-
+		console.log(delCustomer)
 		// Functional webhooks
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/orders-paid',
@@ -86,19 +95,21 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
+		console.log(ordersPaid)
 		const shopUpdate =  await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/shop-update',
 			topic: 'SHOP_UPDATE',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
+		console.log(shopUpdate)
 
 		if(!delShop['APP_UNINSTALLED'].success){
 			console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
 		}
 		if(!ordersPaid['ORDERS_PAID'].success){
 			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
-		}
+		}*/
 		//console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
 
 		// Check bills and db saved shops
@@ -151,12 +162,12 @@ Shopify.Webhooks.Registry.addHandler("SHOP_REDACT", {
 
 Shopify.Webhooks.Registry.addHandler("CUSTOMERS_DATA_REQUEST", {
 	path: "/webhooks/customers-data-request",
-	webhookHandler: handleAppUninstall,
+	webhookHandler: handleCustomersDataRequest,
 })
 
 Shopify.Webhooks.Registry.addHandler("CUSTOMERS_REDACT", {
 	path: "/webhooks/customers-redact",
-	webhookHandler: handleAppUninstall,
+	webhookHandler: handleCustomersRedact,
 })
 
 Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
@@ -166,7 +177,7 @@ Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
 
 Shopify.Webhooks.Registry.addHandler("SHOP_UPDATE", {
 	path: "/webhooks/shop-update",
-	webhookHandler: handleAppUninstall,
+	webhookHandler: handleShopUpdate,
 })
 
 export default auth
