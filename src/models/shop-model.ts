@@ -26,6 +26,9 @@ const ShopSchema = new mongoose.Schema({
 			default: Date.now()
 		}
 	},
+	shopifyPlan: String,
+	id: String,
+	shopUrl: String,
 	scope: [String],
 	email: String,
 	currencyCode: String,

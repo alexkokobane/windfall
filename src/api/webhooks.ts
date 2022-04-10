@@ -19,7 +19,7 @@ export const handleAppUninstall = async (topic: string, shop: string, webhookReq
 			await ActiveShop.deleteMany({'shop': shop})
 		}
 		console.log(`${shop} has been obliterated.`)
-		console.log(webhookRequestBody)
+		//console.log(webhookRequestBody)
 	} catch(err: any){
 		console.log(err)
 	}

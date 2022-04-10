@@ -101,17 +101,29 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				{
 					data: `{
 						shop {
+							name
 							currencyCode
+							email
+							id
+							plan {
+								displayName 
+								partnerDevelopment
+								shopifyPlus
+							}
+							url
 						}
 					}`
 				}
 			)
-			//console.log(data.body.data.shop.currencyCode)
+			const shopData = data.body.data.shop
+			console.log(shopData)
 			const storeShop = new Shop({
-				shop: session.shop,
-				scope: [session.scope],
-				email: session.onlineAccessInfo.associated_user.email,
-				currencyCode: data.body.data.shop.currencyCode
+				'shop': session.shop,
+				'email': shopData.email,
+				'currencyCode': shopData.currencyCode,
+				'shopifyPlan': shopData.plan.displayName,
+				'id': shopData.id,
+				'url': shopData.url
 			})
 			storeShop.save()
 			//console.log("check point 1")
