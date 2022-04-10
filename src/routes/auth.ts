@@ -4,10 +4,7 @@ import cors from 'cors'
 import getShop from '../utils/get-shop'
 import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-session'
 import { 
-	handleOrdersPaid, 
-	handleAppUninstall, 
-	handleCustomersRedact,
-	handleCustomersDataRequest,
+	handleOrdersPaid,
 	handleShopUpdate
 } from '../api/webhooks'
 import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
@@ -70,29 +67,8 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			accessToken: session.accessToken,
 			shop: session.shop,
 		})
-		// GDPR webhooks
-		const delShop = await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/shop-redact',
-			topic: 'shop/redact',
-			accessToken: session.accessToken,
-			shop: session.shop,
-		})
-		console.log(delShop)
-		/*
-		const reqCustomer =  await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/customers-data-request',
-			topic: 'CUSTOMERS_DATA_REQUEST',
-			accessToken: session.accessToken,
-			shop: session.shop
-		})
-		console.log(reqCustomer)
-		const delCustomer =  await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/customers-redact',
-			topic: 'CUSTOMERS_REDACT',
-			accessToken: session.accessToken,
-			shop: session.shop
-		})
-		console.log(delCustomer)
+		
+		
 		// Functional webhooks
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/orders-paid',
@@ -100,21 +76,22 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
-		console.log(ordersPaid)
+		//console.log(ordersPaid)
 		const shopUpdate =  await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/shop-update',
 			topic: 'SHOP_UPDATE',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
-		console.log(shopUpdate)
+		//console.log(shopUpdate)
 
-		if(!delShop['APP_UNINSTALLED'].success){
-			console.log(`Failed to create a webhook for APP UNINSTALL: ${delShop.result}`)
-		}
+		
 		if(!ordersPaid['ORDERS_PAID'].success){
 			console.log(`Failed to create a webhook for ORDERS_PAID: ${ordersPaid.result}`)
-		}*/
+		}
+		if(!shopUpdate['SHOP_UPDATE'].success){
+			console.log(`Failed to create a webhook for ORDERS_PAID: ${shopUpdate.result}`)
+		}
 		//console.log("Is this a webhook path? : "+Shopify.Webhooks.Registry.isWebhookPath('/webhooks'))
 
 		// Check bills and db saved shops
@@ -160,21 +137,6 @@ auth.get('/callback/error', async (req, res) => {
 
 
 // Register webhook handlers
-Shopify.Webhooks.Registry.addHandler("shop/redact", {
-	path: "/webhooks/shop-redact",
-	webhookHandler: handleAppUninstall,
-})
-
-Shopify.Webhooks.Registry.addHandler("CUSTOMERS_DATA_REQUEST", {
-	path: "/webhooks/customers-data-request",
-	webhookHandler: handleCustomersDataRequest,
-})
-
-Shopify.Webhooks.Registry.addHandler("CUSTOMERS_REDACT", {
-	path: "/webhooks/customers-redact",
-	webhookHandler: handleCustomersRedact,
-})
-
 Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
 	path: "/webhooks/orders-paid",
 	webhookHandler: handleOrdersPaid,

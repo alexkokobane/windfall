@@ -555,26 +555,6 @@ export const handleShopUpdate = async (topic: string, shop: string, webhookReque
 	}
 }
 
-export const handleCustomersDataRequest = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
-	try {
-		const obj = JSON.parse(webhookRequestBody)
-		console.log(obj)
-	} catch(err: any){
-		console.log(err)
-		return err
-	}
-}
-
-export const handleCustomersRedact = async (topic: string, shop: string, webhookRequestBody: any): Promise<any> => {
-	try {
-		const obj = JSON.parse(webhookRequestBody)
-		console.log(obj)
-	} catch(err: any){
-		console.log(err)
-		return err
-	}
-}
-
 // Functional
 webhooks.post('/orders-paid', async (req, res) => {
 	try{
@@ -592,30 +572,5 @@ webhooks.post('/shop-update', async (req, res) => {
 	}
 })
 
-
-// GDPR
-webhooks.post('/shop-redact', async (req, res) => {
-	try{
-		await Shopify.Webhooks.Registry.process(req, res)		
-	} catch(err: any){
-		console.log(err)
-	}
-})
-
-webhooks.post('/customers-data-request', async (req, res) => {
-	try{
-		await Shopify.Webhooks.Registry.process(req, res)		
-	} catch(err: any){
-		console.log(err)
-	}
-})
-
-webhooks.post('/customers-redact', async (req, res) => {
-	try{
-		await Shopify.Webhooks.Registry.process(req, res)		
-	} catch(err: any){
-		console.log(err)
-	}
-})
 
 export default webhooks
