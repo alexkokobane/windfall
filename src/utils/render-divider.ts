@@ -5,7 +5,7 @@ import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-m
 interface render {
 	plan: string,
 	page: string,
-	layer?: string
+	layer: string
 }
 
 export interface renderFor extends Array<render>{}
