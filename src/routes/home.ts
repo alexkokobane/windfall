@@ -32,6 +32,23 @@ home.get('/', checkAuth, async (req, res) => {
 	}
 })
 
+home.get('/analytics', checkAuth, forStandard, async (req, res) => {
+	try{
+		//res.send("Ha ha ha! Gotcha, this is a dummy URL.")
+		const render: renderFor = [
+			{
+				"plan": "Main",
+				"page": "pages/main/analytics-main",
+				"layer": "layouts/main-ultimate"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 home.get('/test',  async (req, res) => {
 	res.render('pages/campaign-edit', {layout: 'layouts/main-starter'})
 })

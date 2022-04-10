@@ -11,33 +11,6 @@ import { generateDiscountCode, newSubs } from '../utils/functions'
 
 const analytics = express.Router()
 
-analytics.get('/', checkApiAuth, forStandard, async (req, res) => {
-	try{
-		//res.send("Ha ha ha! Gotcha, this is a dummy URL.")
-		const render: renderFor = [
-			{
-				"plan": "Ultimate",
-				"page": "pages/home",
-				"layer": "layouts/main-ultimate"
-			},
-			{
-				"plan": "Standard",
-				"page": "pages/standard/analytics-standard",
-				"layer": "layouts/main-standard"
-			},
-			{
-				"plan": "Starter",
-				"page": "pages/starter/home-starter",
-				"layer": "layouts/main-starter"
-			}
-		]
-		divide(req, res, render)
-	} catch(err: any){
-		console.log(err)
-		return err
-	}
-})
-
 analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 	try{
 		const eventId = parseInt(req.params.id)
