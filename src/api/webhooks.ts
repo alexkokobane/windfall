@@ -549,6 +549,14 @@ export const handleShopUpdate = async (topic: string, shop: string, webhookReque
 	try {
 		const obj = JSON.parse(webhookRequestBody)
 		console.log(obj)
+		const updateCurrency = await Shop.updateOne(
+			{'shop': shop},
+			{
+				'$set': {
+					'currencyCode': obj.currency
+				}
+			}
+		)
 	} catch(err: any){
 		console.log(err)
 		return err
