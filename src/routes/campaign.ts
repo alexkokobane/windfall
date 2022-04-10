@@ -15,19 +15,19 @@ campaign.get('/giveaways', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/campaigns",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/campaigns",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/campaigns",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -42,19 +42,19 @@ campaign.get('/long/new', checkAuth, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/longevent-create",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/longevent-create",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/longevent-create",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -211,19 +211,19 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, quota, async (req, res
 		}
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/equitable",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/equitable",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "freebie",
 				"page": "pages/equitable",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -259,19 +259,19 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, 
 		}
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/hierarchical",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/hierarchical",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "freebie",
 				"page": "pages/hierarchical",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -293,19 +293,19 @@ campaign.get('/long/:id', checkAuth, async (req, res) => {
 		}
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/campaign",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/campaign",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/campaign",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -766,19 +766,19 @@ campaign.get('/long/:id/edit', checkApiAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/longevent-edit",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/longevent-edit",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/longevent-edit",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -930,19 +930,19 @@ campaign.get('/rapid/new', checkAuth, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/rapidevent-create",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -1126,19 +1126,19 @@ campaign.get('/rapid/:id', checkAuth, async (req, res) => {
 		}
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/rapidevent",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/rapidevent",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/rapidevent",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -1768,19 +1768,19 @@ campaign.get('/rapid/template/:id', checkAuth, forCommon, async (req, res) => {
 
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/rapidevent-template",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/rapidevent-template",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/rapidevent-template",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
@@ -2616,19 +2616,19 @@ campaign.get('/template/:id', checkAuth, forCommon, async (req, res) => {
 
 		const render: renderFor = [
 			{
-				"plan": "Ultimate",
+				"plan": "Main",
 				"page": "pages/campaign-template",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			},
 			{
-				"plan": "Standard",
+				"plan": "Appetizer",
 				"page": "pages/campaign-template",
-				"layer": "layouts/main-standard"
+				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "Starter",
+				"plan": "Freebie",
 				"page": "pages/campaign-template",
-				"layer": "layouts/main-starter"
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
