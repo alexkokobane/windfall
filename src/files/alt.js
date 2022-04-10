@@ -35,14 +35,14 @@ $(document).ready(function(){
 		})
 	})
 
-	$("#Standard").click(function(){
-		location.href="/billing/plans/subscribe?plan=Standard"
+	$("#Mainplan").click(function(){
+		location.href="/billing/plans/subscribe?plan=Main"
 	})
-	$("#Ultimate").click(function(){
-		location.href="/billing/plans/subscribe?plan=Ultimate"
+	$("#Appetizerplan").click(function(){
+		location.href="/billing/plans/subscribe?plan=Appetizer"
 	})
-	$("#Starter").click(function(){
-		location.href="/billing/plans/subscribe?plan=Starter"
+	$("#Freebieplan").click(function(){
+		location.href="/billing/plans/subscribe?plan=Freebie"
 	})
 
 	if(window.location.pathname === "/auth/callback/error"){
