@@ -26,6 +26,7 @@ import shopInfo from './api/shop-info'
 import data from './api/data'
 import webhooks from './api/webhooks'
 import analytics from './api/analytics'
+import gdpr from './api/gdpr'
 
 const app = express()
 
@@ -77,6 +78,7 @@ app.use('/billing', billing)
 app.use('/campaign', campaign)
 app.use('/participants', participants)
 // App API routes
+app.use('/gdpr', gdpr)
 app.use('/login', login)
 app.use('/customers', customers)
 app.use('/shop', shopInfo)
