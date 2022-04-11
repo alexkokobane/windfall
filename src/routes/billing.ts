@@ -24,17 +24,17 @@ billing.get('/', checkAuth, async (req, res) => {
 		const render: renderFor = [
 			{
 				"plan": "Main",
-				"page": "pages/billing",
+				"page": "pages/main/main-main",
 				"layer": "layouts/main-main"
 			},
 			{
 				"plan": "Appetizer",
-				"page": "pages/billing",
+				"page": "pages/appetizer/plans-appetizer",
 				"layer": "layouts/main-appetizer"
 			},
 			{
 				"plan": "Freebie",
-				"page": "pages/billing",
+				"page": "pages/freebie/plans-freebie",
 				"layer": "layouts/main-freebie"
 			}
 		]
