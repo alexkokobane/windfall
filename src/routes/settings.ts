@@ -1,6 +1,15 @@
 import express from 'express'
 import checkAuth from '../utils/middlewares/check-auth'
-import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { 
+	forCommon, 
+	forCommonApi,
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 
 const settings = express.Router()

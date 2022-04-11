@@ -5,7 +5,16 @@ import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } fro
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
-import { forCommon, forStarter, forStandard, forUltimate, forStandardApi } from '../utils/middlewares/price-plan'
+import { 
+	forCommon, 
+	forCommonApi,
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 import { generateDiscountCode, newSubs } from '../utils/functions'
 
@@ -211,7 +220,7 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 	}
 })
 
-analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, res) => {
+analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) => {
 	try{
 		let results: any = {}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -304,7 +313,7 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 	}
 })
 
-analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
+analytics.get('/lucky-days', checkApiAuth, forMainApi, async (req, res) => {
 	try{
 		let sun = 0, mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0
 		let jan = 0, feb = 0, mar = 0, apr = 0, may = 0, jun = 0, jul = 0, aug = 0, sep = 0, oct = 0, nov = 0, dec = 0
@@ -446,7 +455,7 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 	}
 })
 
-analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) => {
+analytics.get('/overall-impact', checkApiAuth, forMainApi, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const dateNow = Date.now()

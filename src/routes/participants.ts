@@ -1,7 +1,16 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
-import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { 
+	forCommon, 
+	forCommonApi,
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 
 const participants = express.Router()

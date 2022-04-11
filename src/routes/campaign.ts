@@ -4,7 +4,16 @@ import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, Save
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
-import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { 
+	forCommon, 
+	forCommonApi,
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 import { generateDiscountCode } from '../utils/functions'
 import { quota, quotaApi } from '../utils/middlewares/quota'
@@ -38,7 +47,7 @@ campaign.get('/giveaways', checkAuth, async (req, res) => {
 
 // Long events
 
-campaign.get('/long/new', checkAuth, quota, async (req, res) => {
+campaign.get('/long/new', checkAuth, forCommon, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
@@ -63,7 +72,7 @@ campaign.get('/long/new', checkAuth, quota, async (req, res) => {
 	}
 })
 
-campaign.post('/long/new', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/long/new', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try {
 		const data = req.body.form
 		console.log(req.body.form)
@@ -314,7 +323,7 @@ campaign.get('/long/:id', checkAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/long/new/hierarchical/create', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/long/new/hierarchical/create', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try {
 		const amounts = req.body.amounts
 		const giveawayId = req.body.id
@@ -344,7 +353,7 @@ campaign.post('/long/new/hierarchical/create', checkApiAuth, quotaApi, async (re
 	}
 })
 
-campaign.post('/long/new/equitable/create', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/long/new/equitable/create', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try {
 		const amount = req.body.amounts
 		const giveawayId = req.body.id
@@ -926,7 +935,7 @@ campaign.post('/long/:id/edit', checkApiAuth, async (req, res) => {
 
 // Rapid events
 
-campaign.get('/rapid/new', checkAuth, quota, async (req, res) => {
+campaign.get('/rapid/new', checkAuth, forCommon, quota, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
@@ -951,7 +960,7 @@ campaign.get('/rapid/new', checkAuth, quota, async (req, res) => {
 	}
 })
 
-campaign.post('/rapid/new', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/rapid/new', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try{
 		const data = req.body.event
 		const giveawayId = Math.floor(Math.random() * 1000000000)
@@ -1681,7 +1690,7 @@ campaign.post('/rapid/:id/delete', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/rapid/store', checkApiAuth, async (req, res) => {
+campaign.post('/rapid/store', checkApiAuth, forCommonApi, async (req, res) => {
 	try{
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -1789,7 +1798,7 @@ campaign.get('/rapid/template/:id', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-campaign.post('/rapid/template/:id/activate', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/rapid/template/:id/activate', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){
@@ -2330,7 +2339,7 @@ campaign.post('/:id/delete', checkApiAuth, async (req, res) => {
 	}
 })
 
-campaign.post('/store', checkApiAuth, async (req, res) => {
+campaign.post('/store', checkApiAuth, forCommonApi, async (req, res) => {
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
@@ -2410,7 +2419,7 @@ campaign.post('/store', checkApiAuth, async (req, res) => {
 
 // Templates
 
-campaign.post('/template/:id/activate', checkApiAuth, quotaApi, async (req, res) => {
+campaign.post('/template/:id/activate', checkApiAuth, forCommonApi, quotaApi, async (req, res) => {
 	try{
 		const templateId = parseInt(req.params.id)
 		if(isNaN(templateId) === true){

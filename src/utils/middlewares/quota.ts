@@ -4,7 +4,16 @@ import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, Save
 import checkAuth, { checkApiAuth } from '../middlewares/check-auth'
 import { deleteIncompleteLogin } from '../middlewares/experimental'
 import { templateGate } from '../quotas'
-import { forCommon, forStarter, forStandard, forUltimate } from './price-plan'
+import { 
+	forCommon, 
+	forCommonApi,
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from './price-plan'
 import { divide, renderFor } from '../render-divider'
 import { generateDiscountCode } from '../functions'
 
