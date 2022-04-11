@@ -1640,6 +1640,9 @@ $(document).ready(function(e){
 	$("#AnalyticsBtn").click(function(){
 		location.href="/analytics"
 	})
+	$("#ProgressBtn").click(function(){
+		location.href="/progress"
+	})
 	$("#ToShopifyLinkBtn").click(function(){
 		$.ajax({
 			url: '/shop',
