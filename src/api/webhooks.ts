@@ -41,12 +41,12 @@ export const handleOrdersPaid = async (topic: string, shop: string, webhookReque
 			const lastName = obj.customer.last_name
 			const email = obj.customer.email
 			const marketing = obj.customer.accepts_marketing
-			const tip = parseFloat(obj.total_tip_received)
+			const tip = parseFloat(obj.total_tip_received).toFixed(2)
 			const country = obj.billing_address.country
 			const city = obj.billing_address.city
 			const moneyCode = obj.currency
 			let subtotal = Math.round(parseFloat(obj.subtotal_price))
-			let money = parseFloat(obj.subtotal_price)
+			let money = parseFloat(obj.subtotal_price).toFixed(2)
 
 			const shopExist = await Shop.findOne({
 				'shop': shop
