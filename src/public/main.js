@@ -5070,7 +5070,7 @@ $(document).ready(function(e){
 							// mutate and remove more duplicates
 							final = Array.from(new Set(final.map(JSON.stringify)), JSON.parse)
 							console.log(final)
-							$(".RapidTPHBtn").remove()
+							$(".RapidTPHSpinner").remove()
 							final.reverse().forEach((item) => {
 								const start = item[0]
 								$("#RapidTActivatorBody").after(`
@@ -5082,7 +5082,7 @@ $(document).ready(function(e){
 								`)
 
 								$(`#${start}`).click((giv) => {
-									location.href=`/campaign/rapid/template/${idForRapidTemplate}#RapidTActivatorHeading`
+									location.href=`/campaign/rapid/template/${idForRapidTemplate}#RapidTEntriesGoal`
 									$("#RapidTActivatorBody").html(`
 										<div>
 											<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
