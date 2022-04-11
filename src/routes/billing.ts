@@ -24,7 +24,7 @@ billing.get('/', checkAuth, async (req, res) => {
 		const render: renderFor = [
 			{
 				"plan": "Main",
-				"page": "pages/main/main-main",
+				"page": "pages/main/plans-main",
 				"layer": "layouts/main-main"
 			},
 			{
