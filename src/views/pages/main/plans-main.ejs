@@ -10,7 +10,7 @@
 			<div class="Polaris-Page-Header__TitleWrapper">
 				<div>
 					<div class="Polaris-Header-Title__TitleAndSubtitleWrapper">
-						<h1 class="Polaris-Header-Title">Change plans</h1>
+						<h1 class="Polaris-Header-Title">Billing</h1>
 						<div class="Polaris-Header-Title__SubTitle Polaris-Header-Title__SubtitleCompact"><p>Choose a plan best suitable for your business.</p></div>
 					</div>
 				</div>
@@ -22,40 +22,45 @@
 			<div class="Polaris-Layout__Section">
 				<div class="Polaris-Card">
 					<div class="Polaris-Card__Header">
-						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
-							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Main plan - your current plan</h2>
-							</div>
+						<h2 class="Polaris-Heading">Subscription plans</h2>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Current plan</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p class="Polaris-TextStyle--variationStrong">Main</p>
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
-						<%- include("../../partials/main")%>
-					</div>
-				</div>
-				<div class="Polaris-Card">
-					<div class="Polaris-Card__Header">
-						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
-							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Appetizer plan - 14USD per month</h2>
+						<div style="display:flex;flex-wrap:wrap;justify-content: center;">
+							<div class="small-container">
+								<div class="Polaris-Stack Polaris-Stack--vertical">
+									<div class="Polaris-Stack__Item Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<h2 class="Polaris-Heading">Appetizer plan - 14 USD per month</h2>
+										</div>
+										<div class="Polaris-Stack__Item"><button id="Appetizerplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Appetizer plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
+									</div>
+									<div class="Polaris-Stack__Item">
+										<%- include("../../partials/appetizer")%>
+									</div>
+								</div>
 							</div>
-							<div class="Polaris-Stack__Item"><button id="Appetizerplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Appetizer plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
-						</div>
-					</div>
-					<div class="Polaris-Card__Section">
-						<%- include("../../partials/appetizer")%>
-					</div>
-				</div>
-				<div class="Polaris-Card">
-					<div class="Polaris-Card__Header">
-						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
-							<div class="Polaris-Stack__Item">
-								<h2 class="Polaris-Heading">Freebie plan - Free forever</h2>
+							<div class="small-container">
+								<div class="Polaris-Stack Polaris-Stack--vertical">
+									<div class="Polaris-Stack__Item Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<h2 class="Polaris-Heading">Freebie plan - Free forever</h2>
+										</div>
+										<div class="Polaris-Stack__Item"><button id="Freebieplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Freebie plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
+									</div>
+									<div class="Polaris-Stack__Item">
+										<%- include("../../partials/freebie")%>
+									</div>
+								</div>
 							</div>
-							<div class="Polaris-Stack__Item"><button id="Freebieplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Freebie plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
 						</div>
-					</div>
-					<div class="Polaris-Card__Section">
-						<%- include("../../partials/freebie")%>
 					</div>
 				</div>
 			</div>

@@ -15,6 +15,18 @@
     align-items: center;
 }
 
+.small-container {
+    flex: 0 1 45%; 
+    margin: 10px;
+}
+
+@media (max-width: 48.0625em) {
+   .small-container {
+        flex: 0 1 95%; 
+        margin: 10px;
+    } 
+}
+
 .calendarDayInUse {
     background:var(--p-action-critical); 
     color:var(--p-text-on-interactive); 
