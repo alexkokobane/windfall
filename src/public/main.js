@@ -1976,11 +1976,6 @@ $(document).ready(function(e){
 													<p>Incentivize customers to spend more in your store.</p>
 												</div>
 											</div>
-											<div class="Polaris-EmptyState__Actions">
-												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-													<div class="Polaris-Stack__Item"><button class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></button></div>
-												</div>
-											</div>
 										</div>
 									</div>
 									<div class="Polaris-EmptyState__ImageContainer"></div>
@@ -2045,11 +2040,6 @@ $(document).ready(function(e){
 												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway</p>
 												<div class="Polaris-EmptyState__Content">
 													<p>Incentivize customers to spend more in your store.</p>
-												</div>
-											</div>
-											<div class="Polaris-EmptyState__Actions">
-												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-													<div class="Polaris-Stack__Item"><a href="/campaign/new" class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></a></div>
 												</div>
 											</div>
 										</div>
