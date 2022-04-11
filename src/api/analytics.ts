@@ -223,12 +223,10 @@ analytics.get('/long-distribution', checkApiAuth, forStandardApi, async (req, re
 			'shop': session.shop,
 			'distributionType': "Equitable"
 		})
-		//const shop = await Shop.findOne({'shop': session.shop})
+		const shop = await Shop.findOne({'shop': session.shop})
 
-		// This must be fixed ASAP
-		results.currencyCode = hierarchical[hierarchical.length - 1].currencyCode
-		console.log(hierarchical[hierarchical.length - 1].currencyCode)
-		console.log(hierarchical.length)
+		results.currencyCode = shop.currencyCode
+
 		// goal success rate
 		let hiGoalSuccess: number = 0, eqGoalSuccess: number = 0
 		hierarchical.forEach((item) => {
@@ -313,6 +311,7 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const long = await Long.find({'shop': session.shop})
 		const rapid = await RapidChild.find({'shop': session.shop})
+		const shop = await Shop.findOne({'shop': session.shop})
 		let transactions: any[] = []
 		let metadata: any[] = []
 		long.forEach((item: any) => {
@@ -436,7 +435,8 @@ analytics.get('/lucky-days', checkApiAuth, forStandardApi, async (req, res) => {
 
 		const results = {
 			days,
-			months
+			months,
+			'currencyCode': shop.currencyCode
 		}
 
 		res.json(results)
@@ -450,6 +450,7 @@ analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) 
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const dateNow = Date.now()
+		const shop = await Shop.findOne({'shop': session.shop})
 		const long = await Long.find({
 			'shop': session.shop,
 			'startDate': {'$lt': new Date(dateNow)},
@@ -509,7 +510,8 @@ analytics.get('/overall-impact', checkApiAuth, forStandardApi, async (req, res) 
 			winnersAllTime,
 			winnersThisYear,
 			payoutAllTime,
-			payoutThisYear
+			payoutThisYear,
+			'currencyCode': shop.currencyCode
 		}
 		res.json(results)
 	} catch(err: any){

@@ -39,7 +39,7 @@ home.get('/analytics', checkAuth, forStandard, async (req, res) => {
 			{
 				"plan": "Main",
 				"page": "pages/main/analytics-main",
-				"layer": "layouts/main-ultimate"
+				"layer": "layouts/main-main"
 			}
 		]
 		divide(req, res, render)
