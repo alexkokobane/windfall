@@ -31,7 +31,7 @@ const forCommonApi = async (req: Request, res: Response, next: NextFunction) => 
 	}
 }
 
-const forStarter = async (req: Request, res: Response, next: NextFunction) => {
+const forFreebie = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
@@ -44,7 +44,7 @@ const forStarter = async (req: Request, res: Response, next: NextFunction) => {
 	}
 }
 
-const forStarterApi = async (req: Request, res: Response, next: NextFunction) => {
+const forFreebieApi = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
@@ -57,11 +57,11 @@ const forStarterApi = async (req: Request, res: Response, next: NextFunction) =>
 	}
 }
 
-const forStandard = async (req: Request, res: Response, next: NextFunction) => {
+const forAppetizer = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
+		if(checkShop.pricePlan === "Appetizer"){
 			return next()
 		}
 		res.status(403).redirect("/billing/plans")
@@ -70,11 +70,11 @@ const forStandard = async (req: Request, res: Response, next: NextFunction) => {
 	}
 }
 
-const forStandardApi = async (req: Request, res: Response, next: NextFunction) => {
+const forAppetizerApi = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
+		if(checkShop.pricePlan === "Appetizer"){
 			return next()
 		}
 		return res.status(403).send("Forbidden")
@@ -83,7 +83,7 @@ const forStandardApi = async (req: Request, res: Response, next: NextFunction) =
 	}
 }
 
-const forUltimate = async (req: Request, res: Response, next: NextFunction) => {
+const forMain = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
@@ -96,7 +96,7 @@ const forUltimate = async (req: Request, res: Response, next: NextFunction) => {
 	}
 }
 
-const forUltimateApi = async (req: Request, res: Response, next: NextFunction) => {
+const forMainApi = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
@@ -109,4 +109,4 @@ const forUltimateApi = async (req: Request, res: Response, next: NextFunction) =
 	}
 }
 
-export { forCommon, forStarter, forStandard, forUltimate, forStandardApi }
+export { forCommon, forFreebie, forAppetizer, forMain, forAppetizerApi, forFreebieApi, forMainApi }

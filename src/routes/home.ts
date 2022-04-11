@@ -2,7 +2,15 @@ import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
 import detectScope from '../utils/middlewares/detect-scope'
-import { forCommon, forStarter, forStandard, forUltimate } from '../utils/middlewares/price-plan'
+import { 
+	forCommon, 
+	forFreebie, 
+	forAppetizer, 
+	forMain, 
+	forAppetizerApi, 
+	forFreebieApi, 
+	forMainApi 
+} from '../utils/middlewares/price-plan'
 import { divide, renderFor } from '../utils/render-divider'
 
 const home = express.Router()
@@ -32,7 +40,7 @@ home.get('/', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-home.get('/analytics', checkAuth, forStandard, async (req, res) => {
+home.get('/analytics', checkAuth, forMain, async (req, res) => {
 	try{
 		//res.send("Ha ha ha! Gotcha, this is a dummy URL.")
 		const render: renderFor = [
