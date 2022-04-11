@@ -7,7 +7,7 @@ import { divide, renderFor } from '../utils/render-divider'
 
 const home = express.Router()
 
-home.get('/', checkAuth, async (req, res) => {
+home.get('/', checkAuth, forCommon, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{

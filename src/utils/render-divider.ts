@@ -12,6 +12,9 @@ export interface renderFor extends Array<render>{}
 export const divide = async (req: Request, res: Response, plans: renderFor, error?: boolean) => {
 	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 	const checkShop = await Shop.findOne({shop: session.shop})
+	if(!checkShop.pricePlan){
+		return res.redirect("/auth/callback/error")
+	}
 	if(plans && error){
 		plans.forEach((plan) => {
 			if(checkShop.pricePlan === plan.plan){
