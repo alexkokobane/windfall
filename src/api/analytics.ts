@@ -131,12 +131,12 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 			'shop': session.shop
 		})
 		long.forEach((item: any) => {
-		 	const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-		 	total+=money
+			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
+			total+=money
 		})
 		rapid.forEach((item: any) => {
 			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
-		 	total+=money
+			total+=money
 		})
 		res.send(total.toString())
 	} catch(err: any){
@@ -526,6 +526,86 @@ analytics.get('/overall-impact', checkApiAuth, forMainApi, async (req, res) => {
 	} catch(err: any){
 		console.log(err)
 		return res.status(403).json(err)
+	}
+})
+
+analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+
+		let cursor: string | null = ""
+		let proceed: boolean = true
+		let products: any[] = []
+		const firstBatch: any = await client.query({
+			data: `
+				{
+					products(first:3, after:${cursor} ){
+						edges{
+							node{
+								id,
+								title,
+								featuredImage{
+									altText,
+									url
+								}
+							}
+							cursor
+						}
+						pageInfo {
+							hasNextPage
+						}
+					}
+				}
+			`
+		})
+
+		const prods = firstBatch.body.data.products.edges
+		prods.forEach((item: any) => {
+			products.push(item.node)
+		})
+		proceed = firstBatch.body.data.products.pageInfo.hasNextPage
+		cursor = prods[prods.length - 1].cursor
+
+		while(proceed){
+			console.log("running")
+			const storeProducts: any = await client.query({
+				data: `
+					{
+						products(first:3, after:${cursor} ){
+							edges{
+								node{
+									id,
+									title,
+									featuredImage{
+										altText,
+										url
+									}
+								}
+								cursor
+							}
+							pageInfo {
+								hasNextPage
+							}
+						}
+					}
+				`
+			})
+			console.log(storeProducts.body)
+			const prods = storeProducts.body.data.products.edges
+			prods.forEach((item: any) => {
+				products.push(item.node)
+			})
+			proceed = storeProducts.body.data.products.pageInfo.hasNextPage
+			cursor = prods[prods.length - 1].cursor
+			console.log(cursor)
+			console.log(products)
+		}
+		//console.log(products)
+		res.json(products)
+	} catch(err: any){
+		console.log(err)
+		return err
 	}
 })
 

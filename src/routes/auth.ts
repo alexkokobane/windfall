@@ -130,7 +130,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			return res.redirect("/billing/plans")
 		}
 		
-		if(checkShop.pricePlan === "Ultimate" || checkShop.pricePlan === "Standard" || checkShop.pricePlan === "Starter"){
+		if(checkShop.pricePlan === "Main" || checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Freebie"){
 			//console.log("check point 2")
 			return res.redirect(`/`)
 		}
