@@ -11,7 +11,7 @@
 				<div>
 					<div class="Polaris-Header-Title__TitleAndSubtitleWrapper">
 						<h1 class="Polaris-Header-Title">Billing</h1>
-						<div class="Polaris-Header-Title__SubTitle Polaris-Header-Title__SubtitleCompact"><p>Choose a plan best suitable for your business.</p></div>
+						<div class="Polaris-Header-Title__SubTitle Polaris-Header-Title__SubtitleCompact"><p>Manage your bill here.</p></div>
 					</div>
 				</div>
 			</div>
@@ -33,12 +33,39 @@
 						</div>
 					</div>
 					<div class="Polaris-Card__Section">
-						<div style="display:flex;flex-wrap:wrap;justify-content: center;">
-							<div class="small-container">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Monthly entries quota</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="MonthlyLimit" class="Polaris-TextStyle--variationStrong">0</p>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Entries quota usage</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="MonthlyUsage" class="Polaris-TextStyle--variationStrong">0%</p>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Entries usage history</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<canvas id="QuotaUsage"></canvas>
+						</div>
+					</div>
+					<div class="Polaris-Card__Section">
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Change plan</h3>
+						</div>
+						<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+							<div class="Polaris-Stack__Item">
 								<div class="Polaris-Stack Polaris-Stack--vertical">
 									<div class="Polaris-Stack__Item Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 										<div class="Polaris-Stack__Item">
-											<h2 class="Polaris-Heading">Appetizer plan - 14 USD per month</h2>
+											<h2 class="Polaris-Heading">Appetizer plan</h2>
 										</div>
 										<div class="Polaris-Stack__Item"><button id="Appetizerplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Appetizer plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
 									</div>
@@ -47,11 +74,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="small-container">
+							<div class="Polaris-Stack__Item">
 								<div class="Polaris-Stack Polaris-Stack--vertical">
 									<div class="Polaris-Stack__Item Polaris-Stack Polaris-Stack--distributionEqualSpacing">
 										<div class="Polaris-Stack__Item">
-											<h2 class="Polaris-Heading">Freebie plan - Free forever</h2>
+											<h2 class="Polaris-Heading">Freebie plan</h2>
 										</div>
 										<div class="Polaris-Stack__Item"><button id="Freebieplan" class="Polaris-Button Polaris-Button--outline" aria-label="Downgrade to Freebie plan" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Downgrade</span></span></button></div>
 									</div>
