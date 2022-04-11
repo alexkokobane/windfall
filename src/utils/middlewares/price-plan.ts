@@ -109,4 +109,4 @@ const forMainApi = async (req: Request, res: Response, next: NextFunction) => {
 	}
 }
 
-export { forCommon, forFreebie, forAppetizer, forMain, forAppetizerApi, forFreebieApi, forMainApi }
+export { forCommon, forFreebie, forAppetizer, forMain, forCommonApi, forAppetizerApi, forFreebieApi, forMainApi }
