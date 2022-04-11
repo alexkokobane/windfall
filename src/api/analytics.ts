@@ -540,7 +540,7 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 		const firstBatch: any = await client.query({
 			data: `
 				{
-					products(first:3, after:${cursor} ){
+					products(first:3){
 						edges{
 							node{
 								id,
@@ -572,7 +572,7 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 			const storeProducts: any = await client.query({
 				data: `
 					{
-						products(first:3, after:${cursor} ){
+						products(first:3, after:"${cursor}" ){
 							edges{
 								node{
 									id,
