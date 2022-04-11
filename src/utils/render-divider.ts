@@ -27,10 +27,8 @@ export const divide = async (req: Request, res: Response, plans: renderFor, erro
 		})
 	} else if(plans){
 		plans.forEach((plan) => {
-			console.log("It reaches")
 			if(checkShop.pricePlan === plan.plan){
 				if(plan.layer){
-					console.log("Oh, hi! Mark.")
 					return res.render(plan.page, {layout: plan.layer})
 				} else {
 					return res.render(plan.page)

@@ -58,12 +58,12 @@ home.get('/analytics', checkAuth, forMain, async (req, res) => {
 	}
 })
 
-home.get('/', checkAuth, forMain, async (req, res) => {
+home.get('/progress', checkAuth, forMain, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
 				"plan": "Main",
-				"page": "pages/main/progess-main",
+				"page": "pages/main/progress-main",
 				"layer": "layouts/main-main"
 			}
 		]
