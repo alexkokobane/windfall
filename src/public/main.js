@@ -4164,8 +4164,7 @@ $(document).ready(function(e){
 					return location.href="/billing/plans"
 				}
 			}
-		})
-		
+		})		
 	}
 
 	//url === /campaign/rapid/new
@@ -5258,7 +5257,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Points",
-								backgroundColor: ["violet", "indigo"],
+								backgroundColor: ["#00691c", "#ff7700"],
 								data: [data.totalPerformance.hiTotal, data.totalPerformance.eqTotal]
 							}
 						]
@@ -5282,7 +5281,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Percentage ( % )",
-								backgroundColor: ["violet", "indigo"],
+								backgroundColor: ["#00691c", "#ff7700"],
 								data: [data.goalSuccess.hiRate, data.goalSuccess.eqRate]
 							}
 						]
@@ -5305,7 +5304,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Percentage ( % )",
-								backgroundColor: ["violet", "indigo"],
+								backgroundColor: ["#00691c", "#ff7700"],
 								data: [data.revenueSuccess.hiRate, data.revenueSuccess.eqRate]
 							}
 						]
@@ -5329,7 +5328,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Money per customer ("+data.currencyCode+")",
-								backgroundColor: ["violet", "indigo"],
+								backgroundColor: ["#00691c", "#ff7700"],
 								data: [data.spendingAverage.hiRate, data.spendingAverage.eqRate]
 							}
 						]
@@ -5368,7 +5367,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
-								backgroundColor: ["violet"],
+								backgroundColor: ["#00691c"],
 								data: [data.days.Sunday, data.days.Monday, data.days.Tuesday, data.days.Wednesday, data.days.Thursday, data.days.Friday, data.days.Saturday]
 							}
 						]
@@ -5392,7 +5391,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
-								backgroundColor: ["violet"],
+								backgroundColor: ["#00691c"],
 								data: [
 									data.months.jan,
 									data.months.feb,
