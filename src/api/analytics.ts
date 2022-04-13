@@ -28,7 +28,7 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		}
 
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-
+		const shop = await Shop.findOne({'shop': session.shop})
 		const long =  await Long.findOne({
 			'shop': session.shop,
 			'id': eventId
@@ -55,6 +55,7 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 			"averageSpentProjected": parseFloat(projectedAvgSpent.toFixed(2)),
 			"averageSpentProgress": parseFloat(avgSpentProgress.toFixed(2)),
 			"revenueNet": parseFloat(netProfit.toFixed(2)),
+			"currencyCode": shop.currencyCode,
 			"status": true
 		}
 		res.json(stats)
@@ -72,7 +73,7 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 		}
 
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-
+		const shop = await Shop.findOne({'shop': session.shop})
 		const parent =  await Rapid.findOne({
 			'shop': session.shop,
 			'id': eventId
@@ -110,6 +111,7 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 			"averageSpentProgress": parseFloat(avgSpentProgress.toFixed(3)),
 			"revenueNet": parseFloat(netProfit.toFixed(3)),
 			"totalPrizes": parseFloat(totalPrizes.toFixed(3)),
+			"currencyCode": shop.currencyCode,
 			"status": true
 		}
 		console.log(stats)
