@@ -5478,4 +5478,60 @@ $(document).ready(function(e){
 		})
 	}
 
+	//url === /progress
+	if(window.location.pathname === "/progress"){
+		$.ajax({
+			url: "/analytics/long-term-goals",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				if(data.goalSet === false){
+					$("#GoalsHeading").empty()
+					$("#GoalsBtnText").empty().removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").text("Save")
+					$("#GoalsHeading").text(`Set your goals for ${data.thisYear}`)
+					$("#GoalsDetails").html(`
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Set a revenue goal for the year</h3>
+						</div>
+						<div class="Polaris-Labelled--hidden">
+							<div class="Polaris-Labelled__LabelWrapper">
+								<div class="Polaris-Label"><label id="TotalRevenueInputLabel" for="TotalRevenueInput" class="Polaris-Label__Text">Total revenue</label></div>
+							</div>
+							<div class="Polaris-Connected">
+								<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+									<div class="Polaris-TextField">
+										<input id="TotalRevenueInput" type="number" placeholder="" autocomplete="off" class="Polaris-TextField__Input" aria-labelledby="TotalRevenueInputLabel" aria-invalid="false" value="">
+										<div class="Polaris-TextField__Backdrop"></div>
+									</div>
+								</div>
+							</div>
+						</div>				
+					`)
+					$("#GoalsBtn").click(function(){
+
+					})					
+				} else {
+					$("#GoalsHeading").empty()
+					$("#GoalsBtnText").empty().removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").text("Edit")
+					$("#GoalsHeading").text(`Your ${data.thisYear} goals`)
+					$("#GoalsDetails").html(`
+						<div class="Polaris-Card__SectionHeader">
+							<h3 class="Polaris-Subheading">Total revenue goal</h3>
+						</div>
+						<div class="Polaris-TextContainer">
+							<p id="TotalRevenueGoal" class="Polaris-TextStyle--variationStrong"></p>
+						</div>
+					`)
+					$("#TotalRevenueGoal").text(data.totalRevenueGoal)
+					$("#GoalsBtn").click(function(){
+
+					})
+				}
+			},
+			error: function(data){
+
+			}
+		})
+	}
+
 })
