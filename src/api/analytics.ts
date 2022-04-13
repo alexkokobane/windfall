@@ -48,13 +48,13 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		const avgSpentData : number = long.analytics.avgSpentCounter
 		const netProfit: number = moneyMade - long.winners.reduce((sum: number, num: any) => sum+num.voucherPrize, 0)
 		const stats = {
-			"averageSpent": avgSpent,
-			"revenueGoal": long.goals.totalRevenue,
-			"revenueGross": moneyMade,
-			"revenueProgress": revenueProgress,
-			"averageSpentProjected": projectedAvgSpent,
-			"averageSpentProgress": avgSpentProgress,
-			"revenueNet": netProfit,
+			"averageSpent": parseFloat(avgSpent.toFixed(2)),
+			"revenueGoal": parseFloat(long.goals.totalRevenue.toFixed(2)),
+			"revenueGross": parseFloat(moneyMade.toFixed(2)),
+			"revenueProgress": parseFloat(revenueProgress.toFixed(2)),
+			"averageSpentProjected": parseFloat(projectedAvgSpent.toFixed(2)),
+			"averageSpentProgress": parseFloat(avgSpentProgress.toFixed(2)),
+			"revenueNet": parseFloat(netProfit.toFixed(2)),
 			"status": true
 		}
 		res.json(stats)
@@ -102,14 +102,14 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 		const avgSpentProgress: number = projectedAvgSpent > 0 ? (avgSpent/projectedAvgSpent)*100 : 0
 		const netProfit: number = moneyMade - totalPrizes
 		const stats = {
-			"averageSpent": avgSpent,
-			"revenueGoal": parent.goals.totalRevenue,
-			"revenueGross": moneyMade,
-			"revenueProgress": revenueProgress,
-			"averageSpentProjected": projectedAvgSpent,
-			"averageSpentProgress": avgSpentProgress,
-			"revenueNet": netProfit,
-			"totalPrizes": totalPrizes,
+			"averageSpent": parseFloat(avgSpent.toFixed(3)),
+			"revenueGoal": parseFloat(parent.goals.totalRevenue.toFixed(3)),
+			"revenueGross": parseFloat(moneyMade.toFixed(3)),
+			"revenueProgress": parseFloat(revenueProgress.toFixed(3)),
+			"averageSpentProjected": parseFloat(projectedAvgSpent.toFixed(3)),
+			"averageSpentProgress": parseFloat(avgSpentProgress.toFixed(3)),
+			"revenueNet": parseFloat(netProfit.toFixed(3)),
+			"totalPrizes": parseFloat(totalPrizes.toFixed(3)),
 			"status": true
 		}
 		console.log(stats)
@@ -211,7 +211,7 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 		const quota = await Quota.findOne({'shop': session.shop})
 
 		usage.max = quota.entries[quota.entries.length - 1].maxValue
-		usage.usage = (quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100
+		usage.usage = parseFloat(((quota.entries[quota.entries.length - 1].value/quota.entries[quota.entries.length - 1].maxValue)*100).toFixed(2))
 		usage.entries = quota.entries.slice(quota.entries.length - 6)
 		res.json(usage)
 	} catch(err: any){
@@ -257,8 +257,8 @@ analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) =
 			}
 		})
 		results.goalSuccess = {
-			'hiRate': (hiGoalSuccess/hierarchical.length)*100,
-			'eqRate': (eqGoalSuccess/equitable.length)*100
+			'hiRate': parseFloat(((hiGoalSuccess/hierarchical.length)*100).toFixed(2)),
+			'eqRate': parseFloat(((eqGoalSuccess/equitable.length)*100).toFixed(2))
 		}
 
 		// profitability rate
@@ -278,8 +278,8 @@ analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) =
 			}
 		})
 		results.revenueSuccess = {
-			'hiRate': (hiNetRevenue/hierarchical.length)*100,
-			'eqRate': (eqNetRevenue/equitable.length)*100
+			'hiRate': parseFloat(((hiNetRevenue/hierarchical.length)*100).toFixed(2)),
+			'eqRate': parseFloat(((eqNetRevenue/equitable.length)*100).toFixed(2))
 		}
 
 		// spending rate
@@ -294,13 +294,13 @@ analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) =
 		})
 		console.log(`${hiMoney} divided by ${hiEntries}`)
 		results.spendingAverage = {
-			'hiRate': hiMoney/hiEntries,
-			'eqRate': eqMoney/eqEntries
+			'hiRate': parseFloat((hiMoney/hiEntries).toFixed(2)),
+			'eqRate': parseFloat((eqMoney/eqEntries).toFixed(2))
 		}
 
 		// overall performance
-		const hiTotal = ((hiGoalSuccess/hierarchical.length)*100) + ((hiNetRevenue/hierarchical.length)*100) + (hiMoney/hiEntries)
-		const eqTotal = ((eqGoalSuccess/equitable.length)*100) + ((eqGoalSuccess/equitable.length)*100) + (eqMoney/eqEntries)
+		const hiTotal = Math.round(((hiGoalSuccess/hierarchical.length)*100) + ((hiNetRevenue/hierarchical.length)*100) + (hiMoney/hiEntries))
+		const eqTotal = Math.round(((eqGoalSuccess/equitable.length)*100) + ((eqGoalSuccess/equitable.length)*100) + (eqMoney/eqEntries))
 		results.totalPerformance = {
 			hiTotal,
 			eqTotal
