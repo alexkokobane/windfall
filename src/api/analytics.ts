@@ -618,7 +618,7 @@ analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => 
 		//console.log(shop.longTermGoals)
 		const results = {
 			'status' : shop.longTermGoals.totalRevenue ? true : false,
-			'totalRevenue': shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0,
+			'totalRevenueGoal': shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0,
 			'thisYear': new Date(Date.now()).getFullYear(),
 			'currencyCode': shop.currencyCode
 		}
@@ -632,21 +632,48 @@ analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => 
 
 analytics.post('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
 	try{
-		const data = req.body.form
+		const data = req.body.setRevenueGoal
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
 		//console.log(shop.longTermGoals)
-		const results = {
-			'status' : shop.longTermGoals.totalRevenue ? true : false,
-			'totalRevenue': shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0,
-			'thisYear': new Date(Date.now()).getFullYear(),
-			'currencyCode': shop.currencyCode
+		if(data <= 0){
+			return res.status(403).send("You cannot do that, the goal must be any number above zero.")
 		}
+		const results = await Shop.updateOne(
+			{'shop': session.shop},
+			{
+				'$set': {
+					'longTermGoals.totalRevenue': data
+				}
+			}
+		)
 		console.log(results)
-		res.json(results)
+		res.json({'status': 'OK'})
 	} catch(err: any){
 		console.log(err)
-		return err
+		return res.status(403).send("Error, could not save goal, try again.")
+	}
+})
+
+analytics.post('/long-term-goals/unset', checkApiAuth, forMainApi, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		//console.log(shop.longTermGoals)
+		
+		const results = await Shop.updateOne(
+			{'shop': session.shop},
+			{
+				'$unset': {
+					'longTermGoals.totalRevenue': 1
+				}
+			}
+		)
+		console.log(results)
+		res.json({'status': 'OK'})
+	} catch(err: any){
+		console.log(err)
+		return res.status(403).send("Error, could not save goal, try again.")
 	}
 })
 

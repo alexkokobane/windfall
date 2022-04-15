@@ -5487,44 +5487,74 @@ $(document).ready(function(e){
 			success: function(data){
 				if(data.status === false){
 					$("#GoalsHeading").empty()
-					$("#GoalsBtnText").empty().removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").text("Save")
+					$("#GoalsBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--primary")
+					$("#GoalsBtnText").empty().text("Save")
 					$("#GoalsHeading").text(`Set your goals for ${data.thisYear}`)
 					$("#GoalsDetails").html(`
 						<div class="Polaris-Card__SectionHeader">
-							<h3 class="Polaris-Subheading">Set a revenue goal for the year</h3>
+							<h3 class="Polaris-Subheading">Set a revenue goal for the year (in ${data.currencyCode})</h3>
 						</div>
-						<form>
-							<div class="Polaris-Stack__Item">
-								<div class="Polaris-Labelled--hidden">
-									<div class="Polaris-Labelled__LabelWrapper">
-										<div class="Polaris-Label"><label id="TotalRevenueInputLabel" for="TotalRevenueInput" class="Polaris-Label__Text">Set a revenue goal for the year</label></div>
-									</div>
-									<div class="Polaris-Connected">
-										<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
-											<div class="Polaris-TextField">
-												<input id="TotalRevenueInput" type="number" placeholder="" autocomplete="off" class="Polaris-TextField__Input" aria-labelledby="TotalRevenueInputLabel" value="">
-												<div class="Polaris-TextField__Backdrop"></div>
-											</div>
+						<form>						
+							<div class="Polaris-Labelled--hidden">
+								<div class="Polaris-Labelled__LabelWrapper">
+									<div class="Polaris-Label"><label id="TotalRevenueInputLabel" for="TotalRevenueInput" class="Polaris-Label__Text">Set a revenue goal for the year</label></div>
+								</div>
+								<div class="Polaris-Connected">
+									<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+										<div class="Polaris-TextField">
+											<input id="TotalRevenueInput" type="number" placeholder="" autocomplete="off" class="Polaris-TextField__Input" aria-labelledby="TotalRevenueInputLabel" value="">
+											<div class="Polaris-TextField__Backdrop"></div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="Polaris-Stack__Item">
-								<button id="ProductSelectionModalSave" class="Polaris-Button Polaris-Button--primary" type="button">
-									<span class="Polaris-Button__Content">
-										<span class="Polaris-Button__Text">Save</span>
-									</span>
-								</button>
-							</div>	
+							</div>							
 						</form>			
 					`)
-					$("#GoalsCardFooter").addClass("disappear")
+					//$("#GoalsCardFooter").addClass("disappear")
 					$("#GoalsBtn").click(function(){
+						const setRevenueGoal = $("#TotalRevenueInput").val()
+						if(setRevenueGoal <= 0){
+							return alert("Your revenue goal cannot be zero or less.")
+						}
 
+						$(this).addClass("Polaris-Button--loading")
+						$("#GoalsBtnText").before(`
+							<span id="GoalsBtnSpinner" class="Polaris-Button__Spinner">
+								<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+									</svg>
+								</span>
+								<span role="status">
+									<span class="Polaris-VisuallyHidden">Loading</span>
+								</span>
+							</span>
+						`)
+						
+						$.ajax({
+							url: "/analytics/long-term-goals",
+							type: "POST",
+							contentType: "application/json",
+							data: JSON.stringify({setRevenueGoal}),
+							success: function(data){
+								location.reload()
+							},
+							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
+								}
+								$("#GoalsBtn").removeClass("Polaris-Button--loading")
+								$("#GoalsBtnSpinner").remove()
+								alert(data.responseText)
+							}
+						})
 					})					
 				} else {
 					$("#GoalsHeading").empty()
-					$("#GoalsBtnText").empty().removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline").text("Edit")
+					$("#GoalsBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
+					$("#GoalsBtnText").empty().text("Edit")
 					$("#GoalsHeading").text(`Your ${data.thisYear} goals`)
 					$("#GoalsDetails").html(`
 						<div class="Polaris-Card__SectionHeader">
@@ -5534,9 +5564,39 @@ $(document).ready(function(e){
 							<p id="TotalRevenueGoal" class="Polaris-TextStyle--variationStrong"></p>
 						</div>
 					`)
-					$("#TotalRevenueGoal").text(data.totalRevenueGoal)
+					$("#TotalRevenueGoal").text(data.totalRevenueGoal+" "+data.currencyCode)
 					$("#GoalsBtn").click(function(){
-
+						$(this).addClass("Polaris-Button--loading")
+						$("#GoalsBtnText").before(`
+							<span id="GoalsBtnSpinner" class="Polaris-Button__Spinner">
+								<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+									</svg>
+								</span>
+								<span role="status">
+									<span class="Polaris-VisuallyHidden">Loading</span>
+								</span>
+							</span>
+						`)
+						$.ajax({
+							url: "/analytics/long-term-goals/unset",
+							type: "POST",
+							contentType: "application/json",
+							success: function(data){
+								location.reload()
+							},
+							error: function(data){
+								if(data.responseText === "Unauthorized"){
+									return location.href="/"
+								} else if(data.responseText === "Forbidden"){
+									return location.href="/billing/plans"
+								}
+								$("#GoalsBtn").removeClass("Polaris-Button--loading")
+								$("#GoalsBtnSpinner").remove()
+								alert(data.responseText)
+							}
+						})
 					})
 				}
 			},
