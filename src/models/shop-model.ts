@@ -52,6 +52,9 @@ const ShopSchema = new mongoose.Schema({
 			default: Date.now()
 		}
 	}],
+	longTermGoals: {
+		totalRevenue: Number
+	},
 	lastOrderPaidId: Number,
 	createdAt: {
 		type: Date,

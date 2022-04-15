@@ -611,4 +611,43 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 	}
 })
 
+analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		//console.log(shop.longTermGoals)
+		const results = {
+			'status' : shop.longTermGoals.totalRevenue ? true : false,
+			'totalRevenue': shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0,
+			'thisYear': new Date(Date.now()).getFullYear(),
+			'currencyCode': shop.currencyCode
+		}
+		console.log(results)
+		res.json(results)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
+analytics.post('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
+	try{
+		const data = req.body.form
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		//console.log(shop.longTermGoals)
+		const results = {
+			'status' : shop.longTermGoals.totalRevenue ? true : false,
+			'totalRevenue': shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0,
+			'thisYear': new Date(Date.now()).getFullYear(),
+			'currencyCode': shop.currencyCode
+		}
+		console.log(results)
+		res.json(results)
+	} catch(err: any){
+		console.log(err)
+		return err
+	}
+})
+
 export default analytics
