@@ -87,12 +87,14 @@ const longEventSchema = new mongoose.Schema({
 		email: String,
 		points: Number,
 		spent: Number,
+		presentedCurrency: String,
 		tip: Number,
 		marketing: Boolean,
 		city: String,
 		country: String,
 		metadata: [{
 			spent: Number,
+			presentedCurrency: String,
 			timestamp: Date
 		}]
 	}],
@@ -178,12 +180,14 @@ const rapidChildsSchema = new mongoose.Schema({
 		email: String,
 		points: Number,
 		spent: Number,
+		presentedCurrency: String,
 		tip: Number,
 		marketing: Boolean,
 		city: String,
 		country: String,
 		metadata: [{
 			spent: Number,
+			presentedCurrency: String,
 			timestamp: Date
 		}]
 	}],

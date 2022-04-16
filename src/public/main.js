@@ -5561,7 +5561,7 @@ $(document).ready(function(e){
 							<h3 class="Polaris-Subheading">Total revenue goal</h3>
 						</div>
 						<div class="Polaris-TextContainer">
-							<p id="TotalRevenueGoal"></p>
+							<p id="TotalRevenueGoal" class="Polaris-DisplayText Polaris-DisplayText--sizeLarge"></p>
 						</div>
 					`)
 					$("#TotalRevenueGoal").text(data.totalRevenueGoal+" "+data.currencyCode)
