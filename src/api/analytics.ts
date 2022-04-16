@@ -315,6 +315,112 @@ analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) =
 	}
 })
 
+analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) => {
+	try {
+		const dateNow = Date.now()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'currencyCode': shop.currencyCode
+		})
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'currencyCode': shop.currencyCode
+		})
+		const rapidParent = await Rapid.find({
+			'shop': session.shop,
+			'currencyCode': shop.currencyCode
+		})	
+		const totalEvents = rapid.length+long.length
+
+		// long events
+		let goalsAchievedLong = 0 // goal achievement
+		let avgSpendingLong = 0 // average spending
+		let highProfitRateLong = 0 // profitability rate
+		long.forEach((item: any) => {
+			const revenue = item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)
+			const budget: number = item.winners.reduce((sum: number, num: any) => sum+num.voucherPrize, 0)
+			if(item.goals.totalRevenue < revenue){
+				goalsAchievedLong+=1
+			}
+			if(item.entries.length > 0){
+				avgSpendingLong+= revenue/item.entries.length
+			}
+			console.log(avgSpendingLong)
+			if(revenue > budget*2){
+				highProfitRateLong+=1
+			}
+		})
+
+		// rapid events
+		let goalsAchievedRapid = 0 // goal achievement
+		let avgSpendingRapid = 0 // average spending
+		let highProfitRateRapid = 0 // profitability rate
+		rapid.forEach((item: any) => {
+			// look for total budget in the parent
+			let goal = 0
+			const index = rapidParent.findIndex((meti: any) => meti.id === item.parentId)
+			//console.log(index)
+			if(index >= 0){
+				goal+=rapidParent[index].goals.totalRevenue
+			}
+
+			// begin calculating
+			const revenue = item.entries.reduce((sum: number, num: any) => sum+num.spent, 0)
+			const budget: number = item.winner.voucherPrize
+			if(goal < revenue){
+				goalsAchievedLong+=1
+			}
+			if(item.entries.length > 0){
+				avgSpendingRapid+= revenue/item.entries.length
+			}
+			if(revenue > budget*2){
+				highProfitRateLong+=1
+			}
+		})
+
+		// aggregate
+		const goalsAchieved = goalsAchievedLong+goalsAchievedRapid // goal achievement
+		const avgSpending = parseFloat((avgSpendingLong+avgSpendingRapid).toFixed(2)) // average spending
+		const highProfitRate = highProfitRateLong+highProfitRateRapid // profitability rate
+
+		const longPerformance = {
+			goalsAchievedLong,
+			"avgSpendingLong": parseFloat((avgSpendingLong).toFixed(2)),
+			highProfitRateLong,
+			"goalsAchievedShare": parseFloat(((goalsAchievedLong/goalsAchieved)*100).toFixed(2)),
+			"avgSpendingShare": parseFloat(((avgSpendingLong/avgSpending)*100).toFixed(2)),
+			"highProfitRateShare": parseFloat(((highProfitRateLong/highProfitRate)*100).toFixed(2))
+		}
+		const rapidPerformance = {
+			goalsAchievedRapid,
+			"avgSpendingRapid": parseFloat((avgSpendingRapid).toFixed(2)),
+			highProfitRateRapid,
+			"goalsAchievedShare": parseFloat(((goalsAchievedRapid/goalsAchieved)*100).toFixed(2)),
+			"avgSpendingShare": parseFloat(((avgSpendingRapid/avgSpending)*100).toFixed(2)),
+			"highProfitRateShare": parseFloat(((highProfitRateRapid/highProfitRate)*100).toFixed(2))
+		}
+		res.json({
+			'aggregate': {
+				goalsAchieved,
+				avgSpending,
+				highProfitRate
+			},
+			longPerformance,
+			rapidPerformance,
+			'currencyCode': shop.currencyCode
+		})
+	} catch(err: any){
+		console.log(err)
+		return res.status(403).send("Oops! Couldn't gather analytics for the performances of events.")
+	}
+})
+
 analytics.get('/lucky-days', checkApiAuth, forMainApi, async (req, res) => {
 	try{
 		let sun = 0, mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0
