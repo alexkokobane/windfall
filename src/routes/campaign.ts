@@ -1921,6 +1921,7 @@ campaign.post('/rapid/template/:id/activate', checkApiAuth, forCommonApi, quotaA
 				'name': template.name,
 				'eventType': 'Rapid',
 				'parentId': rapidId,
+				'templateId': template.id,
 				'startDate': item,
 				'endDate': new Date(Number(new Date(item))+(1000*60*60*23)),
 				'winnersChosen': false,
