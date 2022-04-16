@@ -768,17 +768,17 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			'endDate': {'$lt': new Date(dateNow)},
 			'entries.spent': {'$gte': 1}
 		})
-		const revenueGoal = shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0
+		const revenueGoal: number = shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0
 
-		// forecast
+		// forecasts calculations
 		
-		let totalMoney = 0
+		let totalProductsWorth = 0
 		let productCount = 0
 		let totalEntries = 0
 		let totalSpent = 0
 		products.forEach((item: any) => {
 			if(item.currencyCode === shop.currencyCode){
-				totalMoney+=parseFloat(item.amount)
+				totalProductsWorth+=parseFloat(item.amount)
 				productCount+=1
 			}
 		})
@@ -790,24 +790,33 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			totalEntries+=item.entries.length
 			totalSpent+=item.entries.reduce((a: number, b: any) => a+b.spent, 0)
 		})
-		//console.log(totalMoney)
-		//console.log(productCount)
-		console.log(long.length+rapid.length)
-		const avgMaxPrice = parseFloat((totalMoney/productCount).toFixed(2))
-		const avgGrossRevenue = parseFloat((totalSpent/(long.length+rapid.length)).toFixed(2))
-		const avgEventEntries = totalEntries/(long.length+rapid.length)
-		const avgMaxPriceRequired = parseFloat((revenueGoal/productCount).toFixed(2))		
-		const eventsRequired = Math.round((revenueGoal/avgGrossRevenue))
-		const avgGrossRevenueRequired = parseFloat((revenueGoal/eventsRequired).toFixed(2))
-		const avgProductsSoldRequired = Math.round(avgGrossRevenueRequired/avgMaxPrice)
-		console.log(avgGrossRevenueRequired*eventsRequired)
+
+		const forecast = (totalPrice: number, totalProducts: number, totalRevenue: number, totalEvents: number, totalEntries: number, goal: number): object => {
+			const avgMaxProductPrice = parseFloat((totalPrice/totalProducts).toFixed(2))
+			const avgGrossRevenue = parseFloat((totalRevenue/totalEvents).toFixed(2))
+			const eventsRequired = Math.round((goal/avgGrossRevenue))
+			const avgProductsSoldRequired = Math.round(avgGrossRevenue/avgMaxProductPrice)
+			
+			return {
+				avgMaxProductPrice,
+				avgGrossRevenue,			
+				eventsRequired,
+				avgProductsSoldRequired
+			}
+		}
+
+		// realistic forecast
+		const realistic = forecast(totalProductsWorth, productCount, totalSpent, (long.length+rapid.length), totalEntries, revenueGoal)
+
+		// 10x optimistic forcast
+		const tenfold = forecast(totalProductsWorth, productCount, (totalSpent*10), (long.length+rapid.length), totalEntries, revenueGoal)
+
+		// 50X optimistic forcast
+		const fiftyfold = forecast(totalProductsWorth, productCount, (totalSpent*50), (long.length+rapid.length), totalEntries, revenueGoal)
 		res.json({
-			avgMaxPrice,
-			avgEventEntries,
-			avgMaxPriceRequired,
-			avgGrossRevenueRequired,
-			eventsRequired,
-			avgProductsSoldRequired
+			realistic,
+			tenfold,
+			fiftyfold
 		})
 	} catch(err: any){
 		console.log(err)
