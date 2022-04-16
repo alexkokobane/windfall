@@ -542,14 +542,15 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 		const firstBatch: any = await client.query({
 			data: `
 				{
-					products(first:3){
+					products(first:60){
 						edges{
 							node{
 								id,
-								title,
-								featuredImage{
-									altText,
-									url
+								priceRangeV2{
+									maxVariantPrice {
+										amount,
+										currencyCode
+									}
 								}
 							}
 							cursor
@@ -561,27 +562,26 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 				}
 			`
 		})
-
+		//console.log(firstBatch.body)
 		const prods = firstBatch.body.data.products.edges
 		prods.forEach((item: any) => {
-			products.push(item.node)
+			products.push(item.node.priceRangeV2.maxVariantPrice)
 		})
 		proceed = firstBatch.body.data.products.pageInfo.hasNextPage
 		cursor = prods[prods.length - 1].cursor
 
 		while(proceed){
-			console.log("running")
+			//console.log("running")
 			const storeProducts: any = await client.query({
 				data: `
 					{
-						products(first:3, after:"${cursor}" ){
+						products(first:60, after:"${cursor}" ){
 							edges{
 								node{
 									id,
-									title,
-									featuredImage{
-										altText,
-										url
+									priceRangeV2{
+										amount,
+										currencyCode
 									}
 								}
 								cursor
@@ -593,15 +593,15 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 					}
 				`
 			})
-			console.log(storeProducts.body)
+			//console.log(storeProducts.body)
 			const prods = storeProducts.body.data.products.edges
 			prods.forEach((item: any) => {
-				products.push(item.node)
+				products.push(item.node.priceRangeV2.maxVariantPrice)
 			})
 			proceed = storeProducts.body.data.products.pageInfo.hasNextPage
 			cursor = prods[prods.length - 1].cursor
-			console.log(cursor)
-			console.log(products)
+			//console.log(cursor)
+			//console.log(products)
 		}
 		//console.log(products)
 		res.json(products)
@@ -610,6 +610,9 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 		return err
 	}
 })
+
+
+// For the progress page
 
 analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
 	try{
@@ -630,7 +633,7 @@ analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => 
 	}
 })
 
-analytics.post('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
+analytics.post('/long-term-goals/set', checkApiAuth, forMainApi, async (req, res) => {
 	try{
 		const data = req.body.setRevenueGoal
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -674,6 +677,141 @@ analytics.post('/long-term-goals/unset', checkApiAuth, forMainApi, async (req, r
 	} catch(err: any){
 		console.log(err)
 		return res.status(403).send("Error, could not save goal, try again.")
+	}
+})
+
+analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		// get all products prices
+		let cursor: string | null = ""
+		let proceed: boolean = true
+		let products: any[] = []
+		const firstBatch: any = await client.query({
+			data: `
+				{
+					products(first:60){
+						edges{
+							node{
+								id,
+								priceRangeV2{
+									maxVariantPrice {
+										amount,
+										currencyCode
+									}
+								}
+							}
+							cursor
+						}
+						pageInfo {
+							hasNextPage
+						}
+					}
+				}
+			`
+		})
+		const prods = firstBatch.body.data.products.edges
+		prods.forEach((item: any) => {
+			products.push(item.node.priceRangeV2.maxVariantPrice)
+		})
+		proceed = firstBatch.body.data.products.pageInfo.hasNextPage
+		cursor = prods[prods.length - 1].cursor
+
+		while(proceed){
+			//console.log("running")
+			const storeProducts: any = await client.query({
+				data: `
+					{
+						products(first:60, after:"${cursor}" ){
+							edges{
+								node{
+									id,
+									priceRangeV2{
+										amount,
+										currencyCode
+									}
+								}
+								cursor
+							}
+							pageInfo {
+								hasNextPage
+							}
+						}
+					}
+				`
+			})
+			//console.log(storeProducts.body)
+			const prods = storeProducts.body.data.products.edges
+			prods.forEach((item: any) => {
+				products.push(item.node.priceRangeV2.maxVariantPrice)
+			})
+			proceed = storeProducts.body.data.products.pageInfo.hasNextPage
+			cursor = prods[prods.length - 1].cursor
+			//console.log(cursor)
+			//console.log(products)
+		}
+
+		// set up
+		const dateNow = Date.now()
+		const thisYear = new Date(dateNow).getFullYear()
+		const shop = await Shop.findOne({'shop': session.shop})
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$gte': new Date(thisYear+"-01-01")},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1}
+		})
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$gte': new Date(thisYear+"-01-01")},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1}
+		})
+		const revenueGoal = shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0
+
+		// forecast
+		
+		let totalMoney = 0
+		let productCount = 0
+		let totalEntries = 0
+		let totalSpent = 0
+		products.forEach((item: any) => {
+			if(item.currencyCode === shop.currencyCode){
+				totalMoney+=parseFloat(item.amount)
+				productCount+=1
+			}
+		})
+		long.forEach((item: any) => {
+			totalEntries+=item.entries.length
+			totalSpent+=item.entries.reduce((a: number, b: any) => a+b.spent, 0)
+		})
+		rapid.forEach((item: any) => {
+			totalEntries+=item.entries.length
+			totalSpent+=item.entries.reduce((a: number, b: any) => a+b.spent, 0)
+		})
+		//console.log(totalMoney)
+		//console.log(productCount)
+		console.log(long.length+rapid.length)
+		const avgMaxPrice = parseFloat((totalMoney/productCount).toFixed(2))
+		const avgGrossRevenue = parseFloat((totalSpent/(long.length+rapid.length)).toFixed(2))
+		const avgEventEntries = totalEntries/(long.length+rapid.length)
+		const avgMaxPriceRequired = parseFloat((revenueGoal/productCount).toFixed(2))		
+		const eventsRequired = Math.round((revenueGoal/avgGrossRevenue))
+		const avgGrossRevenueRequired = parseFloat((revenueGoal/eventsRequired).toFixed(2))
+		const avgProductsSoldRequired = Math.round(avgGrossRevenueRequired/avgMaxPrice)
+		console.log(avgGrossRevenueRequired*eventsRequired)
+		res.json({
+			avgMaxPrice,
+			avgEventEntries,
+			avgMaxPriceRequired,
+			avgGrossRevenueRequired,
+			eventsRequired,
+			avgProductsSoldRequired
+		})
+	} catch(err: any){
+		console.log(err)
+		return res.status(403).send("There must be an error in the server.")
 	}
 })
 

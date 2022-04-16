@@ -5532,7 +5532,7 @@ $(document).ready(function(e){
 						`)
 						
 						$.ajax({
-							url: "/analytics/long-term-goals",
+							url: "/analytics/long-term-goals/set",
 							type: "POST",
 							contentType: "application/json",
 							data: JSON.stringify({setRevenueGoal}),

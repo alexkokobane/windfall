@@ -246,9 +246,9 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, 
 		let decoyId: string
 		let decoyWinners: string
 		if (req.query.id && typeof req.query.id === 'string') {
-					decoyId = req.query.id
+			decoyId = req.query.id
 		} else {
-					return undefined
+			return undefined
 		}
 		if(req.query.winners && typeof req.query.winners === 'string') {
 			decoyWinners = req.query.winners
