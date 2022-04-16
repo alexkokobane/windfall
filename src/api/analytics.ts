@@ -611,6 +611,50 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 	}
 })
 
+analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) => {
+	try {
+		let compiled: any[] = []
+		const dateNow = Date.now()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)}
+		})
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)}
+		})
+
+		rapid.forEach((item: any) => {
+			if(item.currencyCode === shop.currencyCode){
+				compiled.push({
+					"totalPrizes": item.winner.voucherPrize,
+					"entries": item.entries.length
+				})
+			}
+		})
+		long.forEach((item: any) => {
+			if(item.currencyCode === shop.currencyCode){
+				compiled.push({
+					"totalPrizes": item.winners.reduce((a: number, b: any) => a + b.voucherPrize, 0),
+					"entries": item.entries.length
+				})
+			}
+		})
+
+		compiled.sort((a, b) => a.totalPrizes - b.totalPrizes)
+		res.json({
+			compiled,
+			'currencyCode': shop.currencyCode
+		})
+	} catch(err: any){
+		res.status(403).send("We think there's a error, couldn't compute analytics.")
+	}
+})
+
 
 // For the progress page
 
