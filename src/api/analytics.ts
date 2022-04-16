@@ -657,6 +657,54 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 	}
 })
 
+analytics.get('/top-performing-events', checkApiAuth, forCommonApi, async (req, res) => {
+	try{
+		let compiled: any[] = []
+		const dateNow = Date.now()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1}
+		})
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1}
+		})
+
+		rapid.forEach((item: any) => {
+			if(item.currencyCode === shop.currencyCode){
+				compiled.push({
+					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
+					"eventType": item.eventType,
+					"name": item.name,
+					"endDate": item.endDate,
+					"currencyCode": item.currencyCode
+				})
+			}
+		})
+		long.forEach((item: any) => {
+			if(item.currencyCode === shop.currencyCode){
+				compiled.push({
+					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
+					"eventType": item.eventType,
+					"name": item.name,
+					"endDate": item.endDate,
+					"currencyCode": item.currencyCode
+				})
+			}
+		})
+		const results = compiled.sort((a, b) => b.grossRevenue - a.grossRevenue).slice(0,5)
+		res.json(results)
+	} catch(err: any){
+		return res.status(403).send("Oops, couldn't return the top performing events.")
+	}
+})
+
 
 // For the progress page
 
