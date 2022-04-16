@@ -1,7 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import axios from 'axios'
-import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild } from '../models/shop-model'
+import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
 import { templateGate } from '../utils/quotas'
@@ -701,7 +701,70 @@ analytics.get('/top-performing-events', checkApiAuth, forCommonApi, async (req, 
 		const results = compiled.sort((a, b) => b.grossRevenue - a.grossRevenue).slice(0,5)
 		res.json(results)
 	} catch(err: any){
-		return res.status(403).send("Oops, couldn't return the top performing events.")
+		return res.status(403).send("Oops! Couldn't return the top performing events.")
+	}
+})
+
+analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res) => {
+	try {
+		const liquidity: any[] = []
+		const dateNow = Date.now()
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
+		const longTemplates = await SavedLong.find({'shop': session.shop})
+		const rapidTemplates = await SavedRapid.find({'shop': session.shop})
+		longTemplates.forEach((item: any) => {
+			liquidity.push({
+				"id": item.id,
+				"name": item.name,
+				"eventType": item.eventType,
+				"revenue": 0,
+				"currencyCode": item.currencyCode
+			})
+		})
+		rapidTemplates.forEach((item: any) => {
+			liquidity.push({
+				"id": item.id,
+				"name": item.name,
+				"eventType": item.eventType,
+				"revenue": 0,
+				"currencyCode": item.currencyCode
+			})
+		})
+
+		const rapid = await RapidChild.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1},
+			'templateId': {'$exists': true}
+		})
+		const long = await Long.find({
+			'shop': session.shop,
+			'startDate': {'$lt': new Date(dateNow)},
+			'endDate': {'$lt': new Date(dateNow)},
+			'entries.spent': {'$gte': 1},
+			'templateId': {'$exists': true}
+		})
+		console.log(long)
+		rapid.forEach((item: any) => {
+			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
+			console.log(index)
+			if(index >= 0){
+				liquidity[index].revenue+=item.entries.reduce((a: number, b: any) => a + b.spent, 0)
+			}
+		})
+		long.forEach((item: any) => {
+			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
+			console.log(index)
+			if(index >= 0){
+				liquidity[index].revenue+=item.entries.reduce((a: number, b: any) => a + b.spent, 0)
+			}
+		})
+		res.json(liquidity)
+	} catch (err: any){
+		console.log(err)
+		return res.status(403).send("Oops! Couldn't gather analytics for lucrative event templates.")
 	}
 })
 
