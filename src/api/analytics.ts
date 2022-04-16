@@ -632,6 +632,7 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 			if(item.currencyCode === shop.currencyCode){
 				compiled.push({
 					"totalPrizes": item.winner.voucherPrize,
+					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
 					"entries": item.entries.length
 				})
 			}
@@ -640,6 +641,7 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 			if(item.currencyCode === shop.currencyCode){
 				compiled.push({
 					"totalPrizes": item.winners.reduce((a: number, b: any) => a + b.voucherPrize, 0),
+					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
 					"entries": item.entries.length
 				})
 			}
