@@ -386,7 +386,8 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 				'$or': [
 					{'winnersGifted': false},
 					{'winnersChosen': false}
-				]
+				],
+				'entries.spent': {'$gte': 1}
 			}
 		)
 
@@ -397,7 +398,8 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 				'$or': [
 					{'winnersGifted': false},
 					{'winnersChosen': false}
-				]
+				],
+				'entries.spent': {'$gte': 1}
 			}
 		)
 
