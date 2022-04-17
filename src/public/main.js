@@ -5634,7 +5634,49 @@ $(document).ready(function(e){
 								alert(data.responseText)
 							}
 						})
-					})					
+					})
+					$("#CurrentForecast").html(`
+						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+							<div class="Polaris-EmptyState__Section">
+								<div class="Polaris-EmptyState__DetailsContainer">
+									<div class="Polaris-EmptyState__Details">
+										<div class="Polaris-TextContainer">
+											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No data.</p>
+										</div>
+									</div>
+								</div>
+								<div class="Polaris-EmptyState__ImageContainer"></div>
+							</div>
+						</div>
+					`)	
+					$("#ScenarioOne").html(`
+						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+							<div class="Polaris-EmptyState__Section">
+								<div class="Polaris-EmptyState__DetailsContainer">
+									<div class="Polaris-EmptyState__Details">
+										<div class="Polaris-TextContainer">
+											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No data.</p>
+										</div>
+									</div>
+								</div>
+								<div class="Polaris-EmptyState__ImageContainer"></div>
+							</div>
+						</div>
+					`)
+					$("#ScenarioTwo").html(`
+						<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+							<div class="Polaris-EmptyState__Section">
+								<div class="Polaris-EmptyState__DetailsContainer">
+									<div class="Polaris-EmptyState__Details">
+										<div class="Polaris-TextContainer">
+											<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No data.</p>
+										</div>
+									</div>
+								</div>
+								<div class="Polaris-EmptyState__ImageContainer"></div>
+							</div>
+						</div>
+					`)				
 				} else {
 					$("#GoalsHeading").empty()
 					$("#GoalsBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
@@ -5687,13 +5729,180 @@ $(document).ready(function(e){
 						type: "GET",
 						contentType: "application/json",
 						success: function(data){
-							if(data.realistic.eventsRequired < 1){
+							// current
+							if(data.realistic.eventsRequired >= 1){
 								$("#CurrentForecast").html(`
-
+									<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Average event revenue</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.realistic.avgGrossRevenue} ${data.currencyCode}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Items to sell per event</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.realistic.avgProductsSoldRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Events required</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeLarge">
+														${data.realistic.eventsRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+									<div>
 								`)
 							} else {
 								$("#CurrentForecast").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Congratulations!! You have achieved your goal.</p>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
+										</div>
+									</div>
+								`)
+							}
 
+							// 10x
+							if(data.tenfold.eventsRequired >= 1){
+								$("#ScenarioOne").html(`
+									<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Average event revenue</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.tenfold.avgGrossRevenue} ${data.currencyCode}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Items to sell per event</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.tenfold.avgProductsSoldRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Events required</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeLarge">
+														${data.tenfold.eventsRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+									<div>
+								`)
+							} else {
+								$("#ScenarioOne").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Achieved! Your goal would be achieved at this scenario.</p>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
+										</div>
+									</div>
+								`)
+							}
+
+							// 50x
+							if(data.fiftyfold.eventsRequired >= 1){
+								$("#ScenarioTwo").html(`
+									<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Average event revenue</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.fiftyfold.avgGrossRevenue} ${data.currencyCode}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Items to sell per event</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeMedium">
+														${data.fiftyfold.avgProductsSoldRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+										<div class="Polaris-Stack__Item">
+											<div class="Polaris-Stack Polaris-Stack--vertical">
+												<div class="Polaris-Stack__Item">
+													<h3 class="Polaris-Subheading">Events required</h3>
+												</div>
+												<div class="Polaris-Stack__Item">
+													<p class="Polaris-DisplayText Polaris-DisplayText--sizeLarge">
+														${data.fiftyfold.eventsRequired}
+													</p>
+												</div>
+											</div>
+										</div>
+									<div>
+								`)
+							} else {
+								$("#ScenarioTwo").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Achieved! Your goal would be achieved at this scenario.</p>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
+										</div>
+									</div>
 								`)
 							}
 						},

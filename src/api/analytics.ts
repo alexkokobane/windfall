@@ -1092,7 +1092,8 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 		res.json({
 			realistic,
 			tenfold,
-			fiftyfold
+			fiftyfold,
+			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
 		console.log(err)
