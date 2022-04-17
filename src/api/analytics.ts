@@ -126,11 +126,14 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 	try{
 		let total = 0
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
 		const long = await Long.find({
 			'shop': session.shop,
+			'currencyCode': shop.currencyCode
 		})
 		const rapid = await RapidChild.find({
-			'shop': session.shop
+			'shop': session.shop,
+			'currencyCode': shop.currencyCode
 		})
 		long.forEach((item: any) => {
 			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
@@ -140,10 +143,13 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 			const money: number = item.entries.length > 0 ? item.entries.reduce((sum: number, num: any) => sum+num.spent, 0) : 0
 			total+=money
 		})
-		res.send(total.toString())
+		res.json({
+			'total': parseFloat((total).toFixed(2)),
+			'currencyCode': shop.currencyCode
+		})
 	} catch(err: any){
 		console.log(err)
-		return err
+		return res.status(403).send("Oops! Couldn't gather the total revenue.")
 	}
 })
 

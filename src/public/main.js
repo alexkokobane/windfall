@@ -1677,7 +1677,7 @@ $(document).ready(function(e){
 			contentType: "application/json",
 			success: function(data){
 				$("#HTRSketch").remove()
-				$("#HTRText").text(data)
+				$("#HTRText").text(data.total+" "+data.currencyCode)
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
@@ -1694,7 +1694,7 @@ $(document).ready(function(e){
 			success: function(data){
 				if(data.length > 0){
 					data.forEach(function(giv){
-						$("#HTRCard").before(`
+						$("#HomaPageContent").before(`
 							<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="UnfinishedBanner${giv.id}Heading" aria-describedby="UnfinishedBanner${giv.id}Content">
 								<div class="Polaris-Banner__Ribbon">
 									<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
