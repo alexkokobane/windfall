@@ -795,7 +795,9 @@ analytics.get('/top-performing-events', checkApiAuth, forCommonApi, async (req, 
 					"eventType": item.eventType,
 					"name": item.name,
 					"endDate": item.endDate,
-					"currencyCode": item.currencyCode
+					"currencyCode": item.currencyCode,
+					"id": item.id,
+					"parentId": item.parentId
 				})
 			}
 		})
@@ -806,7 +808,8 @@ analytics.get('/top-performing-events', checkApiAuth, forCommonApi, async (req, 
 					"eventType": item.eventType,
 					"name": item.name,
 					"endDate": item.endDate,
-					"currencyCode": item.currencyCode
+					"currencyCode": item.currencyCode,
+					"id": item.id
 				})
 			}
 		})

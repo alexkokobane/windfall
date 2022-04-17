@@ -1746,6 +1746,90 @@ $(document).ready(function(e){
 			}
 		})
 		$.ajax({
+			url: "/analytics/top-performing-events",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				console.log("The template length is "+data.length)
+				if(data.length === 0){
+					$("#HTPListWrapper").remove()
+					return (
+						$("#TopPerform").html(`
+							<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+								<div class="Polaris-EmptyState__Section">
+									<div class="Polaris-EmptyState__DetailsContainer">
+										<div class="Polaris-EmptyState__Details">
+											<div class="Polaris-TextContainer">
+												<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No top performing events found</p>
+												<div class="Polaris-EmptyState__Content">
+													<p>Create a long or rapid giveaway event from the buttons on the top right of this page to get started outperforming the competiton.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="Polaris-EmptyState__ImageContainer"></div>
+								</div>
+							</div>
+						`)
+					)
+				}
+				$(".HTPDecoyItem").remove()
+				data.reverse().forEach(function(giv){
+					const colour = `hsl(${360 * Math.random()}, ${25 + 70 * Math.random()}%, ${55 + 10 * Math.random()}%)`
+					$("#HTPDataDecoy").after(`
+						<li class="Polaris-ResourceItem__ListItem">
+							<div class="Polaris-ResourceItem__ItemWrapper">
+								<div class="Polaris-ResourceItem Polaris-Scrollable Polaris-Scrollable--horizontal Polaris-Scrollable--horizontalHasScrolling" data-href="/campaign/long/${giv.id}">
+									<a id="TopLink${giv.id}"  class="Polaris-ResourceItem__Link" tabindex="0" data-polaris-unstyled="true"></a>
+									<div class="Polaris-ResourceItem__Container" id="Top${giv.id}">
+										<div class="Polaris-ResourceItem__Owned">
+											<div class="Polaris-ResourceItem__Media">
+												<span aria-label="Solid color thumbnail" role="img" class="Polaris-Thumbnail Polaris-Thumbnail--sizeMedium">
+													<div class="dp" style="background: ${colour}; color: black;">${giv.name.substring(0,1)}</div>
+												</span>
+											</div>
+										</div>
+										<div class="Polaris-ResourceItem__Content">
+											<div class="Polaris-Stack  Polaris-Stack--noWrap Polaris-Stack--alignmentBaseline Polaris-Stack--distributionEqualSpacing">
+												<div class="Polaris-Stack__Item">
+													<h3><span class="Polaris-TextStyle--variationStrong Polaris-Subheading" id="TopName${giv.id}"></span></h3>
+													<div><span class="Polaris-TextStyle--variationStrong">Event type :</span> ${giv.eventType}</div>
+													<div><span class="Polaris-TextStyle--variationStrong">Total revenue :</span> ${giv.grossRevenue} ${giv.currencyCode}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					`)
+
+					$(`#TopName${giv.id}`).text(giv.name)
+					$(`#TopLink${giv.id}`).attr("aria-label", `A link to template ${giv.name}`)
+					
+					if(giv.eventType === "Rapid"){
+						$(`#Top${giv.id}`).click(function(){
+							location=href=`/campaign/rapid/${giv.id}`
+						})
+						$(`#TopLink${giv.id}`).attr("href", `/campaign/rapid/${giv.id}`)
+					} else {
+						$(`#Top${giv.id}`).click(function(){
+							location=href=`/campaign/long/${giv.id}`
+						})
+						$(`#TopLink${giv.id}`).attr("href", `/campaign/long/${giv.id}`)
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+				alert(data.responseText)
+			}
+		})
+		$.ajax({
 			url: "/analytics/quota/usage",
 			type: "GET",
 			contentType: "application/json",
