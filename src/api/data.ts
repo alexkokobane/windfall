@@ -277,7 +277,7 @@ data.get('/campaigns/unfinished', checkApiAuth, async (req, res) => {
 		)
 		const defects: any[] = []
 		long.forEach((item) => {
-			if(item.winners.length < 1 || !item.winners){
+			if((item.winners.length < 1 || !item.winners) && new Date(item.startDate) > new Date(Date.now())){
 				defects.push({
 					"name": item.name,
 					"id": item.id,

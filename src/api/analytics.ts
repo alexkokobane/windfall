@@ -1032,13 +1032,15 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(thisYear+"-01-01")},
 			'endDate': {'$lt': new Date(dateNow)},
-			'entries.spent': {'$gte': 1}
+			'entries.spent': {'$gte': 1},
+			'currencyCode': shop.currencyCode
 		})
 		const rapid = await RapidChild.find({
 			'shop': session.shop,
 			'startDate': {'$gte': new Date(thisYear+"-01-01")},
 			'endDate': {'$lt': new Date(dateNow)},
-			'entries.spent': {'$gte': 1}
+			'entries.spent': {'$gte': 1},
+			'currencyCode': shop.currencyCode
 		})
 		const revenueGoal: number = shop.longTermGoals.totalRevenue ? shop.longTermGoals.totalRevenue : 0
 
@@ -1062,16 +1064,18 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			totalEntries+=item.entries.length
 			totalSpent+=item.entries.reduce((a: number, b: any) => a+b.spent, 0)
 		})
-
+		console.log(totalEntries/(long.length+rapid.length))
 		const forecast = (totalPrice: number, totalProducts: number, totalRevenue: number, totalEvents: number, totalEntries: number, goal: number): object => {
 			const avgMaxProductPrice = parseFloat((totalPrice/totalProducts).toFixed(2))
 			const avgGrossRevenue = parseFloat((totalRevenue/totalEvents).toFixed(2))
+			const avgSpendingPerEvent = parseFloat((avgGrossRevenue/(totalEntries/totalEvents)).toFixed(2))
 			const eventsRequired = Math.round((goal/avgGrossRevenue))
 			const avgProductsSoldRequired = Math.round(avgGrossRevenue/avgMaxProductPrice)
 			
 			return {
 				avgMaxProductPrice,
-				avgGrossRevenue,			
+				avgGrossRevenue,
+				avgSpendingPerEvent,			
 				eventsRequired,
 				avgProductsSoldRequired
 			}
