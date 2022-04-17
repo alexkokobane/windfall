@@ -5682,10 +5682,37 @@ $(document).ready(function(e){
 							}
 						})
 					})
+					$.ajax({
+						url: "/analytics/forecast",
+						type: "GET",
+						contentType: "application/json",
+						success: function(data){
+							if(data.realistic.eventsRequired < 1){
+								$("#CurrentForecast").html(`
+
+								`)
+							} else {
+								$("#CurrentForecast").html(`
+
+								`)
+							}
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+						}
+					})
 				}
 			},
 			error: function(data){
-
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
 			}
 		})
 	}
