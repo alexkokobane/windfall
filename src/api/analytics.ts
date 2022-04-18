@@ -837,8 +837,14 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 		const dateNow = Date.now()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
-		const longTemplates = await SavedLong.find({'shop': session.shop})
-		const rapidTemplates = await SavedRapid.find({'shop': session.shop})
+		const longTemplates = await SavedLong.find({
+			'shop': session.shop,
+			'eventType': {'$exists': true}
+		})
+		const rapidTemplates = await SavedRapid.find({
+			'shop': session.shop,
+			'eventType': {'$exists': true}
+		})
 		longTemplates.forEach((item: any) => {
 			liquidity.push({
 				"id": item.id,
@@ -872,7 +878,9 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 			'entries.spent': {'$gte': 1},
 			'templateId': {'$exists': true}
 		})
-		console.log(long)
+		//if(long.length === 0 && rapid.length === 0){
+			//res.json({'status': false})
+		//}
 		rapid.forEach((item: any) => {
 			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
 			console.log(index)
@@ -887,7 +895,11 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 				liquidity[index].revenue+=item.entries.reduce((a: number, b: any) => a + b.spent, 0)
 			}
 		})
-		res.json(liquidity)
+		const results = liquidity.sort((a, b) => b.revenue - a.revenue).slice(0,5)
+		res.json({
+			results,
+			'status': true
+		})
 	} catch (err: any){
 		console.log(err)
 		return res.status(403).send("Oops! Couldn't gather analytics for lucrative event templates.")
