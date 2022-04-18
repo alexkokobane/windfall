@@ -5347,6 +5347,8 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
+						indexAxis: 'y',
+						responsive: true,
 						legend: {display: false},
 						plugins: {
 							title: {
@@ -5371,6 +5373,8 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
+						indexAxis: 'y',
+						responsive: true,
 						plugins: {
 							title: {
 								display: true,
@@ -5394,6 +5398,8 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
+						indexAxis: 'y',
+						responsive: true,
 						legend: {display: false},
 						plugins: {
 							title: {
@@ -5418,6 +5424,8 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
+						indexAxis: 'y',
+						responsive: true,
 						plugins: {
 							title: {
 								display: true,
@@ -5445,18 +5453,30 @@ $(document).ready(function(e){
 				const monthsCtx = $("#TotalRevenueByMonths")
 
 				new Chart(daysCtx, {
-					type: "bar",
+					type: "line",
 					data: {
 						labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
 								backgroundColor: ["#00691c"],
-								data: [data.days.Sunday, data.days.Monday, data.days.Tuesday, data.days.Wednesday, data.days.Thursday, data.days.Friday, data.days.Saturday]
+								fill: true,
+								lineTension: 0.4,
+								cubicInterpolationMode: 'monotone',
+								data: [
+									data.days.Sunday, 
+									data.days.Monday, 
+									data.days.Tuesday, 
+									data.days.Wednesday, 
+									data.days.Thursday, 
+									data.days.Friday, 
+									data.days.Saturday
+								]
 							}
 						]
 					},
 					options: {
+						responsive: true,
 						legend: {display: false},
 						plugins: {
 							title: {
@@ -5469,13 +5489,16 @@ $(document).ready(function(e){
 				})
 
 				new Chart(monthsCtx, {
-					type: "bar",
+					type: "line",
 					data: {
 						labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
 								backgroundColor: ["#00691c"],
+								fill: true,
+								lineTension: 0.4,
+								cubicInterpolationMode: 'monotone',
 								data: [
 									data.months.jan,
 									data.months.feb,
@@ -5494,6 +5517,7 @@ $(document).ready(function(e){
 						]
 					},
 					options: {
+						responsive: true,
 						legend: {display: false},
 						plugins: {
 							title: {

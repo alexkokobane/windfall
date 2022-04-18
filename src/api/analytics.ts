@@ -740,6 +740,8 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 			'endDate': {'$lt': new Date(dateNow)}
 		})
 
+		const dataPoints: any[] = []
+
 		rapid.forEach((item: any) => {
 			if(item.currencyCode === shop.currencyCode){
 				compiled.push({
@@ -747,6 +749,9 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
 					"entries": item.entries.length
 				})
+				if(!dataPoints.includes(item.entries.length)){
+					dataPoints.push(item.entries.length)
+				}
 			}
 		})
 		long.forEach((item: any) => {
@@ -756,9 +761,15 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
 					"entries": item.entries.length
 				})
+				if(!dataPoints.includes(item.entries.length)){
+					dataPoints.push(item.entries.length)
+				}
 			}
 		})
 
+		const maxValue = Math.max(...dataPoints)
+		console.log(maxValue)
+		console.log(dataPoints)
 		compiled.sort((a, b) => a.totalPrizes - b.totalPrizes)
 		res.json({
 			compiled,
