@@ -5459,7 +5459,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
-								backgroundColor: ["#00691c"],
+								backgroundColor: "#00691c",
 								fill: true,
 								lineTension: 0.4,
 								cubicInterpolationMode: 'monotone',
@@ -5495,7 +5495,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Money ("+data.currencyCode+")",
-								backgroundColor: ["#00691c"],
+								backgroundColor: "#00691c",
 								fill: true,
 								lineTension: 0.4,
 								cubicInterpolationMode: 'monotone',
@@ -5566,7 +5566,7 @@ $(document).ready(function(e){
 						datasets: [
 							{
 								label: "Entries",
-								backgroundColor: "violet",
+								backgroundColor: "#00691c",
 								data: yData
 							}
 						]

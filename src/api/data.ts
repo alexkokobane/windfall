@@ -261,7 +261,7 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
 		})
 		//console.log(upcoming)
-		res.json(upcoming)
+		res.json(upcoming.slice(0,6))
 	} catch(err: any) {
 		console.log(err)
 	}
