@@ -5724,6 +5724,25 @@ $(document).ready(function(e){
 				}
 			}
 		})
+		$.ajax({
+			url: "/analytics/overall-impact",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".Ana-is-ske").remove()
+				$("#Ana-tp-yr").text(`${data.payoutThisYear}  ${data.currencyCode}`)
+				$("#Ana-tw-yr").text(`${data.winnersThisYear}`)
+				$("#Ana-tp-at").text(`${data.payoutAllTime}  ${data.currencyCode}`)
+				$("#Ana-tw-at").text(`${data.winnersAllTime}`)
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
 	}
 
 	//url === /billing

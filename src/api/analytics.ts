@@ -621,8 +621,8 @@ analytics.get('/overall-impact', checkApiAuth, forMainApi, async (req, res) => {
 		let payoutAllTime = 0
 		let winnersThisYear = 0
 		let payoutThisYear = 0
-		const money: any = await axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.EXCHANGE_ID}`)
-		console.log(money.data.rates)
+		//const money: any = await axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.EXCHANGE_ID}`)
+		//console.log(money.data.rates)
 		prizes.forEach((item: any) => {
 			payoutAllTime+=item.voucherPrize
 			const thisYear = new Date(Date.now()).getFullYear()
