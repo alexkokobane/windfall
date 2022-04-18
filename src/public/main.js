@@ -5325,6 +5325,111 @@ $(document).ready(function(e){
 	//url === /analytics
 	if(window.location.pathname === "/analytics"){
 		$.ajax({
+			url: "/analytics/events-performance",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				const all = data.aggregate
+				const rapid = data.rapidPerformance
+				const long = data.longPerformance
+				$(".Ana-ep-ske").remove()
+				$("#Ana-ga").text(`${all.goalsAchieved}/${all.totalEvents}`)
+				$("#Ana-hr").text(`${all.highProfitRate}/${all.totalEvents}`)
+				$("#Ana-spc").text(`${all.avgSpending} ${data.currencyCode}`)
+
+				$("#Ana-ga-rapid").text(`${rapid.goalsAchievedRapid}/${rapid.totalEvents}`)
+				$("#Ana-hr-rapid").text(`${rapid.highProfitRateRapid}/${rapid.totalEvents}`)
+				$("#Ana-spc-rapid").text(`${rapid.avgSpendingRapid} ${data.currencyCode}`)
+
+				$("#Ana-ga-long").text(`${long.goalsAchievedLong}/${long.totalEvents}`)
+				$("#Ana-hr-long").text(`${long.highProfitRateLong}/${long.totalEvents}`)
+				$("#Ana-spc-long").text(`${long.avgSpendingLong} ${data.currencyCode}`)
+
+				const gaCtx = $("#Ana-ga-comp")
+				const hrCtx = $("#Ana-hr-comp")
+				const spcCtx = $("#Ana-spc-comp")
+
+				new Chart(gaCtx, {
+					type: "pie",
+					data: {
+						labels: ["Rapid events", "Long events"],
+						datasets: [
+							{
+								label: "Percent ( % )",
+								backgroundColor: ["#00691c", "#ff7700"],
+								data: [rapid.goalsAchievedShare, long.goalsAchievedShare]
+							}
+						]
+					},
+					options: {
+						responsive: true,
+						plugins: {
+							title: {
+								display: true,
+								text: 'Goal achievement',
+								color: "#000000"
+							}
+						}
+					}
+				})
+
+				new Chart(hrCtx, {
+					type: "pie",
+					data: {
+						labels: ["Rapid events", "Long events"],
+						datasets: [
+							{
+								label: "Percent ( % )",
+								backgroundColor: ["#00691c", "#ff7700"],
+								data: [rapid.highProfitRateShare, long.highProfitRateShare]
+							}
+						]
+					},
+					options: {
+						responsive: true,
+						plugins: {
+							title: {
+								display: true,
+								text: 'High revenue',
+								color: "#000000"
+							}
+						}
+					}
+				})
+
+				new Chart(spcCtx, {
+					type: "pie",
+					data: {
+						labels: ["Rapid events", "Long evets"],
+						datasets: [
+							{
+								label: "Percent ( % )",
+								backgroundColor: ["#00691c", "#ff7700"],
+								data: [rapid.avgSpendingShare, long.avgSpendingShare]
+							}
+						]
+					},
+					options: {
+						responsive: true,
+						plugins: {
+							title: {
+								display: true,
+								text: 'Spending per customer',
+								color: "#000000"
+							}
+						}
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+		$.ajax({
 			url: `/analytics/long-distribution`,
 			type: "GET",
 			contentType: "application/json",
@@ -5875,7 +5980,7 @@ $(document).ready(function(e){
 												</div>
 											</div>
 										</div>
-									<div>
+									</div>
 								`)
 							} else {
 								$("#CurrentForecast").html(`
@@ -5934,7 +6039,7 @@ $(document).ready(function(e){
 												</div>
 											</div>
 										</div>
-									<div>
+									</div>
 								`)
 							} else {
 								$("#ScenarioOne").html(`
@@ -5993,7 +6098,7 @@ $(document).ready(function(e){
 												</div>
 											</div>
 										</div>
-									<div>
+									</div>
 								`)
 							} else {
 								$("#ScenarioTwo").html(`

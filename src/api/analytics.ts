@@ -357,7 +357,7 @@ analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) 
 			if(item.entries.length > 0){
 				avgSpendingLong+= revenue/item.entries.length
 			}
-			console.log(avgSpendingLong)
+			//console.log(avgSpendingLong)
 			if(revenue > budget*2){
 				highProfitRateLong+=1
 			}
@@ -399,6 +399,7 @@ analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) 
 			goalsAchievedLong,
 			"avgSpendingLong": parseFloat((avgSpendingLong).toFixed(2)),
 			highProfitRateLong,
+			"totalEvents": long.length,
 			"goalsAchievedShare": parseFloat(((goalsAchievedLong/goalsAchieved)*100).toFixed(2)),
 			"avgSpendingShare": parseFloat(((avgSpendingLong/avgSpending)*100).toFixed(2)),
 			"highProfitRateShare": parseFloat(((highProfitRateLong/highProfitRate)*100).toFixed(2))
@@ -407,6 +408,7 @@ analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) 
 			goalsAchievedRapid,
 			"avgSpendingRapid": parseFloat((avgSpendingRapid).toFixed(2)),
 			highProfitRateRapid,
+			"totalEvents": rapid.length,
 			"goalsAchievedShare": parseFloat(((goalsAchievedRapid/goalsAchieved)*100).toFixed(2)),
 			"avgSpendingShare": parseFloat(((avgSpendingRapid/avgSpending)*100).toFixed(2)),
 			"highProfitRateShare": parseFloat(((highProfitRateRapid/highProfitRate)*100).toFixed(2))
@@ -415,7 +417,8 @@ analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) 
 			'aggregate': {
 				goalsAchieved,
 				avgSpending,
-				highProfitRate
+				highProfitRate,
+				totalEvents
 			},
 			longPerformance,
 			rapidPerformance,
@@ -487,7 +490,7 @@ analytics.get('/lucky-days', checkApiAuth, forMainApi, async (req, res) => {
 
 		transactions.forEach((item: any) => {
 			let day: number = new Date(item.timestamp).getMonth()
-			console.log(day)
+			//console.log(day)
 			switch(day){
 				case 0:
 					jan+=item.spent
