@@ -728,7 +728,7 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 
 analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) => {
 	try {
-		let compiled: any[] = []
+		let compiler: any[] = []
 		const dateNow = Date.now()
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
@@ -742,43 +742,74 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 			'startDate': {'$lt': new Date(dateNow)},
 			'endDate': {'$lt': new Date(dateNow)}
 		})
-
-		const dataPoints: any[] = []
+		//console.log(rapid)
+		//console.log(long)
+		let dataPoints: any[] = []
+		let dataSetEntries: any[] = []
+		let dataSetRevenue: any[] = []
 
 		rapid.forEach((item: any) => {
 			if(item.currencyCode === shop.currencyCode){
-				compiled.push({
-					"totalPrizes": item.winner.voucherPrize,
-					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
-					"entries": item.entries.length
-				})
-				if(!dataPoints.includes(item.entries.length)){
-					dataPoints.push(item.entries.length)
+				const budget = item.winner.voucherPrize
+				const revenue = item.entries.reduce((a: number, b: any) => a + b.spent, 0)
+				const entries = item.entries.length
+				if(!dataPoints.includes(budget)){
+					//console.log(budget+" "+entries+" "+revenue)
+					dataPoints.push(budget)
+					dataSetEntries.push(entries)
+					dataSetRevenue.push(revenue)
+				} else {
+					//console.log(budget+" "+entries+" "+revenue)
+					const index = dataPoints.findIndex((meti: any) => meti === budget)
+					dataSetEntries[index]+=entries
+					dataSetRevenue[index]+=revenue
 				}
 			}
 		})
 		long.forEach((item: any) => {
 			if(item.currencyCode === shop.currencyCode){
-				compiled.push({
-					"totalPrizes": item.winners.reduce((a: number, b: any) => a + b.voucherPrize, 0),
-					"grossRevenue": item.entries.reduce((a: number, b: any) => a + b.spent, 0),
-					"entries": item.entries.length
-				})
-				if(!dataPoints.includes(item.entries.length)){
-					dataPoints.push(item.entries.length)
+				const budget = item.winners.reduce((a: number, b: any) => a + b.voucherPrize, 0)
+				const revenue = item.entries.reduce((a: number, b: any) => a + b.spent, 0)
+				const entries = item.entries.length
+				if(!dataPoints.includes(budget)){
+					//console.log(budget+" "+entries+" "+revenue)
+					dataPoints.push(budget)
+					dataSetEntries.push(entries)
+					dataSetRevenue.push(revenue)
+				} else {
+					//console.log(budget+" "+entries+" "+revenue)
+					const index = dataPoints.findIndex((meti: any) => meti === budget)
+					dataSetEntries[index]+=entries
+					dataSetRevenue[index]+=revenue
 				}
 			}
 		})
 
-		const maxValue = Math.max(...dataPoints)
-		console.log(maxValue)
-		console.log(dataPoints)
-		compiled.sort((a, b) => a.totalPrizes - b.totalPrizes)
+		
+		// compile everything into an grouping array
+		dataPoints.forEach((item: any, index: number) => {
+			compiler.push([item, dataSetEntries[index], dataSetRevenue[index]])
+		})
+
+		// reset the unsorted arrays
+		dataPoints.length = 0
+		dataSetEntries.length = 0
+		dataSetRevenue.length = 0
+
+		// sort through the grouped compilations and assign to appropriate arrays
+		compiler.sort((a, b) => a[0] - b[0]).forEach((item: any) => {
+			dataPoints.push(item[0])
+			dataSetEntries.push(item[1])
+			dataSetRevenue.push(item[2])
+		})
 		res.json({
-			compiled,
+			dataPoints,
+			dataSetEntries,
+			dataSetRevenue,
 			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
+		console.log(err)
 		res.status(403).send("We think there's a error, couldn't compute analytics.")
 	}
 })
