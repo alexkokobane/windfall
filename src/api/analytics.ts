@@ -456,7 +456,7 @@ analytics.get('/lucky-days', checkApiAuth, forMainApi, async (req, res) => {
 		//const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 		transactions.forEach((item: any) => {
 			let day: number = new Date(item.timestamp).getDay()
-			console.log(day)
+			//console.log(day)
 			switch(day){
 				case 0:
 					sun+=item.spent
@@ -878,9 +878,9 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 			'entries.spent': {'$gte': 1},
 			'templateId': {'$exists': true}
 		})
-		//if(long.length === 0 && rapid.length === 0){
-			//res.json({'status': false})
-		//}
+		if(long.length === 0 && rapid.length === 0){
+			return res.json({'status': false})
+		}
 		rapid.forEach((item: any) => {
 			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
 			console.log(index)
