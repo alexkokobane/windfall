@@ -1809,9 +1809,9 @@ $(document).ready(function(e){
 					
 					if(giv.eventType === "Rapid"){
 						$(`#Top${giv.id}`).click(function(){
-							location=href=`/campaign/rapid/${giv.id}`
+							location=href=`/campaign/rapid/${giv.parentId}`
 						})
-						$(`#TopLink${giv.id}`).attr("href", `/campaign/rapid/${giv.id}`)
+						$(`#TopLink${giv.id}`).attr("href", `/campaign/rapid/${giv.parentId}`)
 					} else {
 						$(`#Top${giv.id}`).click(function(){
 							location=href=`/campaign/long/${giv.id}`
