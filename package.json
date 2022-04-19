@@ -29,6 +29,7 @@
     "express-ejs-layouts": "^2.5.1",
     "graphql": "^16.0.0",
     "helmet": "^4.6.0",
+    "mailgun.js": "^5.2.1",
     "mongoose": "^6.0.13",
     "morgan": "^1.10.0",
     "shelljs": "^0.8.5",
