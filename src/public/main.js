@@ -5325,6 +5325,64 @@ $(document).ready(function(e){
 	//url === /analytics
 	if(window.location.pathname === "/analytics"){
 		$.ajax({
+			url: "/analytics/prize-v-interest",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				const eppCtx = $("#EventPrizesPerformance")
+				new Chart(eppCtx, {
+					type: "line",
+					data: {
+						labels: data.dataPoints,
+						datasets: [
+							{
+								label: "Entries",
+								backgroundColor: "#00691c",
+								fill: true,
+								lineTension: 0.4,
+								cubicInterpolationMode: 'monotone',
+								data: data.dataSetEntries
+							},
+							{
+								label: data.currencyCode,
+								fill: true,
+								lineTension: 0.4,
+								cubicInterpolationMode: 'monotone',
+								backgroundColor: "#ff7700",
+								data: data.dataSetRevenue
+							}
+						]
+					},
+					options: {
+						responsive: true,
+						plugins: {
+							title: {
+								display: true,
+								text: 'Correlation between event prize amount, entries and revenue',
+								color: "#000000"
+							}
+						},
+						scales: {
+							x: {
+								display: true,
+								title: {
+									display: true,
+									text: "Voucher amount ("+data.currencyCode+")"
+								}
+							}
+						}
+					}
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+		$.ajax({
 			url: "/analytics/events-performance",
 			type: "GET",
 			contentType: "application/json",

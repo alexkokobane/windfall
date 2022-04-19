@@ -788,7 +788,11 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 		
 		// compile everything into an grouping array
 		dataPoints.forEach((item: any, index: number) => {
-			compiler.push([item, dataSetEntries[index], dataSetRevenue[index]])
+			compiler.push({
+				'x': item, 
+				'y': dataSetEntries[index], 
+				'r': dataSetRevenue[index]
+			})
 		})
 
 		// reset the unsorted arrays
@@ -797,12 +801,13 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 		dataSetRevenue.length = 0
 
 		// sort through the grouped compilations and assign to appropriate arrays
-		compiler.sort((a, b) => a[0] - b[0]).forEach((item: any) => {
-			dataPoints.push(item[0])
-			dataSetEntries.push(item[1])
-			dataSetRevenue.push(item[2])
+		compiler.sort((a, b) => a.x - b.x).forEach((item: any) => {
+			dataPoints.push(item.x)
+			dataSetEntries.push(item.y)
+			dataSetRevenue.push(item.r)
 		})
 		res.json({
+			compiler,
 			dataPoints,
 			dataSetEntries,
 			dataSetRevenue,
