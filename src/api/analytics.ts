@@ -60,8 +60,8 @@ analytics.get('/long/:id', checkApiAuth, async (req, res) => {
 		}
 		res.json(stats)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -114,11 +114,11 @@ analytics.get('/rapid/:id', checkApiAuth, async (req, res) => {
 			"currencyCode": shop.currencyCode,
 			"status": true
 		}
-		console.log(stats)
+		//console.log(stats)
 		res.json(stats)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -148,7 +148,7 @@ analytics.get('/all-revenue', checkApiAuth, async (req, res) => {
 			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("Oops! Couldn't gather the total revenue.")
 	}
 })
@@ -190,13 +190,13 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 			
 			if(newbie === null){
 				const newMonth = newSubs(shop.pricePlan)
-				console.log(newMonth)
-				console.log({
+				//console.log(newMonth)
+				/*console.log({
 					'month': newMonth[newMonth.length - 1].month,
 					'value': 0,
 					'maxValue': newMonth[newMonth.length - 1].maxValue,
 					'plan': newMonth[newMonth.length - 1].plan
-				})
+				})*/
 				const upQplus = await Quota.updateOne(
 					{
 						'shop': session.shop
@@ -223,8 +223,8 @@ analytics.get('/quota/usage', checkApiAuth, async (req, res) => {
 		usage.entries = quota.entries.slice(quota.entries.length - 6)
 		res.json(usage)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -316,8 +316,8 @@ analytics.get('/long-distribution', checkApiAuth, forMainApi, async (req, res) =
 
 		res.json(results)
 	} catch(err: any){
-		console.log(err)
-		return err	
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")	
 	}
 })
 
@@ -425,7 +425,7 @@ analytics.get('/events-performance', checkApiAuth, forMainApi, async (req, res) 
 			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("Oops! Couldn't gather analytics for the performances of events.")
 	}
 })
@@ -567,8 +567,8 @@ analytics.get('/lucky-days', checkApiAuth, forMainApi, async (req, res) => {
 
 		res.json(results)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -641,7 +641,7 @@ analytics.get('/overall-impact', checkApiAuth, forMainApi, async (req, res) => {
 		}
 		res.json(results)
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).json(err)
 	}
 })
@@ -721,8 +721,8 @@ analytics.get('/products', checkApiAuth, forMainApi, async (req, res) => {
 		//console.log(products)
 		res.json(products)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -814,7 +814,7 @@ analytics.get('/prize-v-interest', checkApiAuth, forMainApi, async (req, res) =>
 			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		res.status(403).send("We think there's a error, couldn't compute analytics.")
 	}
 })
@@ -922,14 +922,14 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 		}
 		rapid.forEach((item: any) => {
 			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
-			console.log(index)
+			//console.log(index)
 			if(index >= 0){
 				liquidity[index].revenue+=item.entries.reduce((a: number, b: any) => a + b.spent, 0)
 			}
 		})
 		long.forEach((item: any) => {
 			const index = liquidity.findIndex((meti: any) => meti.id === item.templateId)
-			console.log(index)
+			//console.log(index)
 			if(index >= 0){
 				liquidity[index].revenue+=item.entries.reduce((a: number, b: any) => a + b.spent, 0)
 			}
@@ -940,7 +940,7 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 			'status': true
 		})
 	} catch (err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("Oops! Couldn't gather analytics for lucrative event templates.")
 	}
 })
@@ -959,11 +959,11 @@ analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => 
 			'thisYear': new Date(Date.now()).getFullYear(),
 			'currencyCode': shop.currencyCode
 		}
-		console.log(results)
+		//console.log(results)
 		res.json(results)
 	} catch(err: any){
-		console.log(err)
-		return err
+		//console.log(err)
+		return res.status(400).send("Thare was an error fetching results.")
 	}
 })
 
@@ -984,10 +984,10 @@ analytics.post('/long-term-goals/set', checkApiAuth, forMainApi, async (req, res
 				}
 			}
 		)
-		console.log(results)
+		//console.log(results)
 		res.json({'status': 'OK'})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("Error, could not save goal, try again.")
 	}
 })
@@ -1006,10 +1006,10 @@ analytics.post('/long-term-goals/unset', checkApiAuth, forMainApi, async (req, r
 				}
 			}
 		)
-		console.log(results)
+		//console.log(results)
 		res.json({'status': 'OK'})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("Error, could not save goal, try again.")
 	}
 })
@@ -1126,7 +1126,7 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			totalEntries+=item.entries.length
 			totalSpent+=item.entries.reduce((a: number, b: any) => a+b.spent, 0)
 		})
-		console.log(totalEntries/(long.length+rapid.length))
+		//console.log(totalEntries/(long.length+rapid.length))
 		const forecast = (totalPrice: number, totalProducts: number, totalRevenue: number, totalEvents: number, totalEntries: number, goal: number): object => {
 			const avgMaxProductPrice = parseFloat((totalPrice/totalProducts).toFixed(2))
 			const avgGrossRevenue = parseFloat((totalRevenue/totalEvents).toFixed(2))
@@ -1158,7 +1158,7 @@ analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
 			'currencyCode': shop.currencyCode
 		})
 	} catch(err: any){
-		console.log(err)
+		//console.log(err)
 		return res.status(403).send("There must be an error in the server.")
 	}
 })

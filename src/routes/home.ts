@@ -92,6 +92,7 @@ home.get('/test',  async (req, res) => {
 home.get('/test/api', async (req, res) => {
 	try {
 		readFile(path.resolve(__dirname, '../public/windfall-banner-with-text.png'))
+		res.send("Hi there.")
 	} catch(err: any){
 		res.status(400).send("Opps that request was made in bad faith.")
 	}
