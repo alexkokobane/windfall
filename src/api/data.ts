@@ -22,7 +22,7 @@ data.get('/customers/export-json', checkApiAuth, async (req, res) => {
 			}
 		})
 
-		console.log(exportData)
+		//console.log(exportData)
 		res.json(exportData)
 	} catch(err: any){
 		console.log(err)
@@ -34,7 +34,7 @@ data.get('/customers/counter', checkApiAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const customers = await Customers.find({'shop': session.shop})
 
-		console.log(customers.length)
+		//console.log(customers.length)
 		res.json(customers.length)
 	} catch(err: any){
 		console.log(err)
@@ -65,8 +65,8 @@ data.get('/products', checkApiAuth, async (req, res) => {
 				}
 			`
 		})
-		console.log(storeProducts.body)
-		res.json(storeProducts.body.data.products.edges)
+		//console.log(storeProducts.body)
+		return res.json(storeProducts.body.data.products.edges)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -75,7 +75,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 	try{
 		const giveawayId = parseInt(req.params.id)
-		console.log(giveawayId)
+		//console.log(giveawayId)
 		if(isNaN(giveawayId) === true){
 			return res.status(404).send("Giveaway not found")
 		}
@@ -86,7 +86,7 @@ data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 				'id': giveawayId
 			}
 		)
-		console.log(giveaway)
+		//console.log(giveaway)
 		if(giveaway === null){
 			return res.status(404).send("Giveaway not found")
 		}
@@ -107,8 +107,8 @@ data.get('/campaign/:id',  checkApiAuth, async (req, res) => {
 			'qualifyingItems': giveaway.qualifyingItems,
 			"currencyCode": giveaway.currencyCode
 		}
-		console.log(justOne)
-		res.json(justOne)
+		//console.log(justOne)
+		return res.json(justOne)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -159,8 +159,8 @@ data.get('/campaigns/expired', checkApiAuth, async (req, res) => {
 		expired.sort((a: any, b: any) => { 
 			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
 		})
-		console.log(expired)
-		res.json(expired)
+		//console.log(expired)
+		return res.json(expired)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -209,7 +209,7 @@ data.get('/campaigns/active', checkApiAuth, async (req, res) => {
 			})
 		})
 		//console.log(active)
-		res.json(active)
+		return res.json(active)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -261,7 +261,7 @@ data.get('/campaigns/upcoming', checkApiAuth, async (req, res) => {
 			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
 		})
 		//console.log(upcoming)
-		res.json(upcoming.slice(0,6))
+		return res.json(upcoming.slice(0,6))
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -286,7 +286,7 @@ data.get('/campaigns/unfinished', checkApiAuth, async (req, res) => {
 				})
 			}
 		})
-		res.json(defects)
+		return res.json(defects)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -313,8 +313,8 @@ data.get('/campaigns/hierarchical', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.winnersTotal 
 			})
 		})
-		console.log(hierarchy)
-		res.json(hierarchy)
+		//console.log(hierarchy)
+		return res.json(hierarchy)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -341,8 +341,8 @@ data.get('/campaigns/equitable', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.winnersTotal 
 			})
 		})
-		console.log(equity)
-		res.json(equity)
+		//console.log(equity)
+		return res.json(equity)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -368,8 +368,8 @@ data.get('/campaigns/all', checkApiAuth, async (req, res) => {
 				"winnersTotal": item.winnersTotal 
 			})
 		})
-		console.log(all)
-		res.json(all)
+		//console.log(all)
+		return res.json(all)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -438,7 +438,7 @@ data.get('/awaiting', checkApiAuth, async (req, res) => {
 			})
 		})
 
-		res.json(awaiting)
+		return res.json(awaiting)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -481,7 +481,7 @@ data.get('/giveaway-templates', checkApiAuth, async (req, res) => {
 			})
 		})
 		//console.log(templates)
-		res.json(templates)
+		return res.json(templates)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -514,11 +514,11 @@ data.get('/template/:id', checkApiAuth, async (req, res) => {
 				'eventType': 1
 			}
 		)
-		console.log(template)
+		//console.log(template)
 		if(template === null){
 			return res.status(404).send("Giveaway does not exist")
 		}
-		res.json(template)
+		return res.json(template)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -557,7 +557,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 		const rapid: any[] = await RapidChild.find({'shop': session.shop})
 
 		let keyValue: any = []
-		console.log(eventId)
+		//console.log(eventId)
 		if(eventId !== 0){
 			if(isNaN(eventId) === true){
 				return res.status(404).send("Oops! This event seems corrupt, try reload and if the problem persists contact support.")
@@ -631,7 +631,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 						}
 					}
 				})
-				console.log(keyValue)
+				//console.log(keyValue)
 				if(keyValue.length !== 0) {
 					return res.json(keyValue)
 				}
@@ -661,7 +661,7 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 						}
 					}
 				})
-				console.log(keyValue)
+				//console.log(keyValue)
 				if(keyValue.length !== 0) {
 					return res.json(keyValue)
 				}
@@ -691,14 +691,14 @@ data.get('/long-validator', checkApiAuth, async (req, res) => {
 						}
 					}
 				})
-				console.log(keyValue)
+				//console.log(keyValue)
 				if(keyValue.length !== 0) {
 					return res.json(keyValue)
 				}
 			}
 		}
 
-		res.json(keyValue)
+		return res.json(keyValue)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -730,7 +730,7 @@ data.get('/:id/winners', checkApiAuth, async (req, res) => {
 				displayWinners.push(what)
 			})
 		}
-		res.json(displayWinners)
+		return res.json(displayWinners)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -741,7 +741,7 @@ data.get('/:id/winners', checkApiAuth, async (req, res) => {
 data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 	try{
 		const eventId = parseInt(req.params.id)
-		console.log(eventId)
+		//console.log(eventId)
 		if(isNaN(eventId) === true){
 			return res.status(404).send("Giveaway not found")
 		}
@@ -752,7 +752,7 @@ data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 				'id': eventId
 			}
 		)
-		console.log(event)
+		//console.log(event)
 		if(event === null){
 			return res.status(404).send("Giveaway not found")
 		}
@@ -773,7 +773,7 @@ data.get('/campaign/rapid/:id',  checkApiAuth, async (req, res) => {
 			'currencyCode': event.currencyCode
 		}
 		//console.log(justOne)
-		res.json(justOne)
+		return res.json(justOne)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -824,8 +824,8 @@ data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
 			})
 		})
 
-		console.log(awaiting)
-		res.json(awaiting)
+		//console.log(awaiting)
+		return res.json(awaiting)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -874,8 +874,8 @@ data.get('/campaign/rapid/:id/upcoming',  checkApiAuth, async (req, res) => {
 			}
 		})
 
-		console.log(upcoming)
-		res.json(upcoming)
+		//console.log(upcoming)
+		return res.json(upcoming)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -920,8 +920,8 @@ data.get('/campaign/rapid/:id/active',  checkApiAuth, async (req, res) => {
 			"winnersTotal": child.winnersTotal 
 		}
 
-		console.log(active)
-		res.json(active)
+		//console.log(active)
+		return res.json(active)
 	} catch(err: any) {
 		console.log(err)
 	}
@@ -955,7 +955,7 @@ data.get('/campaign/rapid/template/:id', checkApiAuth, async (req, res) => {
 				'dates': 1
 			}
 		)
-		res.json(template)
+		return res.json(template)
 	} catch(err: any){
 		console.log(err)
 		return err
@@ -986,7 +986,7 @@ data.get('/campaign/grand/:id', checkApiAuth, async (req, res) => {
 			{'$unwind': '$childrenEvents'},
 			{'$match': {'childrenEvents.winnersChosen': true}}
 		])
-		console.log(participants)
+		//console.log(participants)
 		if(event === null){
 			return res.status(404).send("Giveaway not found")
 		}
@@ -999,8 +999,8 @@ data.get('/campaign/grand/:id', checkApiAuth, async (req, res) => {
 			"completedEvents": participants.length,
 			"allEvents": event.childrenEvents.length
 		}
-		console.log(grand)
-		res.json(grand)
+		//console.log(grand)
+		return res.json(grand)
 	} catch(err: any){
 		console.log(err)
 	}
@@ -1034,7 +1034,7 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
 		})
 		//console.log(allEventsEver)
-		res.json(allEventsEver)
+		return res.json(allEventsEver)
 	} catch(err: any){
 		console.log(err)
 		return err
@@ -1067,7 +1067,7 @@ data.get('/everything', checkApiAuth, async (req, res) => {
 			customers,
 			transactions
 		}
-		res.json(allData)
+		return res.json(allData)
 	} catch(err: any) {
 		console.log(err)
 	}

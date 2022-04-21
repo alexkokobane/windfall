@@ -22,7 +22,8 @@ const fs = promises
 async function readFile(filePath: any) {
   try {
     const data = await fs.readFile(filePath);
-    console.log(data.toString());
+    console.log(data.toString())
+    return data.toString()
   } catch (error) {
     console.error(`Got an error trying to read the file: ${error.message}`);
   }
@@ -91,8 +92,8 @@ home.get('/test',  async (req, res) => {
 
 home.get('/test/api', async (req, res) => {
 	try {
-		readFile(path.resolve(__dirname, '../public/windfall-banner-with-text.png'))
-		res.send("Hi there.")
+		const filr = readFile(path.resolve(__dirname, '../public/main.js'))
+		res.json(filr)
 	} catch(err: any){
 		res.status(400).send("Opps that request was made in bad faith.")
 	}
