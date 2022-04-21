@@ -51,8 +51,6 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
 
 auth.get('/callback', async (req: Request, res: Response) => {
 	try {
-		
-		console.log("Here are the cookie")
 		const session = await Shopify.Auth.validateAuthCallback(
 			req,
 			res,
@@ -61,14 +59,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		console.log({
-			path: '/webhooks/shop-redact',
-			topic: 'shop/redact',
-			accessToken: session.accessToken,
-			shop: session.shop,
-		})
-		
-		
+				
 		// Functional webhooks
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/orders-paid',
@@ -119,6 +110,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			console.log(shopData)
 			const storeShop = new Shop({
 				'shop': session.shop,
+				'name': shopData.name,
 				'email': shopData.email,
 				'currencyCode': shopData.currencyCode,
 				'shopifyPlan': shopData.plan.displayName,

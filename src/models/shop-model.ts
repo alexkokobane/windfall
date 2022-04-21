@@ -27,6 +27,7 @@ const ShopSchema = new mongoose.Schema({
 		}
 	},
 	shopifyPlan: String,
+	name: String,
 	id: String,
 	shopUrl: String,
 	scope: [String],
