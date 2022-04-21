@@ -102,6 +102,9 @@ auth.get('/callback', async (req: Request, res: Response) => {
 								shopifyPlus
 							}
 							url
+							billingAddress {
+								formatted(withCompany:true, withName :true)
+							}
 						}
 					}`
 				}
@@ -115,7 +118,8 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				'currencyCode': shopData.currencyCode,
 				'shopifyPlan': shopData.plan.displayName,
 				'id': shopData.id,
-				'url': shopData.url
+				'url': shopData.url,
+				'billingAddress': shopData.billingAddress.formatted
 			})
 			storeShop.save()
 			//console.log("check point 1")

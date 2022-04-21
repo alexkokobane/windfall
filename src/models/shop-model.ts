@@ -28,6 +28,7 @@ const ShopSchema = new mongoose.Schema({
 	},
 	shopifyPlan: String,
 	name: String,
+	billingAddress: [String],
 	id: String,
 	shopUrl: String,
 	scope: [String],
