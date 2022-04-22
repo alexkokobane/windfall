@@ -553,7 +553,15 @@ export const handleShopUpdate = async (topic: string, shop: string, webhookReque
 			{'shop': shop},
 			{
 				'$set': {
-					'currencyCode': obj.currency
+					'currencyCode': obj.currency,
+					'billingAddress': {
+						'address1': obj.address1,
+						'address2': obj.address2,
+						'city': obj.city,
+						'zip': obj.zip,
+						'country': obj.country
+					},
+					'name': obj.name
 				}
 			}
 		)

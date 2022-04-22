@@ -128,7 +128,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 					'address1': shopData.billingAddress.address1,
 					'address2': shopData.billingAddress.address2,
 					'city': shopData.billingAddress.city,
-					'zip' shopData.billingAddress.zip,
+					'zip': shopData.billingAddress.zip,
 					'country': shopData.billingAddress.country
 				},
 				'metaDescription': shopData.description
