@@ -39,8 +39,9 @@ settings.get('/', checkAuth, forCommon, async (req, res) => {
 	}
 })
 
-settings.get('/email', checkAuth, forCommon, async (req, res) => {
+settings.get('/email', async (req, res) => {
 	try{
+		return res.render("pages/email-template", {layout: "layouts/main-main"})
 		const render: renderFor = [
 			{
 				"plan": "Main",

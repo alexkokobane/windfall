@@ -6214,4 +6214,23 @@ $(document).ready(function(e){
 		})
 	}
 
+	//url === /settings/email
+	if(window.location.pathname === "/settings/email"){
+		const template = $("#template-frame").contents()
+		const whole = template.find("html").html()
+		const title = template.find("#email-title")
+		const logoLink = template.find("#email-logo-href")
+		const logoImg = template.find("#email-logo-img")
+		const heading = template.find("#email-heading")
+		const bannerLink = template.find("#email-banner-href")
+		const bannerImg = template.find("#email-banner-img")
+		const body = template.find("#email-body")
+		const discountCode = template.find("#email-discount-code")
+		const logoImgSmall = template.find("#email-logo-img-small")
+		const aboutShop = template.find("#email-about-text")
+		const shopLink = template.find("#email-button-link")
+		const addressBar = template.find("#email-address-bar")
+		console.log(whole)
+	}
+
 })
