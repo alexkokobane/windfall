@@ -1041,6 +1041,14 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 	}
 })
 
+data.get('/email/settings', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+	} catch(err: any){
+		return res.status(403).send("Couldn't fetch email settings.")
+	}
+})
+
 data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
