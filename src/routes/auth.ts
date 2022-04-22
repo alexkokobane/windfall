@@ -95,6 +95,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 							name
 							currencyCode
 							email
+							description
 							id
 							plan {
 								displayName 
@@ -103,7 +104,11 @@ auth.get('/callback', async (req: Request, res: Response) => {
 							}
 							url
 							billingAddress {
-								formatted(withCompany:true, withName :true)
+								address1
+								address2
+								city
+								zip
+								country
 							}
 						}
 					}`
@@ -119,7 +124,14 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				'shopifyPlan': shopData.plan.displayName,
 				'id': shopData.id,
 				'url': shopData.url,
-				'billingAddress': shopData.billingAddress.formatted
+				'billingAddress': {
+					'address1': shopData.billingAddress.address1,
+					'address2': shopData.billingAddress.address2,
+					'city': shopData.billingAddress.city,
+					'zip' shopData.billingAddress.zip,
+					'country': shopData.billingAddress.country
+				},
+				'metaDescription': shopData.description
 			})
 			storeShop.save()
 			//console.log("check point 1")
