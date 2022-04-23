@@ -6235,7 +6235,39 @@ $(document).ready(function(e){
 		const aboutShop = template.find("#email-about-text")
 		const shopLink = template.find("#email-button-link")
 		const addressBar = template.find("#email-address-bar")
-		console.log(body.text())
+
+		//console.log(body.text())
+
+		$.ajax({
+			url: "/data/email/settings",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				shopNameHead.text(data.name)
+				shopNameBody.text("About "+data.name)
+				title.text(data.name)
+				aboutShop.text(data.description)
+				addressBar.empty().html(`
+					${data.address.address1}
+					<br>
+					${data.address.address2}
+					${data.address.address2 ? "<br>" : ""}
+					${data.address.city}
+					<br>
+					${data.address.zip}
+					<br>
+					${data.address.country}
+				`)
+
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}	
+			}
+		})
 	}
 
 })

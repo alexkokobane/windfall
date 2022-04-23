@@ -1044,6 +1044,14 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 data.get('/email/settings', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop =await Shop.findOne({'shop': session.shop})
+		const results = {
+			'name': shop.name,
+			'address': shop.billingAddress,
+			'description': shop.metaDescription,
+			'url': shop.shopUrl
+		}
+		res.json(results)
 	} catch(err: any){
 		return res.status(403).send("Couldn't fetch email settings.")
 	}

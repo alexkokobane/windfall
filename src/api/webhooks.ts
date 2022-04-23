@@ -559,7 +559,7 @@ export const handleShopUpdate = async (topic: string, shop: string, webhookReque
 						'address2': obj.address2,
 						'city': obj.city,
 						'zip': obj.zip,
-						'country': obj.country
+						'country': obj.country_name
 					},
 					'name': obj.name
 				}
