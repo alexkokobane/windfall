@@ -6236,6 +6236,50 @@ $(document).ready(function(e){
 		const shopLink = template.find("#email-button-link")
 		const addressBar = template.find("#email-address-bar")
 
+
+		// chunks
+		const chunk1 = `<!DOCTYPE html><html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+			<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+			<meta name="x-apple-disable-message-reformatting"><title id="email-title">`
+		const chunk2 = `</title><!--[if mso]><style>table {border-collapse:collapse;border-spacing:0;border:none;margin:0;}
+			div, td {padding:0;}div {margin:0 !important;}</style><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch>
+			</o:OfficeDocumentSettings></xml></noscript><![endif]--><style>table, td, div, h1, p {font-family: Arial, sans-serif;
+			}div.col-sml {font-family:Arial,sans-serif;font-size:14px;color:#363636;}div.col-lge {font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;
+			}@media screen and (max-width: 530px) {.unsub {display: block;padding: 8px;margin-top: 14px;border-radius: 6px;background-color: #555555;text-decoration: none !important;
+			font-weight: bold;}	.col-lge {max-width: 100% !important;}}	@media screen and (min-width: 531px) {.col-sml {max-width: 27% !important;
+			}.col-lge {	max-width: 73% !important;}}/*table, td {border:2px solid #000000 !important;}*/</style></head><body style="margin:0;padding:0;word-spacing:normal;background-color:#ffffff;">
+			<div role="article" aria-roledescription="email" lang="en" style="text-size-adjust:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background-color:#ffffff;">
+			<table role="presentation" style="width:100%;border:none;border-spacing:0;"><tr><td align="center" style="padding:0;">
+			<!--[if mso]><table role="presentation" align="center" style="width:600px;"><tr><td><![endif]-->
+			<table role="presentation" style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;">
+			<tr><td align="center" style="padding:0;"><table role="presentation" style="width:100%;border:none;border-spacing:0; background-color: #ffffff;">
+			<tr><td align="left" style="padding:20px 0px 5px 30px;text-align:left; width: 160px; max-width:95%;"><a id="email-logo-href" href="`
+		const chunk3 = `" style="text-decoration:none;"><p id="email-name-head" style="margin-top:0; font-size: 26px; line-height: 32px; color: #363636;">`
+		const chunk4 = `</p></a></td><td align="right" style="padding:10px 5px 5px 5px;margin: 0; width: 5%;font-size:13 px; line-height:1.5em;">
+			<p style="margin:0;text-align:center; font-size:2.5em;font-weight:bold;">&nbsp;</p></td>
+			</tr></table></td></tr><tr><td style="padding:30px 30px 10px 30px;background-color:#ffffff;">
+			<h1 id="email-heading" style="margin-top:0;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;">`
+		const chunk5 = `</h1></td></tr><tr><td style="padding:30px;background-color:#ffffff;"><p id="email-salutations" style="margin:0;">`
+		const chunk6 = `</p><br><p id="email-body" style="margin:0;">`
+		const chunk7 = `</p></td></tr><tr><td align="center" style="padding: 15px 30px 15px 30px;margin:0;background-color: #ffffff;">
+			<p style="margin:0;text-align: center;font-size: 1em; line-height: 1.5em;color: #000000; padding: 10px;">Your discount code</p>
+			<p id="email-discount-code" style="margin:0;font-size:32px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;padding: 10px;border: 1px #111111 solid; background-color: #fefefa;">`
+		const chunk8 = `</p></td></tr><tr><td style="padding:35px 30px 11px 30px;font-size:0;background-color:#ffffff;border-bottom:1px solid #f0f0f5;border-color:rgba(201,201,207,.35);">
+			<!--[if mso]><table role="presentation" width="100%"><tr><td style="width:145px;" align="left" valign="top">
+			<![endif]--><div class="col-sml" style="display:inline-block;width:100%;max-width:145px;vertical-align:top;text-align:left;">
+			<p id="email-name-body" style="margin-top:0; font-size: 22px; line-height: 28px;">`
+		const chunk9 = `</p></div><!--[if mso]></td><td style="width:395px;padding-bottom:20px;" valign="top"><![endif]-->
+			<div class="col-lge" style="display:inline-block;width:100%;max-width:395px;vertical-align:top;padding-bottom:20px;">
+			<p id="email-about-text" style="margin-top:0;margin-bottom:12px;">`
+		const chunk10 = `</p><p style="margin:0;"><a id="email-button-href" href="`
+		const chunk11 = `" style="text-decoration: none; padding: 10px 25px; color: #000000; border-radius: 4px; border: 2px #000000 solid; display:inline-block; mso-padding-alt:0;text-underline-color:#ff3884">
+			<!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span style="mso-text-raise:10pt;font-weight:bold;">Shop now</span><!--[if mso]>
+			<i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]--></a></p>
+			</div><!--[if mso]></td></tr></table><![endif]--></td></tr><tr><td style="padding:30px;text-align:left;font-size:12px;color:#0f0f0f;">
+			<p id="email-address-bar" style="margin:0;line-height:20px;padding: 10px 0px 0px 0px">`
+		const chunk12 = `</p></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></div></body></html>`
+
+
 		console.log(aboutShop.text())
 
 		$.ajax({
@@ -6273,6 +6317,31 @@ $(document).ready(function(e){
 				// On the db i'm going to submit a JSON doc
 				// the doc will be separated into chincks of static and dynamic strings
 				// theis chunks will be compiled in the serside everytime a gift is sent
+				const dynamicEmail = {
+					"chunk1": chunk1,
+					"title": title.text(),
+					"chunk2": chunk2,
+					"link1": logoLink.text(),
+					"chunk3": chunk3,
+					"nameHead": shopNameHead.text(),
+					"chunk4": chunk4,
+					"heading": heading.text(),
+					"chunk5": chunk5,
+					"salutations": "Hi,",
+					"chunk6": chunk6,
+					"body": body.text(),
+					"chunk7": chunk7,
+					"discountCode": "",
+					"chunk8": chunk8,
+					"nameBody": shopNameBody.text(),
+					"chunk9": chunk9,
+					"aboutShop": aboutShop.text(),
+					"chunk10": chunk10,
+					"link2": shopLink.text(),
+					"chunk11": chunk11,
+					"address": addressBar.html(),
+					"chunk12": chunk12
+				}
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

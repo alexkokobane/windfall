@@ -42,6 +42,10 @@ settings.get('/', checkAuth, forCommon, async (req, res) => {
 settings.get('/email', checkAuth, forCommon, async (req, res) => {
 	try{
 		//return res.render("pages/email-template", {layout: "layouts/main-main"})
+
+		// dont forget to demonstrate the hacker screen function to your followers 
+		// and tag sam esmail
+
 		const render: renderFor = [
 			{
 				"plan": "Main",
