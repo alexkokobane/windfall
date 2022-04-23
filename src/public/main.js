@@ -6236,7 +6236,7 @@ $(document).ready(function(e){
 		const shopLink = template.find("#email-button-link")
 		const addressBar = template.find("#email-address-bar")
 
-		//console.log(body.text())
+		console.log(aboutShop.text())
 
 		$.ajax({
 			url: "/data/email/settings",
@@ -6246,7 +6246,9 @@ $(document).ready(function(e){
 				shopNameHead.text(data.name)
 				shopNameBody.text("About "+data.name)
 				title.text(data.name)
+				console.log(data.description)
 				aboutShop.text(data.description)
+				console.log(aboutShop.text())
 				addressBar.empty().html(`
 					${data.address.address1}
 					<br>
@@ -6258,7 +6260,19 @@ $(document).ready(function(e){
 					<br>
 					${data.address.country}
 				`)
+				$("#HeadingInput").val(heading.text()).on("input", function(){
+					heading.text($(this).val())
+				})
+				$("#BodyInput").val(body.text()).on("input", function(){
+					body.text($(this).val())
+				})
+				$("#AboutInput").val(aboutShop.text()).on("input", function(){
+					aboutShop.text($(this).val())
+				})
 
+				// On the db i'm going to submit a JSON doc
+				// the doc will be separated into chincks of static and dynamic strings
+				// theis chunks will be compiled in the serside everytime a gift is sent
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
