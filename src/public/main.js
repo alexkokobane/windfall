@@ -6280,7 +6280,7 @@ $(document).ready(function(e){
 		const chunk12 = `</p></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></div></body></html>`
 
 
-		console.log(aboutShop.text())
+		//console.log(aboutShop.text())
 
 		$.ajax({
 			url: "/data/email/settings",
@@ -6290,9 +6290,9 @@ $(document).ready(function(e){
 				shopNameHead.text(data.name)
 				shopNameBody.text("About "+data.name)
 				title.text(data.name)
-				console.log(data.description)
+				logoLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
+				shopLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
 				aboutShop.text(data.description)
-				console.log(aboutShop.text())
 				addressBar.empty().html(`
 					${data.address.address1}
 					<br>
@@ -6304,8 +6304,8 @@ $(document).ready(function(e){
 					<br>
 					${data.address.country}
 				`)
-				$("#HeadingInput").val(heading.text()).on("input", function(){
-					heading.text($(this).val())
+				$("#HeadingInput").val(heading.attr("href")).on("input", function(){
+					heading.text($(this).val()+" [voucher amount].")
 				})
 				$("#BodyInput").val(body.text()).on("input", function(){
 					body.text($(this).val())
@@ -6314,14 +6314,11 @@ $(document).ready(function(e){
 					aboutShop.text($(this).val())
 				})
 
-				// On the db i'm going to submit a JSON doc
-				// the doc will be separated into chincks of static and dynamic strings
-				// theis chunks will be compiled in the serside everytime a gift is sent
 				const dynamicEmail = {
 					"chunk1": chunk1,
 					"title": title.text(),
 					"chunk2": chunk2,
-					"link1": logoLink.text(),
+					"link1": logoLink.attr("href"),
 					"chunk3": chunk3,
 					"nameHead": shopNameHead.text(),
 					"chunk4": chunk4,
@@ -6337,11 +6334,49 @@ $(document).ready(function(e){
 					"chunk9": chunk9,
 					"aboutShop": aboutShop.text(),
 					"chunk10": chunk10,
-					"link2": shopLink.text(),
+					"link2": shopLink.attr("href"),
 					"chunk11": chunk11,
 					"address": addressBar.html(),
 					"chunk12": chunk12
 				}
+
+				$("#SaveEmailTempBtn").click(function(){
+					e.preventDefault()
+
+					$(this).addClass("Polaris-Button--loading")
+					$("#SaveEmailTempBtnText").before(`
+						<span id="SaveEmailTempBtnSpinner" class="Polaris-Button__Spinner">
+							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+								</svg>
+							</span>
+							<span role="status">
+								<span class="Polaris-VisuallyHidden">Loading</span>
+							</span>
+						</span>
+					`)
+
+					$.ajax({
+						url: "/settings/email/template/save",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(dynamicEmail),
+						success: function(data){
+							return alert(data)
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+							$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
+							$("#SaveEmailTempBtnSpinner").remove()
+							return alert(data.responseText)
+						}
+					})
+				})
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){

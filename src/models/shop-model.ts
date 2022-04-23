@@ -64,6 +64,7 @@ const ShopSchema = new mongoose.Schema({
 	longTermGoals: {
 		totalRevenue: Number
 	},
+	emailTemplate: Object,
 	lastOrderPaidId: Number,
 	createdAt: {
 		type: Date,

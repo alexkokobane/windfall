@@ -1,15 +1,28 @@
 import express from 'express'
+import Shopify from '@shopify/shopify-api'
 import checkAuth from '../utils/middlewares/check-auth'
+import detectScope from '../utils/middlewares/detect-scope'
 import { 
 	forCommon, 
-	forCommonApi,
 	forFreebie, 
 	forAppetizer, 
 	forMain, 
+	forCommonApi,
 	forAppetizerApi, 
 	forFreebieApi, 
 	forMainApi 
 } from '../utils/middlewares/price-plan'
+import { 
+	Shop, 
+	Long, 
+	Grand, 
+	SavedLong, 
+	Customers, 
+	Quota, 
+	Rapid, 
+	RapidChild, 
+	SavedRapid 
+} from '../models/shop-model'
 import { divide, renderFor } from '../utils/render-divider'
 
 const settings = express.Router()
@@ -66,6 +79,25 @@ settings.get('/email', checkAuth, forCommon, async (req, res) => {
 		divide(req, res, render)
 	} catch(err: any){
 		console.log(err)
+	}
+})
+
+settings.post('/email/template/save', checkAuth, forCommon, async (req, res) => {
+	try {
+		const data = req.body.dynamicEmail
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const update = await Shop.updateOne(
+			{'shop': session.shop},
+			{
+				'$set': {
+					'emailTemplate': data
+				}
+			}
+		)
+
+		res.send("Template saved successfully!")
+	} catch(err: any){
+		return res.status(400).send("Error! Couldn't save template, if this error persists contact the developer.")
 	}
 })
 
