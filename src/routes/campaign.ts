@@ -1,5 +1,7 @@
 import express from 'express'
 import Shopify from '@shopify/shopify-api'
+import formData from 'form-data'
+import Mailgun from 'mailgun.js'
 import { Shop, Long, Grand, SavedLong, Customers, Quota, Rapid, RapidChild, SavedRapid } from '../models/shop-model'
 import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import { deleteIncompleteLogin } from '../utils/middlewares/experimental'
@@ -18,7 +20,13 @@ import { divide, renderFor } from '../utils/render-divider'
 import { generateDiscountCode } from '../utils/functions'
 import { quota, quotaApi } from '../utils/middlewares/quota'
 
+const { MAIL_DOMAIN, MAIL_KEY } = process.env
 const campaign = express.Router()
+const mailgun = new Mailgun(formData)
+const mg = mailgun.client({
+	username: MAIL_DOMAIN,
+	key: MAIL_KEY
+})
 
 campaign.get('/giveaways', checkAuth, async (req, res) => {
 	try{
@@ -586,6 +594,7 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
 		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop,
@@ -676,26 +685,59 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 			if(!logger){
 				errorCounter.push("something")
 			}
-
-			const updateWinner = await Long.updateOne(
-				{
-					'shop': session.shop,
-					'id': giveawayId,
-					'winners.prizeId': item.prizeId
-				},
-				{
-					'$set': {
-						'winners.$.discountCode': disCode
+			try {
+				const updateWinner = await Long.updateOne(
+					{
+						'shop': session.shop,
+						'id': giveawayId,
+						'winners.prizeId': item.prizeId
+					},
+					{
+						'$set': {
+							'winners.$.discountCode': disCode
+						}
 					}
-				}
-			)
+				)
 
-			console.log(updateWinner)
+				console.log(updateWinner)
+			} catch(err: any){
+				console.log(err)
+			}
 		})
 		console.log(errorCounter)
 		if(errorCounter.length !== 0){
 			return res.status(403).send("Error! Please try again and if this persists contact support.")
 		}
+		const mailerSetUp = await Long.findOne({'id': giveawayId})
+		mailerSetUp.winners.forEach(async (item: any) => {
+			const emailObj: any = shop.emailTemplate
+
+			const code = item.discountCode
+			const names = item.entrantName
+			const email: string = item.entrantEmail
+			const voucher = item.voucherPrize
+			const currencyCode = giveaway.currencyCode
+			const username = shop.shop.split(".")[0]
+
+			emailObj.heading = emailObj.heading+voucher+" "+currencyCode
+			emailObj.salutations = "Hi "+names+","
+			emailObj.discountCode = code
+
+			const salute: string = emailObj.heading
+			let wholeMail: string = ""
+			Object.values(emailObj).forEach((item: any) => {
+				//console.log("Iter")
+				wholeMail = wholeMail.concat(item)
+			})
+			
+			const sender = await mg.messages.create(MAIL_DOMAIN, {
+				from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
+				to: email,
+				subject: salute,
+				html: wholeMail
+			})
+			console.log(sender)
+		})
 
 		giveaway.entries.forEach(async (item: any) => {
 			try{
@@ -2302,10 +2344,36 @@ campaign.get('/gift/testflight', checkApiAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const event = await Long.findOne({'shop': session.shop, 'id': 381274750})
 		const shop = await Shop.findOne({'shop': session.shop})
-		const emailObj = shop.emailTemplate
+		const emailObj: any = shop.emailTemplate
 
-		res.json(Object.values(emailObj))
+		const code = generateDiscountCode(6)
+		const names = event.winners[0].entrantName
+		const email: string = event.winners[0].entrantEmail
+		const voucher = event.winners[0].voucherPrize
+		const currencyCode = event.currencyCode
+		const username = shop.shop.split(".")[0]
+
+		emailObj.heading = emailObj.heading+voucher+" "+currencyCode
+		emailObj.salutations = "Hi "+names+","
+		emailObj.discountCode = code
+
+		const salute: string = emailObj.heading
+		let wholeMail: string = ""
+		Object.values(emailObj).forEach((item: any) => {
+			//console.log("Iter")
+			wholeMail = wholeMail.concat(item)
+		})
+		
+		const sender = await mg.messages.create(MAIL_DOMAIN, {
+			from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
+			to: email,
+			subject: salute,
+			html: wholeMail
+		})
+		console.log(sender)
+		res.send(wholeMail)
 	} catch(err: any){
+		console.log(err)
 		return res.status(403).send(`Encountered an error: ${err}`)
 	}
 })
