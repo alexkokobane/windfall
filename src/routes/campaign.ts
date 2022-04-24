@@ -2297,6 +2297,19 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 	}
 })
 
+campaign.get('/gift/testflight', checkApiAuth, async (req, res) => {
+	try{
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const event = await Long.findOne({'shop': session.shop, 'id': 381274750})
+		const shop = await Shop.findOne({'shop': session.shop})
+		const emailObj = shop.emailTemplate
+
+		res.json(Object.values(emailObj))
+	} catch(err: any){
+		return res.status(403).send(`Encountered an error: ${err}`)
+	}
+})
+
 
 // An event
 

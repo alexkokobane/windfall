@@ -6233,7 +6233,7 @@ $(document).ready(function(e){
 		const discountCode = template.find("#email-discount-code")
 		//const logoImgSmall = template.find("#email-logo-img-small")
 		const aboutShop = template.find("#email-about-text")
-		const shopLink = template.find("#email-button-link")
+		const shopLink = template.find("#email-button-href")
 		const addressBar = template.find("#email-address-bar")
 
 
@@ -6304,7 +6304,7 @@ $(document).ready(function(e){
 					<br>
 					${data.address.country}
 				`)
-				$("#HeadingInput").val(heading.attr("href")).on("input", function(){
+				$("#HeadingInput").val(heading.text().split("[")[0]).on("input", function(){
 					heading.text($(this).val()+" [voucher amount].")
 				})
 				$("#BodyInput").val(body.text()).on("input", function(){
@@ -6322,7 +6322,7 @@ $(document).ready(function(e){
 					"chunk3": chunk3,
 					"nameHead": shopNameHead.text(),
 					"chunk4": chunk4,
-					"heading": heading.text(),
+					"heading": heading.text().split("[")[0],
 					"chunk5": chunk5,
 					"salutations": "Hi,",
 					"chunk6": chunk6,
@@ -6340,7 +6340,9 @@ $(document).ready(function(e){
 					"chunk12": chunk12
 				}
 
-				$("#SaveEmailTempBtn").click(function(){
+				console.log(shopLink.attr("href"))
+
+				$("#SaveEmailTempBtn").click(function(e){
 					e.preventDefault()
 
 					$(this).addClass("Polaris-Button--loading")
@@ -6356,13 +6358,16 @@ $(document).ready(function(e){
 							</span>
 						</span>
 					`)
+					//console.log(dynamicEmail)
 
 					$.ajax({
 						url: "/settings/email/template/save",
 						type: "POST",
 						contentType: "application/json",
-						data: JSON.stringify(dynamicEmail),
+						data: JSON.stringify({dynamicEmail}),
 						success: function(data){
+							$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
+							$("#SaveEmailTempBtnSpinner").remove()
 							return alert(data)
 						},
 						error: function(data){

@@ -94,7 +94,8 @@ settings.post('/email/template/save', checkAuth, forCommon, async (req, res) => 
 				}
 			}
 		)
-
+		console.log(data)
+		console.log(update)
 		res.send("Template saved successfully!")
 	} catch(err: any){
 		return res.status(400).send("Error! Couldn't save template, if this error persists contact the developer.")
