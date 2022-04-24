@@ -69,8 +69,7 @@ $(document).ready(function(e){
 					for(let i = 0; weeks[0].length + i !== 7; i++){
 						one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 					}
-					data
-					//console.log(data)
+					console.log(data)
 					weeks[0].forEach(function(item){
 						//console.log(data.includes(item.date))
 						//console.log(item.date)
@@ -869,22 +868,21 @@ $(document).ready(function(e){
 				})
 
 				let tableRowOne = `<tr class="Polaris-DatePicker__Week">${one}</tr>`
-						let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
-						let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
-						let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
-						let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
-						let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
+				let tableRowTwo = `<tr class="Polaris-DatePicker__Week">${two}</tr>`
+				let tableRowThree = `<tr class="Polaris-DatePicker__Week">${three}</tr>`
+				let tableRowFour = `<tr class="Polaris-DatePicker__Week">${four}</tr>`
+				let tableRowFive = `<tr class="Polaris-DatePicker__Week">${five}</tr>`
+				let tableRowSix = `<tr class="Polaris-DatePicker__Week">${six}</tr>`
 
-						$(".eventCalendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
-						$(".eventCalendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
+				$(".eventCalendarCaption").text(scheduler(num).month+" "+scheduler(num).year)
+				$(".eventCalendarBody").html(tableRowOne.concat(tableRowTwo, tableRowThree, tableRowFour, tableRowFive, tableRowSix))
 			} else{
 				$.ajax({
 					url: "/data/all-event-dates",
 					type: "GET",
 					contentType: "application/json",
 					success: function(data){
-						data
-						//console.log(data)
+						console.log(data)
 						weeks[0].forEach(function(item){
 							//console.log(data.includes(item.date))
 							//console.log(item.date)
@@ -2276,8 +2274,7 @@ $(document).ready(function(e){
 		eventCalendar()
 	}
 
-	//url == /campaign/long/new
-
+	//url === /campaign/long/new
 	if(window.location.pathname === "/campaign/long/new"){
 		$("#StartDate").attr("min", new Date().toISOString().split('T')[0])
 		$("#EndDate").attr("min", new Date().toISOString().split('T')[0])

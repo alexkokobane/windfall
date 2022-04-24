@@ -1145,7 +1145,12 @@ campaign.post('/rapid/validator', checkApiAuth, async (req, res) => {
 		})
 		const rapid = await RapidChild.find({'shop': session.shop})
 		rapid.forEach((item: any) => {
-			allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+			//allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+			for(let i = 0; item.startDate <= item.endDate; i++){
+				//console.log(startDate)
+				allEventsEver.push(new Date(item.startDate).toLocaleDateString('en-ZA'))
+				item.startDate = Number(new Date(item.startDate))+(1000*60*60*24*i)
+			}
 		})
 		let clashingDates: any[] = []
 		if(allEventsEver.length !== 0){
