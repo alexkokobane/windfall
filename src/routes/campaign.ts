@@ -737,10 +737,6 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 		if(errorCounter.length !== 0){
 			return res.status(403).send("Error! Please try again and if this persists contact support.")
 		}
-		const mailerSetUp = await Long.findOne({'id': giveawayId})
-		mailerSetUp.winners.forEach(async (item: any) => {
-
-		})
 
 		giveaway.entries.forEach(async (item: any) => {
 			try{
@@ -1512,6 +1508,7 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
 		const giveaway = await RapidChild.findOne(
 			{
 				'shop': session.shop,
@@ -1638,6 +1635,36 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 			}
 		})
 
+		// send email
+		const emailObj: any = shop.emailTemplate
+
+		const code = disCode
+		const names = giveaway.winner.entrantName
+		const email: string = giveaway.winner.entrantEmail
+		const voucher = giveaway.winner.voucherPrize
+		const currencyCode = giveaway.currencyCode
+		const username = shop.shop.split(".")[0]
+		console.log(code)
+		emailObj.heading = emailObj.heading+voucher+" "+currencyCode
+		emailObj.salutations = "Hi "+names+","
+		emailObj.discountCode = code
+
+		const salute: string = emailObj.heading
+		let wholeMail: string = ""
+		Object.values(emailObj).forEach((item: any) => {
+			//console.log("Iter")
+			wholeMail = wholeMail.concat(item)
+		})
+				
+		const sender = await mg.messages.create(MAIL_DOMAIN, {
+			from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
+			to: email,
+			subject: salute,
+			html: wholeMail
+		})
+		console.log(sender)
+
+		// update states
 		const updateState = await RapidChild.updateOne(
 			{
 				'shop': session.shop,
