@@ -699,6 +699,35 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 					}
 				)
 
+				// send email
+				const emailObj: any = shop.emailTemplate
+
+				const code = disCode
+				const names = item.entrantName
+				const email: string = item.entrantEmail
+				const voucher = item.voucherPrize
+				const currencyCode = giveaway.currencyCode
+				const username = shop.shop.split(".")[0]
+				console.log(code)
+				emailObj.heading = emailObj.heading+voucher+" "+currencyCode
+				emailObj.salutations = "Hi "+names+","
+				emailObj.discountCode = code
+
+				const salute: string = emailObj.heading
+				let wholeMail: string = ""
+				Object.values(emailObj).forEach((item: any) => {
+					//console.log("Iter")
+					wholeMail = wholeMail.concat(item)
+				})
+				
+				const sender = await mg.messages.create(MAIL_DOMAIN, {
+					from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
+					to: email,
+					subject: salute,
+					html: wholeMail
+				})
+				console.log(sender)
+
 				console.log(updateWinner)
 			} catch(err: any){
 				console.log(err)
@@ -710,33 +739,7 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 		}
 		const mailerSetUp = await Long.findOne({'id': giveawayId})
 		mailerSetUp.winners.forEach(async (item: any) => {
-			const emailObj: any = shop.emailTemplate
 
-			const code = item.discountCode
-			const names = item.entrantName
-			const email: string = item.entrantEmail
-			const voucher = item.voucherPrize
-			const currencyCode = giveaway.currencyCode
-			const username = shop.shop.split(".")[0]
-
-			emailObj.heading = emailObj.heading+voucher+" "+currencyCode
-			emailObj.salutations = "Hi "+names+","
-			emailObj.discountCode = code
-
-			const salute: string = emailObj.heading
-			let wholeMail: string = ""
-			Object.values(emailObj).forEach((item: any) => {
-				//console.log("Iter")
-				wholeMail = wholeMail.concat(item)
-			})
-			
-			const sender = await mg.messages.create(MAIL_DOMAIN, {
-				from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
-				to: email,
-				subject: salute,
-				html: wholeMail
-			})
-			console.log(sender)
 		})
 
 		giveaway.entries.forEach(async (item: any) => {
