@@ -2563,12 +2563,12 @@ $(document).ready(function(e){
 					dates.push(new Date(startDate).toLocaleDateString('en-ZA'))
 					startDate = Number(new Date(data.startDate))+(1000*60*60*24*i)
 				}
-				console.log(dates)
+				//console.log(dates)
 				eventCalendar(dates)
 				$("#WinnerBody").html(`
 					<p>This is where your winners will display after the run of the giveaway.</p>
 				`)
-				console.log(data.id)
+				//console.log(data.id)
 				if(data.winnersGifted === false && data.winnersChosen === true){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){

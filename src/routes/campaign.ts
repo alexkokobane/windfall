@@ -2227,6 +2227,7 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 			return res.status(404).send("This giveaway does not exist")
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const shop = await Shop.findOne({'shop': session.shop})
 		const giveaway = await Grand.findOne(
 			{
 				'shop': session.shop,
@@ -2330,6 +2331,34 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 					}
 				}
 			)
+
+			const emailObj: any = shop.emailTemplate
+
+			const code = disCode
+			const names = item.entrantName
+			const email: string = item.entrantEmail
+			const voucher = item.voucherPrize
+			const currencyCode = giveaway.currencyCode
+			const username = shop.shop.split(".")[0]
+			console.log(code)
+			emailObj.heading = "Grand prize! "+emailObj.heading+voucher+" "+currencyCode
+			emailObj.salutations = "Hi "+names+","
+			emailObj.discountCode = code
+
+			const salute: string = emailObj.heading
+			let wholeMail: string = ""
+			Object.values(emailObj).forEach((item: any) => {
+				//console.log("Iter")
+				wholeMail = wholeMail.concat(item)
+			})
+				
+			const sender = await mg.messages.create(MAIL_DOMAIN, {
+				from: `${shop.name} <${username}@${MAIL_DOMAIN}>`,
+				to: email,
+				subject: salute,
+				html: wholeMail
+			})
+			console.log(sender)
 
 			console.log(updateWinner)
 		})
