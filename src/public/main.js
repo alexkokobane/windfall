@@ -31,7 +31,7 @@ $(document).ready(function(e){
 	
 					aMonth.push({
 						"day": firstDay.getDay(),
-						"date": firstDay.toLocaleDateString('en-ZA')
+						"date": firstDay.toISOString()
 					})
 					daySoFar = today.raw.getDate()-i
 					firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
@@ -1656,6 +1656,9 @@ $(document).ready(function(e){
 				}
 			}
 		})		
+	})
+	$("#GetTutorial").click(function(){
+		location.href="#"
 	})
 
 	//url == /

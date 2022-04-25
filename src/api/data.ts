@@ -1025,7 +1025,7 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 			let start = Number(new Date(item.startDate))
 			let end = Number(new Date(item.endDate))
 			for(let i = 0; start <= end; i++){
-				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+				allEventsEver.push(new Date(start).toISOString())
 				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
 			}
 		})
@@ -1033,8 +1033,8 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 		rapid.forEach((item: any) => {
 			let start = Number(new Date(item.startDate))
 			let end = Number(new Date(item.endDate))
-			for(let i = 0; start <= end; i++){
-				allEventsEver.push(new Date(start).toLocaleDateString('en-ZA'))
+			for(let i = 1; start <= end; i++){
+				allEventsEver.push(new Date(start).toISOString())
 				start = Number(new Date(item.startDate))+(1000*60*60*24*i)
 			}
 		})
