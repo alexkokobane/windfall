@@ -31,7 +31,7 @@ $(document).ready(function(e){
 	
 					aMonth.push({
 						"day": firstDay.getDay(),
-						"date": firstDay.toISOString()
+						"date": firstDay.toLocaleDateString('en-ZA')
 					})
 					daySoFar = today.raw.getDate()-i
 					firstDay = new Date(Number(today.raw)-(1000*60*60*24*daySoFar))
@@ -63,13 +63,16 @@ $(document).ready(function(e){
 				type: "GET",
 				contentType: "application/json",
 				success: function(data){
+					data.forEach((item, index, arr) => {
+						return arr[index] = new Date(item).toLocaleDateString('en-ZA')
+					})
 					const weeks = allocateWeeks()
 					let one = ""; let two = ""; let three = ""; let four = ""; let five = ""; let six = "";
 			
 					for(let i = 0; weeks[0].length + i !== 7; i++){
 						one = one.concat(`<td class="Polaris-DatePicker__EmptyDayCell"></td>`)
 					}
-					console.log(data)
+					//console.log(data)
 					weeks[0].forEach(function(item){
 						//console.log(data.includes(item.date))
 						//console.log(item.date)
@@ -882,7 +885,10 @@ $(document).ready(function(e){
 					type: "GET",
 					contentType: "application/json",
 					success: function(data){
-						console.log(data)
+						data.forEach((item, index, arr) => {
+							return arr[index] = new Date(item).toLocaleDateString('en-ZA')
+						})
+						//console.log(data)
 						weeks[0].forEach(function(item){
 							//console.log(data.includes(item.date))
 							//console.log(item.date)
