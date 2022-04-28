@@ -8,7 +8,7 @@ import { generateDiscountCode, newSubs } from '../utils/functions'
 
 const gdpr = express.Router()
 
-function verifyWebhookRequest(req: Request, res: Response, next: NextFunction) {
+async function verifyWebhookRequest(req: Request, res: Response, next: NextFunction) {
 	try {
 		const generatedHash = crypto.createHmac('SHA256', Shopify.Context.API_SECRET_KEY).update(JSON.stringify(req.body), 'utf8').digest('base64');
 		const hmac = req.header('X-Shopify-Hmac-SHA256'); // Equal to 'X-Shopify-Hmac-Sha256' at time of coding

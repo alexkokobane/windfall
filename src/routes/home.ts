@@ -86,6 +86,10 @@ home.get('/progress', checkAuth, forMain, async (req, res) => {
 	}
 })
 
+home.get('/tutorial', checkAuth, async (req, res) => {
+	
+})
+
 home.get('/test',  async (req, res) => {
 	res.render('pages/campaign-edit', {layout: 'layouts/main-starter'})
 })
