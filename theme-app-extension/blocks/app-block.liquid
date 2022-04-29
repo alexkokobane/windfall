@@ -1,13 +1,34 @@
-<div id="windfall-app-boxier">
-	{%- if block.settings.image_1 -%}
-		<img src="{{ block.settings.image_1 | image_url: width: 1024 }}" alt="{{ block.settings.image_1.alt }}" loading="lazy" width="{{ block.settings.image_1.width }}" height="{{ block.settings.image_1.height }}">
-	{%- endif -%}
-	<div id="windfall-app-promo-content">
+<span id="windfall-app-boxier" style="Background: {{ block.settings.bg_color }};">
+	<div id="windfall-app-promo-content" style="text-align: {% if block.settings.text_align == "left"  %}
+				left
+			{%- elsif block.settings.text_align == "center" -%}
+				center
+			{%- elsif block.settings.text_align == "right" -%}
+				right
+			{% else %}
+				left
+			{% endif %};">
 		{%- if block.settings.headline -%}
-			<h2 id="windfall-app-tagline" style="color: {{ block.settings.for_tagline }};">{{ block.settings.headline }}</h2>
+			<h2 id="windfall-app-tagline" 
+			{%- if block.settings.text_flash == "true" -%}
+				class="blink_me"
+			{%- endif -%}
+			style="color: {{ block.settings.for_tagline }}; font-size: {% if block.settings.text_size =="xs" %}
+				0.5em
+			{%- elsif block.settings.text_size == "s" -%}
+				1em
+			{%- elsif block.settings.text_size == "m" -%}
+				1.5em
+			{%- elsif block.settings.text_size == "l" -%}
+				2em
+			{%- elsif block.settings.text_size == "xl" -%}
+				4em
+			{% else %}
+				1.5em
+			{% endif %};">{{ block.settings.headline }}</h2>
 		{%- endif -%}
 	</div>	
-</div>
+</span>
 
 {% schema %}
 	{
@@ -16,21 +37,86 @@
 		"stylesheet": "promo.css",
 		"settings": [
 			{
-				"type": "image_picker",
-				"id": "image_1",
-				"label": "Background Promotional Photo"
+				"type": "color",
+				"id": "bg_color",
+				"label": "Background colour",
+				"default": "#000000"
 			},
 			{
 				"type": "text",
 				"id": "headline",
 				"label": "Tagline",
-				"default": "Stand a chance to win a voucher!"
+				"default": "Buy anything to stand chance to win a voucher!"
 			},
 			{
 				"type": "color",
 				"id": "for_tagline",
 				"label": "Tagline text colour",
 				"default": "#FFFFFF"
+			},
+			{
+				"type": "select",
+				"id": "text_size",
+				"label": "Text size",
+				"options": [
+					{
+						"value": "xs",
+						"label": "Extra small"
+					},
+					{
+						"value": "s",
+						"label": "Small"
+					},
+					{
+						"value": "m",
+						"label": "Medium"
+					},
+					{
+						"value": "l",
+						"label": "Large"
+					},
+					{
+						"value": "xl",
+						"label": "Extra large"
+					}
+				],
+				"default": "m"
+			},
+			{
+				"type": "select",
+				"id": "text_flash",
+				"label": "Text flash",
+				"options": [
+					{
+						"value": "true",
+						"label": "Yes"
+					},
+					{
+						"value": "false",
+						"label": "No"
+					}
+				],
+				"default": "false"
+			},
+			{
+				"type": "select",
+				"id": "text_align",
+				"label": "Text alignment",
+				"options": [
+					{
+						"value": "left",
+						"label": "Left"
+					},
+					{
+						"value": "center",
+						"label": "Center"
+					},
+					{
+						"value": "right",
+						"label": "Right"
+					}
+				],
+				"default": "left"
 			}
 		]
 	}

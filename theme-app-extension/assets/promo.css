@@ -1,36 +1,37 @@
 #windfall-app-boxier {
-	display: block;
-   	width: 100%;
-   	height: 100%;
-   	position: relative;
-}
-
-img {
-  display: block;
-  width: 100%;
-  height: 35vh;
-  object-fit: cover;
+	display: flex;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 2em;
+	overflow: hidden;
 }
 
 #windfall-app-promo-content {
-	position: absolute;
-    left: 50%;
-    top: 70%;
-    transform: translate(-50%,-30%);
 }
 
 #windfall-app-tagline {
-	font-size: 3em;
-	font-weight: bolder;
+	font-weight: 700;
+}
+
+.blink_me {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  	40% {
+		opacity: 1;
+  	}
+  	45% {
+		opacity: 0;
+  	}
+  	65% {
+		opacity: 0;
+  	}
+  	70% {
+		opacity: 1;
+  	}
 }
 
 @media (max-width: 48.0625em){
-	#windfall-app-promo-content {
-	    left: 20%;
-	    top:  40%;
-	    transform: translate(-20%,-30%);
-	}
-	img {
-		height: 80%;
-	}
 }
