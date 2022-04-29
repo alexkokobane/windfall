@@ -1666,8 +1666,27 @@ $(document).ready(function(e){
 	$("#GetTutorial").click(function(){
 		location.href="#"
 	})
+	$("#EmailBtn").click(function(){
+		location.href="/settings/email"
+	})
 
-	//url == /
+
+	$(".ThemeBtn").click(function(){
+		$.ajax({
+			url: '/shop',
+			success: function(data){
+				console.log(data)
+				location.href="https://"+data.shop+"/admin/themes"
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+	})	
 	$(".CreateLong").click(function(){
 		location.href="/campaign/long/new"
 	})
@@ -1677,6 +1696,8 @@ $(document).ready(function(e){
 	$(".ToGiveawayTemplates").click(function(){
 		location.href="/campaign/giveaways"
 	})
+
+	//url === /
 	if(window.location.pathname === "/"){
 		$.ajax({
 			url: "/analytics/all-revenue",

@@ -56,7 +56,6 @@ home.get('/', checkAuth, forCommon, async (req, res) => {
 
 home.get('/analytics', checkAuth, forMain, async (req, res) => {
 	try{
-		//res.send("Ha ha ha! Gotcha, this is a dummy URL.")
 		const render: renderFor = [
 			{
 				"plan": "Main",
@@ -90,8 +89,12 @@ home.get('/tutorial', checkAuth, async (req, res) => {
 	
 })
 
-home.get('/test',  async (req, res) => {
-	res.render('pages/campaign-edit', {layout: 'layouts/main-starter'})
+home.get('/test', checkAuth,  async (req, res) => {
+	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+	const client = new Shopify.Clients.Rest(session.shop, session.accessToken)
+	const themes = client.get({path: "themes"})
+
+	res.json(themes)
 })
 
 home.get('/test/api', async (req, res) => {
