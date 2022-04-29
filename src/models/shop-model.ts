@@ -66,10 +66,7 @@ const ShopSchema = new mongoose.Schema({
 	},
 	emailTemplate: {
 		data: Object,
-		lastUpdated: {
-			type: Date,
-			default: Date.now()
-		}
+		lastUpdated: Date
 	},
 	lastOrderPaidId: Number,
 	createdAt: {

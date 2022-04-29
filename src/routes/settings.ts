@@ -90,7 +90,8 @@ settings.post('/email/template/save', checkAuth, forCommon, async (req, res) => 
 			{'shop': session.shop},
 			{
 				'$set': {
-					'emailTemplate.data': data
+					'emailTemplate.data': data,
+					'emailTemplate.lastUpdated': new Date(Date.now())
 				}
 			}
 		)

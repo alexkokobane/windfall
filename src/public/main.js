@@ -6314,12 +6314,17 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				$("#EmailTemplateLastUpdate").empty().text(data.lastUpdated ? data.lastUpdated : "Never")
-				$("#EmailThemeBody").empty().html(`<iframe id="template-frame" 
-					title="Inline Frame Example" frameborder="0" border="0" 
-					cellspacing="0" style="border-style: none;width: 100%; height: 100vh;"
-					src="/files/responsive.html"></iframe>`
-				)
+				$(".ETLUSketch").remove()
+				$("#EmailTemplateLastUpdate").text(data.lastUpdated ? new Date(data.lastUpdated).toLocaleDateString()+" "+new Date(data.lastUpdated).toLocaleTimeString() : "Never")
+				if(data.heading){
+					heading.text(data.heading+"  [voucher amount].")
+				}
+				if(data.body){
+					body.text(data.body)
+				}
+				if(data.aboutShop){
+					aboutShop.text(data.aboutShop)
+				}
 				shopNameHead.text(data.name)
 				shopNameBody.text("About "+data.name)
 				title.text(data.name)
@@ -6347,32 +6352,6 @@ $(document).ready(function(e){
 					aboutShop.text($(this).val())
 				})
 
-				const dynamicEmail = {
-					"chunk1": chunk1,
-					"title": title.text(),
-					"chunk2": chunk2,
-					"link1": logoLink.attr("href"),
-					"chunk3": chunk3,
-					"nameHead": shopNameHead.text(),
-					"chunk4": chunk4,
-					"heading": heading.text().split("[")[0],
-					"chunk5": chunk5,
-					"salutations": "Hi,",
-					"chunk6": chunk6,
-					"body": body.text(),
-					"chunk7": chunk7,
-					"discountCode": "",
-					"chunk8": chunk8,
-					"nameBody": shopNameBody.text(),
-					"chunk9": chunk9,
-					"aboutShop": aboutShop.text(),
-					"chunk10": chunk10,
-					"link2": shopLink.attr("href"),
-					"chunk11": chunk11,
-					"address": addressBar.html(),
-					"chunk12": chunk12
-				}
-
 				console.log(shopLink.attr("href"))
 
 				$("#SaveEmailTempBtn").click(function(e){
@@ -6391,7 +6370,32 @@ $(document).ready(function(e){
 							</span>
 						</span>
 					`)
-					//console.log(dynamicEmail)
+					
+					const dynamicEmail = {
+						"chunk1": chunk1,
+						"title": title.text(),
+						"chunk2": chunk2,
+						"link1": logoLink.attr("href"),
+						"chunk3": chunk3,
+						"nameHead": shopNameHead.text(),
+						"chunk4": chunk4,
+						"heading": heading.text().split("[")[0],
+						"chunk5": chunk5,
+						"salutations": "Hi,",
+						"chunk6": chunk6,
+						"body": body.text(),
+						"chunk7": chunk7,
+						"discountCode": "",
+						"chunk8": chunk8,
+						"nameBody": shopNameBody.text(),
+						"chunk9": chunk9,
+						"aboutShop": aboutShop.text(),
+						"chunk10": chunk10,
+						"link2": shopLink.attr("href"),
+						"chunk11": chunk11,
+						"address": addressBar.html(),
+						"chunk12": chunk12
+					}
 
 					$.ajax({
 						url: "/settings/email/template/save",
@@ -6401,7 +6405,8 @@ $(document).ready(function(e){
 						success: function(data){
 							$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
 							$("#SaveEmailTempBtnSpinner").remove()
-							return alert(data)
+							alert(data)
+							location.reload()
 						},
 						error: function(data){
 							if(data.responseText === "Unauthorized"){

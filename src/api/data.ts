@@ -1049,17 +1049,32 @@ data.get('/all-event-dates', checkApiAuth, async (req, res) => {
 data.get('/email/settings', checkApiAuth, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
-		const shop =await Shop.findOne({'shop': session.shop})
+		const shop = await Shop.findOne({'shop': session.shop})
+		let heading: string | undefined = undefined
+		let body: string | undefined = undefined
+		let aboutShop: string | undefined = undefined
+		if(shop.emailTemplate.data){
+			heading = shop.emailTemplate.data.heading
+			body = shop.emailTemplate.data.body
+			aboutShop = shop.emailTemplate.data.aboutShop
+		}
 		const results = {
 			'name': shop.name,
 			'address': shop.billingAddress,
 			'description': shop.metaDescription,
 			'url': shop.shopUrl,
 			'shopDomain': shop.shop,
-			'lastUpdated': shop.emailTemplate.lastUpdated
+			'lastUpdated': shop.emailTemplate.lastUpdated,
+			heading,
+			body,
+			aboutShop
+			//'heading': shop.emailTemplate.data.heading ? shop.emailTemplate.data.heading : undefined,
+			//'body': shop.emailTemplate.data.body ? shop.emailTemplate.data.body : undefined,
+			//'aboutShop': shop.emailTemplate.data.aboutShop ? shop.emailTemplate.data.aboutShop : undefined
 		}
 		res.json(results)
 	} catch(err: any){
+		console.log(err)
 		return res.status(403).send("Couldn't fetch email settings.")
 	}
 })
