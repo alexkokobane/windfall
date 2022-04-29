@@ -6314,6 +6314,12 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
+				$("#EmailTemplateLastUpdate").empty().text(data.lastUpdated ? data.lastUpdated : "Never")
+				$("#EmailThemeBody").empty().html(`<iframe id="template-frame" 
+					title="Inline Frame Example" frameborder="0" border="0" 
+					cellspacing="0" style="border-style: none;width: 100%; height: 100vh;"
+					src="/files/responsive.html"></iframe>`
+				)
 				shopNameHead.text(data.name)
 				shopNameBody.text("About "+data.name)
 				title.text(data.name)

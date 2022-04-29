@@ -90,7 +90,7 @@ settings.post('/email/template/save', checkAuth, forCommon, async (req, res) => 
 			{'shop': session.shop},
 			{
 				'$set': {
-					'emailTemplate': data
+					'emailTemplate.data': data
 				}
 			}
 		)

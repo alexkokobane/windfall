@@ -700,7 +700,7 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 				)
 
 				// send email
-				const emailObj: any = shop.emailTemplate
+				const emailObj: any = shop.emailTemplate.data
 
 				const code = disCode
 				const names = item.entrantName
@@ -1641,7 +1641,7 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 		})
 
 		// send email
-		const emailObj: any = shop.emailTemplate
+		const emailObj: any = shop.emailTemplate.data
 
 		const code = disCode
 		const names = giveaway.winner.entrantName
@@ -2337,7 +2337,7 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 				}
 			)
 
-			const emailObj: any = shop.emailTemplate
+			const emailObj: any = shop.emailTemplate.data
 
 			const code = disCode
 			const names = item.entrantName

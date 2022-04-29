@@ -64,7 +64,13 @@ const ShopSchema = new mongoose.Schema({
 	longTermGoals: {
 		totalRevenue: Number
 	},
-	emailTemplate: Object,
+	emailTemplate: {
+		data: Object,
+		lastUpdated: {
+			type: Date,
+			default: Date.now()
+		}
+	},
 	lastOrderPaidId: Number,
 	createdAt: {
 		type: Date,

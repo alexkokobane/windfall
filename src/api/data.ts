@@ -1055,7 +1055,8 @@ data.get('/email/settings', checkApiAuth, async (req, res) => {
 			'address': shop.billingAddress,
 			'description': shop.metaDescription,
 			'url': shop.shopUrl,
-			'shopDomain': shop.shop
+			'shopDomain': shop.shop,
+			'lastUpdated': shop.emailTemplate.lastUpdated
 		}
 		res.json(results)
 	} catch(err: any){
