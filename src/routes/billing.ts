@@ -363,7 +363,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 								"plan": {
 									"appRecurringPricingDetails": {
 										"price": {
-											"amount": 19.0,
+											"amount": 0.0,
 											"currencyCode": "USD"
 										},
 										"interval": "EVERY_30_DAYS"
