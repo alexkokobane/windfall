@@ -948,7 +948,7 @@ analytics.get('/lucrative-templates', checkApiAuth, forMainApi, async (req, res)
 
 // For the progress page
 
-analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => {
+analytics.get('/long-term-goals', checkApiAuth, forAppetizerApi, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
@@ -967,7 +967,7 @@ analytics.get('/long-term-goals', checkApiAuth, forMainApi, async (req, res) => 
 	}
 })
 
-analytics.post('/long-term-goals/set', checkApiAuth, forMainApi, async (req, res) => {
+analytics.post('/long-term-goals/set', checkApiAuth, forAppetizerApi, async (req, res) => {
 	try{
 		const data = req.body.setRevenueGoal
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -992,7 +992,7 @@ analytics.post('/long-term-goals/set', checkApiAuth, forMainApi, async (req, res
 	}
 })
 
-analytics.post('/long-term-goals/unset', checkApiAuth, forMainApi, async (req, res) => {
+analytics.post('/long-term-goals/unset', checkApiAuth, forAppetizerApi, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
@@ -1014,7 +1014,7 @@ analytics.post('/long-term-goals/unset', checkApiAuth, forMainApi, async (req, r
 	}
 })
 
-analytics.get('/forecast', checkApiAuth, forMainApi, async (req, res) => {
+analytics.get('/forecast', checkApiAuth, forAppetizerApi, async (req, res) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)

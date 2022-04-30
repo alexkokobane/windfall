@@ -35,7 +35,7 @@ const forFreebie = async (req: Request, res: Response, next: NextFunction) => {
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Freebie"){
+		if(checkShop.pricePlan !== "Freebie" || checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
 			return res.status(403).redirect("/billing/plans")
 		}
 		next()
@@ -48,7 +48,7 @@ const forFreebieApi = async (req: Request, res: Response, next: NextFunction) =>
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan !== "Freebie"){
+		if(checkShop.pricePlan !== "Freebie" || checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
 			return res.status(403).send("Forbidden")
 		}
 		next()
@@ -61,7 +61,7 @@ const forAppetizer = async (req: Request, res: Response, next: NextFunction) => 
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Appetizer"){
+		if(checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
 			return next()
 		}
 		res.status(403).redirect("/billing/plans")
@@ -74,7 +74,7 @@ const forAppetizerApi = async (req: Request, res: Response, next: NextFunction) 
 	try{
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
-		if(checkShop.pricePlan === "Appetizer"){
+		if(checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Main"){
 			return next()
 		}
 		return res.status(403).send("Forbidden")

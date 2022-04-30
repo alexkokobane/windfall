@@ -49,7 +49,7 @@ billing.get('/plans', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const checkShop = await Shop.findOne({shop: session.shop})
 		if(checkShop.pricePlan){
-			//return res.redirect("/billing/change")
+			return res.redirect("/billing")
 		}
 		res.render('pages/plans-inclusive', {layout: 'layouts/minimal'})
 	} catch(err: any){

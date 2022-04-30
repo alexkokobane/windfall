@@ -70,13 +70,23 @@ home.get('/analytics', checkAuth, forMain, async (req, res) => {
 	}
 })
 
-home.get('/progress', checkAuth, forMain, async (req, res) => {
+home.get('/progress', checkAuth, forAppetizer, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
 				"plan": "Main",
 				"page": "pages/main/progress-main",
 				"layer": "layouts/main-main"
+			},
+			{
+				"plan": "Appetizer",
+				"page": "pages/main/progress-main",
+				"layer": "layouts/main-appetizer"
+			},
+			{
+				"plan": "Freebie",
+				"page": "pages/main/progress-main",
+				"layer": "layouts/main-freebie"
 			}
 		]
 		divide(req, res, render)
