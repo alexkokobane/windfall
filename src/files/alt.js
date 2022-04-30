@@ -42,6 +42,9 @@ $(document).ready(function(){
 		location.href="/billing/plans/subscribe?plan=Appetizer"
 	})
 	$("#Freebieplan").click(function(){
+		if(window.location.pathname !== "/billing/plans"){
+			alert("Are you sure?")
+		}
 		location.href="/billing/plans/subscribe?plan=Freebie"
 	})
 

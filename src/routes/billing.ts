@@ -339,47 +339,48 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		
 		console.log(plan)
 		if(plan === "Freebie"){
-			const selected: any =  await client.query({
-				data: {
-					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
-						appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-							userErrors {
-								field
-								message
-							}
-							appSubscription {
-								id
-							}
-							confirmationUrl
-						}
-					}`,
-					"variables": {
-						"name": "Windfall Freebie free plan",
-						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
-						"test": true,
-						"trialDays": 7,
-						"lineItems": [
-							{
-								"plan": {
-									"appRecurringPricingDetails": {
-										"price": {
-											"amount": 0.0,
-											"currencyCode": "USD"
-										},
-										"interval": "EVERY_30_DAYS"
-									}
-								}
-							}
-						]
-					},
-				},
-			})
+			// const selected: any =  await client.query({
+			// 	data: {
+			// 		"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
+			// 			appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+			// 				userErrors {
+			// 					field
+			// 					message
+			// 				}
+			// 				appSubscription {
+			// 					id
+			// 				}
+			// 				confirmationUrl
+			// 			}
+			// 		}`,
+			// 		"variables": {
+			// 			"name": "Windfall Freebie free plan",
+			// 			"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
+			// 			"test": true,
+			// 			"trialDays": 7,
+			// 			"lineItems": [
+			// 				{
+			// 					"plan": {
+			// 						"appRecurringPricingDetails": {
+			// 							"price": {
+			// 								"amount": 0.0,
+			// 								"currencyCode": "USD"
+			// 							},
+			// 							"interval": "EVERY_30_DAYS"
+			// 						}
+			// 					}
+			// 				}
+			// 			]
+			// 		},
+			// 	},
+			// })
 
-			console.log(selected.body.data.appSubscriptionCreate)
-			let returned: any = selected.body.data
-			if(returned === undefined){
-				return res.status(403).render('pages/503')
-			}
+			// console.log(selected.body.data.appSubscriptionCreate)
+			// let returned: any = selected.body.data
+			// if(returned === undefined){
+			// 	return res.status(403).render('pages/503')
+			// }
+			const localId = "FREE"+Math.floor(Math.random() * 1000000000)
 			await Shop.updateOne(
 				{
 					'shop': session.shop
@@ -388,12 +389,12 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					'$set': {
 						'newChargeDetails': {
 							'plan': plan,
-							'id': returned.appSubscriptionCreate.appSubscription.id
+							'id': localId
 						}
 					}
 				}
 			)
-			return res.redirect(returned.appSubscriptionCreate.confirmationUrl)
+			return res.redirect('/billing/redirect')
 		}
 
 		if(plan === "Appetizer"){
