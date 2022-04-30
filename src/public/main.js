@@ -6316,6 +6316,7 @@ $(document).ready(function(e){
 			success: function(data){
 				$(".ETLUSketch").remove()
 				$("#EmailTemplateLastUpdate").text(data.lastUpdated ? new Date(data.lastUpdated).toLocaleDateString()+" "+new Date(data.lastUpdated).toLocaleTimeString() : "Never")
+				//console.log(data.heading)
 				if(data.heading){
 					heading.text(data.heading+"  [voucher amount].")
 				}
@@ -6352,7 +6353,7 @@ $(document).ready(function(e){
 					aboutShop.text($(this).val())
 				})
 
-				console.log(shopLink.attr("href"))
+				//console.log(shopLink.attr("href"))
 
 				$("#SaveEmailTempBtn").click(function(e){
 					e.preventDefault()
