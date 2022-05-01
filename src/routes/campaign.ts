@@ -213,9 +213,9 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, quota, async (req, res
 	try {
 		let decoyId: string
 		if (req.query.id && typeof req.query.id === 'string') {
-					decoyId = req.query.id
+			decoyId = req.query.id
 		} else {
-					return undefined
+			return undefined
 		}
 		const giveawayId: number = parseInt(decoyId)
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
@@ -238,7 +238,7 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, quota, async (req, res
 				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "freebie",
+				"plan": "Freebie",
 				"page": "pages/equitable",
 				"layer": "layouts/main-freebie"
 			}
@@ -246,6 +246,7 @@ campaign.get('/long/new/equitable', checkAuth, forCommon, quota, async (req, res
 		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
+		return res.status(404).render('pages/404')
 	}
 })
 
@@ -272,7 +273,7 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, 
 		}
 		
 		if(giveaway.winnersTotal !== giveawayWinners){
-			res.status(404).render('pages/404')
+			return res.status(404).render('pages/404')
 		}
 		const render: renderFor = [
 			{
@@ -294,6 +295,7 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, 
 		divide(req, res, render)
 	} catch(err: any) {
 		console.log(err)
+		return res.status(404).render('pages/404')
 	}
 })
 

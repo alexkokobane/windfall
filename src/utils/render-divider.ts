@@ -13,7 +13,7 @@ export const divide = async (req: Request, res: Response, plans: renderFor, erro
 	const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 	const checkShop = await Shop.findOne({shop: session.shop})
 	if(!checkShop.pricePlan){
-		return res.redirect("/auth/callback/error")
+		return res.redirect("/billing/plans")
 	}
 	if(plans && error){
 		plans.forEach((plan) => {
@@ -36,6 +36,6 @@ export const divide = async (req: Request, res: Response, plans: renderFor, erro
 			}
 		})
 	} else {
-		return res.status(403).redirect('/billing/plans')
+		return res.redirect('/billing/plans')
 	}
 }
