@@ -3597,7 +3597,7 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				console.log(data.duration)
+				//console.log(data.duration)
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				$("#GTName").text(data.name)
@@ -3623,7 +3623,7 @@ $(document).ready(function(e){
 				})
 				data.winners.reverse().forEach((item) => {
 					$("#GTWinnerListDecoy").after(`
-						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} USD voucher</li>
+						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} ${item.currencyCode}</li>
 					`)
 				})
 				if(data.active === true){
