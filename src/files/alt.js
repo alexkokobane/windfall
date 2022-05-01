@@ -18,7 +18,6 @@ $(document).ready(function(){
 		`)
 
 		const name = $("#DomainField").val()
-		console.log(name)
 		$.ajax({
 			url: "/login",
 			type: "POST",
