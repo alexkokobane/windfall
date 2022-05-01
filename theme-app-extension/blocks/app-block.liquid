@@ -1,4 +1,9 @@
-<span id="windfall-app-boxier" style="Background: {{ block.settings.bg_color }};">
+<span id="windfall-app-boxier" style="Background: {%- if block.settings.bg_color -%}
+	{{ block.settings.bg_color }}
+{%- else -%}
+	inherit
+{%- endif -%};
+">
 	<div id="windfall-app-promo-content" style="text-align: {% if block.settings.text_align == "left"  %}
 				left
 			{%- elsif block.settings.text_align == "center" -%}
@@ -13,7 +18,11 @@
 			{%- if block.settings.text_flash == "true" -%}
 				class="blink_me"
 			{%- endif -%}
-			style="color: {{ block.settings.for_tagline }}; font-size: {% if block.settings.text_size =="xs" %}
+			style="color: {%- if block.settings.for_tagline -%}
+				{{ block.settings.for_tagline }}
+			{%- else -%}
+				inherit
+			{%- endif -%}; font-size: {% if block.settings.text_size =="xs" %}
 				0.5em
 			{%- elsif block.settings.text_size == "s" -%}
 				1em
