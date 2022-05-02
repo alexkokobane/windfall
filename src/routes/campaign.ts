@@ -287,7 +287,7 @@ campaign.get('/long/new/hierarchical', checkAuth, forCommon, quota, async (req, 
 				"layer": "layouts/main-appetizer"
 			},
 			{
-				"plan": "freebie",
+				"plan": "Freebie",
 				"page": "pages/hierarchical",
 				"layer": "layouts/main-freebie"
 			}
