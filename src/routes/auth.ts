@@ -5,7 +5,8 @@ import getShop from '../utils/get-shop'
 import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-session'
 import { 
 	handleOrdersPaid,
-	handleShopUpdate
+	handleShopUpdate,
+	handleAppUninstall
 } from '../api/webhooks'
 import { Shop, Long, Grand, SavedLong, Customers, Quota } from '../models/shop-model'
 import sessionContext from '../utils/middlewares/session-context'
@@ -44,8 +45,9 @@ auth.get('/', sessionContext, async (req: Request, res: Response) => {
 			);
 		return res.redirect(authRoute);
 	} catch(err: any) {
-		console.log(err)
-		console.log("THE ERROR IS ON auth")
+		//console.log(err)
+		//console.log("THE ERROR IS ON auth")
+		return res.redirect("/auth/callback/error")  
 	}
 });
 
@@ -59,22 +61,28 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
-				
+			
 		// Functional webhooks
+		const appUnistalled = await Shopify.Webhooks.Registry.register({
+			path: '/webhooks/app-uninstalled',
+			topic: 'APP_UNINSTALLED',
+			accessToken: session.accessToken,
+			shop: session.shop
+		})
+
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/orders-paid',
 			topic: 'ORDERS_PAID',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
-		//console.log(ordersPaid)
+		
 		const shopUpdate =  await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/shop-update',
 			topic: 'SHOP_UPDATE',
 			accessToken: session.accessToken,
 			shop: session.shop
 		})
-		//console.log(shopUpdate)
 
 		
 		if(!ordersPaid['ORDERS_PAID'].success){
@@ -143,11 +151,11 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			return res.redirect(`/`)
 		}
 
-		res.redirect("/billing/plans")		
+		return res.redirect("/billing/plans")		
 	} catch (error) {
-		console.error(error);
-		console.log("THE ERROR IS ON auth/callback")
-		res.redirect("/auth/callback/error")  
+		//console.error(error);
+		//console.log("THE ERROR IS ON auth/callback")
+		return res.redirect("/auth/callback/error")  
 	}
 })
 
@@ -157,6 +165,11 @@ auth.get('/callback/error', async (req, res) => {
 
 
 // Register webhook handlers
+Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
+	path: "/webhooks/app-uninstalled",
+	webhookHandler: handleAppUninstall,
+})
+
 Shopify.Webhooks.Registry.addHandler("ORDERS_PAID", {
 	path: "/webhooks/orders-paid",
 	webhookHandler: handleOrdersPaid,
