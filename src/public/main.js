@@ -6459,13 +6459,13 @@ $(document).ready(function(e){
 				aboutShop.text(data.description)
 				addressBar.empty().html(`
 					${data.address.address1}
-					<br>
+					${data.address.address1 ? "<br>" : ""}
 					${data.address.address2}
 					${data.address.address2 ? "<br>" : ""}
 					${data.address.city}
-					<br>
+					${data.address.city ? "<br>" : ""}
 					${data.address.zip}
-					<br>
+					${data.address.zip ? "<br>" : ""}
 					${data.address.country}
 				`)
 				$("#HeadingInput").val(heading.text().split("[")[0]).on("input", function(){
