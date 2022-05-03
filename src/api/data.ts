@@ -1079,6 +1079,26 @@ data.get('/email/settings', checkApiAuth, async (req, res) => {
 	}
 })
 
+data.get('/theme-id', checkApiAuth, async (req, res) => {
+	try {
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const client = new Shopify.Clients.Rest(session.shop, session.accessToken)
+		const theme: any = await client.get({
+			path: 'themes',
+			query: {
+				role: 'main'
+			}
+		})
+		const id = theme.body.themes[0].id
+		return res.json({
+			'shop': session.shop,
+			'id': id
+		})
+	} catch(err: any){
+		return res.send(`Error: ${err}`)
+	}
+})
+
 data.get('/everything', checkApiAuth, async (req, res) => {
 	try {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)

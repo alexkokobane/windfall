@@ -2,7 +2,7 @@ import express from 'express'
 import Shopify from '@shopify/shopify-api'
 import { promises } from 'fs'
 import path from 'path'
-import checkAuth from '../utils/middlewares/check-auth'
+import checkAuth, { checkApiAuth } from '../utils/middlewares/check-auth'
 import detectScope from '../utils/middlewares/detect-scope'
 import { 
 	forCommon, 
@@ -96,7 +96,28 @@ home.get('/progress', checkAuth, forAppetizer, async (req, res) => {
 })
 
 home.get('/tutorial', checkAuth, async (req, res) => {
-	
+	try{
+		const render: renderFor = [
+			{
+				"plan": "Main",
+				"page": "pages/main/tutorials-main",
+				"layer": "layouts/main-main"
+			},
+			{
+				"plan": "Appetizer",
+				"page": "pages/main/tutorials-appetizer",
+				"layer": "layouts/main-appetizer"
+			},
+			{
+				"plan": "Freebie",
+				"page": "pages/main/tutorials-freebie",
+				"layer": "layouts/main-freebie"
+			}
+		]
+		divide(req, res, render)
+	} catch(err: any){
+		console.log(err)
+	}
 })
 
 home.get('/test', checkAuth,  async (req, res) => {
@@ -185,7 +206,7 @@ home.get('/test', checkAuth,  async (req, res) => {
 			results += 0
 		}
 
-	res.json({status: results})
+		res.json({status: results})
 	} catch(err: any){
 		console.log(err)
 		res.status(403).send("Error: "+err)

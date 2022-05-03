@@ -1672,11 +1672,13 @@ $(document).ready(function(e){
 
 
 	$(".ThemeBtn").click(function(){
+
 		$.ajax({
-			url: '/shop',
+			url: '/data/theme-id',
 			success: function(data){
-				console.log(data)
-				location.href="https://"+data.shop+"/admin/themes"
+				//console.log(data)
+				const url ="https://"+data.shop+"/admin/themes/"+data.id+"/editor"
+				return window.open(url, '_blank').focus()
 			},
 			error: function(data){
 				if(data.responseText === "Unauthorized"){
