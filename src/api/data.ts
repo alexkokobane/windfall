@@ -807,7 +807,8 @@ data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
 				'$or': [
 					{'winnersGifted': false},
 					{'winnersChosen': false}
-				]
+				],
+				'entries.0': {'$exists': true},
 			}
 		)
 

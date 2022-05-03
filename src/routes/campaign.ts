@@ -1271,7 +1271,7 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 				return res.status(404).send("Nobody wins when not a single person has entered your giveaway.")
 			}
 			if(entries.length < goodMeasure.winnersTotal){
-				return res.status(403).send("Not enough entries to select a winners, the number of entries must be more than the total possible winners.")
+				return res.status(403).send("Not enough entries to select winners, the number of entries must be more than the total possible winners.")
 			}
 			let prizedWinners: any[] = []
 			let checker: any = []
@@ -1444,9 +1444,10 @@ campaign.post('/rapid/:id/choose-winners', checkApiAuth, async (req, res) => {
 		const displayWinner = anotherMeasure.winner
 		//console.log(displayWinner)
 		//console.log(prizedWinners)
-		res.send("You have successfully picked a winner!")
+		return res.send("You have successfully picked a winner!")
 	} catch(err: any) {
-		console.log(err)
+		//console.log(err)
+		res.status(403).send(`Error: ${err}`)
 	}
 })
 
