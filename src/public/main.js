@@ -1672,7 +1672,6 @@ $(document).ready(function(e){
 
 
 	$(".ThemeBtn").click(function(){
-
 		$.ajax({
 			url: '/data/theme-id',
 			success: function(data){
@@ -2601,7 +2600,7 @@ $(document).ready(function(e){
 				if(data.winnersGifted === false && data.winnersChosen === true){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
-						console.log("Clicked")
+						//console.log("Clicked")
 						$.ajax({
 							url: `/campaign/${data.id}/gift`,
 							type: "GET",
@@ -2615,7 +2614,39 @@ $(document).ready(function(e){
 								} else if(data.responseText === "Forbidden"){
 									return location.href="/billing/plans"
 								}
-								alert(data.responseText)
+								if(data.responseText === "001"){
+									location.href="#"
+									return $(".Polaris-Page__Content").before(`
+										<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="EmailSetupHead" aria-describedby="EmailSetupContent">
+											<div class="Polaris-Banner__Ribbon">
+												<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
+													<span class="Polaris-VisuallyHidden"></span>
+													<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+														<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+													</svg>
+												</span>
+											</div>
+											<div class="Polaris-Banner__ContentWrapper">
+												<div class="Polaris-Banner__Heading" id="EmailSetupHead">
+													<p class="Polaris-Heading">Set up your email template!</p>
+												</div>
+												<div class="Polaris-Banner__Content" id="EmailSetupContent">
+													<p>In order for the discount voucher to be sent to the winner, the email template must be set up.</p>
+													<div class="Polaris-Banner__Actions">
+														<div class="Polaris-ButtonGroup">
+															<div class="Polaris-ButtonGroup__Item">
+																<div class="Polaris-Banner__PrimaryAction">
+																	<button class="Polaris-Banner__Button EmailBtn" type="button">Set up email</button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									`)
+								}
+								return alert(data.responseText)
 							}
 						})
 					})
@@ -4485,6 +4516,7 @@ $(document).ready(function(e){
 				`)
 
 				$("#DeleteRapidBtn").click(function(){
+					alert("Are you sure?")
 					$(this).addClass("Polaris-Button--loading")
 					$("#DeleteRapidBtnText").before(`
 						<span id="DeleteRapidBtnSpinner" class="Polaris-Button__Spinner">
@@ -4525,7 +4557,7 @@ $(document).ready(function(e){
 						<span id="SaveRapidBtnSpinner" class="Polaris-Button__Spinner">
 							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
 								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+									<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
 								</svg>
 							</span>
 							<span role="status">
@@ -4821,6 +4853,38 @@ $(document).ready(function(e){
 											}
 											$(`#sendVoucher${giv.id}`).removeClass("Polaris-Button--loading")
 											$(`#sendVoucher${giv.id}spinner`).remove()
+											if(data.responseText === "001"){
+												location.href="#"
+												return $(".Polaris-Page__Content").before(`
+													<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="EmailSetupHead" aria-describedby="EmailSetupContent">
+														<div class="Polaris-Banner__Ribbon">
+															<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
+																<span class="Polaris-VisuallyHidden"></span>
+																<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																	<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+																</svg>
+															</span>
+														</div>
+														<div class="Polaris-Banner__ContentWrapper">
+															<div class="Polaris-Banner__Heading" id="EmailSetupHead">
+																<p class="Polaris-Heading">Set up your email template!</p>
+															</div>
+															<div class="Polaris-Banner__Content" id="EmailSetupContent">
+																<p>In order for the discount voucher to be sent to the winner, the email template must be set up.</p>
+																<div class="Polaris-Banner__Actions">
+																	<div class="Polaris-ButtonGroup">
+																		<div class="Polaris-ButtonGroup__Item">
+																			<div class="Polaris-Banner__PrimaryAction">
+																				<button class="Polaris-Banner__Button EmailBtn" type="button">Set up email</button>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												`)
+											}
 											alert(data.responseText)
 										}
 									})
@@ -4890,6 +4954,39 @@ $(document).ready(function(e){
 										}
 										$("#GsendVoucher").removeClass("Polaris-Button--loading")
 										$("#GsendVoucherSpinner").remove()
+										
+										if(data.responseText === "001"){
+											location.href="#"
+											return $(".Polaris-Page__Content").before(`
+												<div class="Polaris-Banner Polaris-Banner--statusWarning Polaris-Banner--withinPage" tabindex="0" role="alert" aria-live="polite" aria-labelledby="EmailSetupHead" aria-describedby="EmailSetupContent">
+													<div class="Polaris-Banner__Ribbon">
+														<span class="Polaris-Icon Polaris-Icon--colorWarning Polaris-Icon--applyColor">
+															<span class="Polaris-VisuallyHidden"></span>
+															<svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+																<path fill-rule="evenodd" d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0zM9 6a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V6zm1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+															</svg>
+														</span>
+													</div>
+													<div class="Polaris-Banner__ContentWrapper">
+														<div class="Polaris-Banner__Heading" id="EmailSetupHead">
+															<p class="Polaris-Heading">Set up your email template!</p>
+														</div>
+														<div class="Polaris-Banner__Content" id="EmailSetupContent">
+															<p>In order for the discount voucher to be sent to the winner, the email template must be set up.</p>
+															<div class="Polaris-Banner__Actions">
+																<div class="Polaris-ButtonGroup">
+																	<div class="Polaris-ButtonGroup__Item">
+																		<div class="Polaris-Banner__PrimaryAction">
+																			<button class="Polaris-Banner__Button EmailBtn" type="button">Set up email</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											`)
+										}
 										alert(data.responseText)
 									}
 								})

@@ -823,7 +823,7 @@ data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
 				"endDate": item.endDate
 			})
 		})
-
+		awaiting.sort((a: any, b: any) => new Date(b.endDate).valueOf() - new Date(a.endDate).valueOf())
 		//console.log(awaiting)
 		return res.json(awaiting)
 	} catch(err: any) {
@@ -872,6 +872,10 @@ data.get('/campaign/rapid/:id/upcoming',  checkApiAuth, async (req, res) => {
 					"winnersTotal": item.winnersTotal 
 				})
 			}
+		})
+
+		upcoming.sort((a: any, b: any) => { 
+			return new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
 		})
 
 		//console.log(upcoming)

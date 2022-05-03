@@ -597,6 +597,11 @@ campaign.get('/:id/gift', checkApiAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
+
+		if(!shop.emailTemplate.lastUpdated){
+			return res.status(403).send("001")
+		}
+
 		const giveaway = await Long.findOne(
 			{
 				'shop': session.shop,
@@ -1516,6 +1521,9 @@ campaign.get('/rapid/:id/gift', checkApiAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
+		if(!shop.emailTemplate.lastUpdated){
+			return res.status(403).send("001")
+		}
 		const giveaway = await RapidChild.findOne(
 			{
 				'shop': session.shop,
@@ -2235,6 +2243,9 @@ campaign.get('/grand/:id/gift', checkApiAuth, async (req, res) => {
 		}
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const shop = await Shop.findOne({'shop': session.shop})
+		if(!shop.emailTemplate.lastUpdated){
+			return res.status(403).send("001")
+		}
 		const giveaway = await Grand.findOne(
 			{
 				'shop': session.shop,
