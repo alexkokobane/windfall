@@ -6361,23 +6361,7 @@ $(document).ready(function(e){
 	if(window.location.pathname === "/settings/email"){
 		const shopNameStyles = "margin-top:0; font-size: 26px; line-height: 32px;"
 
-		const template = $("#template-frame").contents()
-		const whole = template.find("html").html()
-		const title = template.find("#email-title")
-		const shopNameHead = template.find("#email-name-head")
-		const shopNameBody = template.find("#email-name-body")
-		const logoLink = template.find("#email-logo-href")
-		//const logoImg = template.find("#email-logo-img")
-		const heading = template.find("#email-heading")
-		//const bannerLink = template.find("#email-banner-href")
-		//const bannerImg = template.find("#email-banner-img")
-		const salutations = template.find("#email-salutations")
-		const body = template.find("#email-body")
-		const discountCode = template.find("#email-discount-code")
-		//const logoImgSmall = template.find("#email-logo-img-small")
-		const aboutShop = template.find("#email-about-text")
-		const shopLink = template.find("#email-button-href")
-		const addressBar = template.find("#email-address-bar")
+		
 
 
 		// chunks
@@ -6424,129 +6408,153 @@ $(document).ready(function(e){
 
 
 		//console.log(aboutShop.text())
-		setTimeout(function(){
-			$.ajax({
-				url: "/data/email/settings",
-				type: "GET",
-				contentType: "application/json",
-				success: function(data){
-					$(".ETLUSketch").remove()
-					$("#EmailTemplateLastUpdate").text(data.lastUpdated ? new Date(data.lastUpdated).toLocaleDateString()+" "+new Date(data.lastUpdated).toLocaleTimeString() : "Never")
-					//console.log(data.heading)
-					if(data.heading){
-						heading.text(data.heading+"  [voucher amount].")
-					}
-					if(data.body){
-						body.text(data.body)
-					}
-					if(data.aboutShop){
-						aboutShop.text(data.aboutShop)
-					}
-					shopNameHead.text(data.name)
-					shopNameBody.text("About "+data.name)
-					title.text(data.name)
-					logoLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
-					shopLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
-					aboutShop.text(data.description)
-					addressBar.empty().html(`
-						${data.address.address1}
-						<br>
-						${data.address.address2}
-						${data.address.address2 ? "<br>" : ""}
-						${data.address.city}
-						<br>
-						${data.address.zip}
-						<br>
-						${data.address.country}
-					`)
-					$("#HeadingInput").val(heading.text().split("[")[0]).on("input", function(){
-						heading.text($(this).val()+" [voucher amount].")
-					})
-					$("#BodyInput").val(body.text()).on("input", function(){
-						body.text($(this).val())
-					})
-					$("#AboutInput").val(aboutShop.text()).on("input", function(){
-						aboutShop.text($(this).val())
-					})
+		$.ajax({
+			url: "/data/email/settings",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".ETLUSketch").remove()
+				$("#EmailTemplateLastUpdate").text(data.lastUpdated ? new Date(data.lastUpdated).toLocaleDateString()+" "+new Date(data.lastUpdated).toLocaleTimeString() : "Never")
+				//console.log(data.heading)
+				//$("#template-frame")
+				let iframe = document.getElementById('template-frame');
+				iframe = iframe.contentWindow || ( iframe.contentDocument.document || iframe.contentDocument);
 
-					//console.log(shopLink.attr("href"))
+				iframe.document.open();
+				iframe.document.write(chunk1.concat(chunk2, chunk3, chunk4, chunk5, chunk6, chunk7, "GH7aVS90", chunk8, chunk9, chunk10, chunk11, chunk12));
+				iframe.document.close();
 
-					$("#SaveEmailTempBtn").click(function(e){
-						e.preventDefault()
+				const template = $("#template-frame").contents()
+				const whole = template.find("html").html()
+				const title = template.find("#email-title")
+				const shopNameHead = template.find("#email-name-head")
+				const shopNameBody = template.find("#email-name-body")
+				const logoLink = template.find("#email-logo-href")
+				//const logoImg = template.find("#email-logo-img")
+				const heading = template.find("#email-heading")
+				//const bannerLink = template.find("#email-banner-href")
+				//const bannerImg = template.find("#email-banner-img")
+				const salutations = template.find("#email-salutations")
+				const body = template.find("#email-body")
+				const discountCode = template.find("#email-discount-code")
+				//const logoImgSmall = template.find("#email-logo-img-small")
+				const aboutShop = template.find("#email-about-text")
+				const shopLink = template.find("#email-button-href")
+				const addressBar = template.find("#email-address-bar")
 
-						$(this).addClass("Polaris-Button--loading")
-						$("#SaveEmailTempBtnText").before(`
-							<span id="SaveEmailTempBtnSpinner" class="Polaris-Button__Spinner">
-								<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
-									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
-									</svg>
-								</span>
-								<span role="status">
-									<span class="Polaris-VisuallyHidden">Loading</span>
-								</span>
-							</span>
-						`)
-						
-						const dynamicEmail = {
-							"chunk1": chunk1,
-							"title": title.text(),
-							"chunk2": chunk2,
-							"link1": logoLink.attr("href"),
-							"chunk3": chunk3,
-							"nameHead": shopNameHead.text(),
-							"chunk4": chunk4,
-							"heading": heading.text().split("[")[0],
-							"chunk5": chunk5,
-							"salutations": "Hi,",
-							"chunk6": chunk6,
-							"body": body.text(),
-							"chunk7": chunk7,
-							"discountCode": "",
-							"chunk8": chunk8,
-							"nameBody": shopNameBody.text(),
-							"chunk9": chunk9,
-							"aboutShop": aboutShop.text(),
-							"chunk10": chunk10,
-							"link2": shopLink.attr("href"),
-							"chunk11": chunk11,
-							"address": addressBar.html(),
-							"chunk12": chunk12
-						}
-
-						$.ajax({
-							url: "/settings/email/template/save",
-							type: "POST",
-							contentType: "application/json",
-							data: JSON.stringify({dynamicEmail}),
-							success: function(data){
-								$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
-								$("#SaveEmailTempBtnSpinner").remove()
-								alert(data)
-								location.reload()
-							},
-							error: function(data){
-								if(data.responseText === "Unauthorized"){
-									return location.href="/"
-								} else if(data.responseText === "Forbidden"){
-									return location.href="/billing/plans"
-								}
-								$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
-								$("#SaveEmailTempBtnSpinner").remove()
-								return alert(data.responseText)
-							}
-						})
-					})
-				},
-				error: function(data){
-					if(data.responseText === "Unauthorized"){
-						return location.href="/"
-					} else if(data.responseText === "Forbidden"){
-						return location.href="/billing/plans"
-					}	
+				if(data.heading){
+					heading.text(data.heading+"  [voucher amount].")
 				}
-			})
-		}, 2000)
+				if(data.body){
+					body.text(data.body)
+				}
+				if(data.aboutShop){
+					aboutShop.text(data.aboutShop)
+				}
+				shopNameHead.text(data.name)
+				shopNameBody.text("About "+data.name)
+				title.text(data.name)
+				logoLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
+				shopLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
+				aboutShop.text(data.description)
+				addressBar.empty().html(`
+					${data.address.address1}
+					<br>
+					${data.address.address2}
+					${data.address.address2 ? "<br>" : ""}
+					${data.address.city}
+					<br>
+					${data.address.zip}
+					<br>
+					${data.address.country}
+				`)
+				$("#HeadingInput").val(heading.text().split("[")[0]).on("input", function(){
+					heading.text($(this).val()+" [voucher amount].")
+				})
+				$("#BodyInput").val(body.text()).on("input", function(){
+					body.text($(this).val())
+				})
+				$("#AboutInput").val(aboutShop.text()).on("input", function(){
+					aboutShop.text($(this).val())
+				})
+
+				//console.log(shopLink.attr("href"))
+
+				$("#SaveEmailTempBtn").click(function(e){
+					e.preventDefault()
+
+					$(this).addClass("Polaris-Button--loading")
+				$("#SaveEmailTempBtnText").before(`
+						<span id="SaveEmailTempBtnSpinner" class="Polaris-Button__Spinner">
+							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+									<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+								</svg>
+							</span>
+							<span role="status">
+								<span class="Polaris-VisuallyHidden">Loading</span>
+							</span>
+						</span>
+					`)
+						
+					const dynamicEmail = {
+						"chunk1": chunk1,
+						"title": title.text(),
+						"chunk2": chunk2,
+						"link1": logoLink.attr("href"),
+						"chunk3": chunk3,
+						"nameHead": shopNameHead.text(),
+						"chunk4": chunk4,
+						"heading": heading.text().split("[")[0],
+						"chunk5": chunk5,
+						"salutations": "Hi,",
+						"chunk6": chunk6,
+						"body": body.text(),
+						"chunk7": chunk7,
+						"discountCode": "",
+						"chunk8": chunk8,
+						"nameBody": shopNameBody.text(),
+						"chunk9": chunk9,
+						"aboutShop": aboutShop.text(),
+						"chunk10": chunk10,
+						"link2": shopLink.attr("href"),
+						"chunk11": chunk11,
+						"address": addressBar.html(),
+						"chunk12": chunk12
+					}
+
+					$.ajax({
+						url: "/settings/email/template/save",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify({dynamicEmail}),
+						success: function(data){
+							$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
+							$("#SaveEmailTempBtnSpinner").remove()
+							alert(data)
+							location.reload()
+						},
+						error: function(data){
+							if(data.responseText === "Unauthorized"){
+								return location.href="/"
+							} else if(data.responseText === "Forbidden"){
+								return location.href="/billing/plans"
+							}
+							$("#SaveEmailTempBtn").removeClass("Polaris-Button--loading")
+							$("#SaveEmailTempBtnSpinner").remove()
+							return alert(data.responseText)
+						}
+					})
+				})
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}	
+			}
+		})
 	}
 
 })

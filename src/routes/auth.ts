@@ -130,6 +130,7 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				'email': shopData.email,
 				'currencyCode': shopData.currencyCode,
 				'shopifyPlan': shopData.plan.displayName,
+				'devShop': shopData.plan.partnerDevelopment,
 				'id': shopData.id,
 				'url': shopData.url,
 				'billingAddress': {

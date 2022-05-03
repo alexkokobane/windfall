@@ -808,7 +808,8 @@ data.get('/campaign/rapid/:id/awaiting',  checkApiAuth, async (req, res) => {
 					{'winnersGifted': false},
 					{'winnersChosen': false}
 				],
-				'entries.0': {'$exists': true},
+				'entries.spent': {'$gte': 1}
+				//'entries.0': {'$exists': true},
 			}
 		)
 

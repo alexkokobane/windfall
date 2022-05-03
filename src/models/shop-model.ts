@@ -35,6 +35,7 @@ const ShopSchema = new mongoose.Schema({
 		zip: String,
 		country: String
 	},
+	devShop: Boolean,
 	metaDescription:String,
 	id: String,
 	shopUrl: String,
