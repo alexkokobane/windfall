@@ -2601,12 +2601,26 @@ $(document).ready(function(e){
 					$("#GiftBtn").removeClass("Polaris-Button--disabled").addClass("Polaris-Button--outline")
 					$("#GiftBtn").click(function(){
 						//console.log("Clicked")
+						$(this).addClass("Polaris-Button--loading")
+						$(`#GiftBtnText`).before(`
+							<span id="GiftBtnSpinner" class="Polaris-Button__Spinner">
+								<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
+									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+										<path d="M7.229 1.173a9.25 9.25 0 1011.655 11.412 1.25 1.25 0 10-2.4-.698 6.75 6.75 0 11-8.506-8.329 1.25 1.25 0 10-.75-2.385z"></path>
+									</svg>
+								</span>
+								<span role="status">
+									<span class="Polaris-VisuallyHidden">Loading</span>
+								</span>
+							</span>
+						`)
 						$.ajax({
 							url: `/campaign/${data.id}/gift`,
 							type: "GET",
 							contentType: "application/json",
 							success: function(data){
 								alert(data)
+								location.reload()
 							},
 							error: function(data){
 								if(data.responseText === "Unauthorized"){
@@ -2614,6 +2628,9 @@ $(document).ready(function(e){
 								} else if(data.responseText === "Forbidden"){
 									return location.href="/billing/plans"
 								}
+
+								$("#GiftBtn").removeClass("Polaris-Button--loading")
+								$("#GiftBtnSpinner").remove()
 								if(data.responseText === "001"){
 									location.href="#"
 									return $(".Polaris-Page__Content").before(`
@@ -4954,7 +4971,7 @@ $(document).ready(function(e){
 										}
 										$("#GsendVoucher").removeClass("Polaris-Button--loading")
 										$("#GsendVoucherSpinner").remove()
-										
+
 										if(data.responseText === "001"){
 											location.href="#"
 											return $(".Polaris-Page__Content").before(`
