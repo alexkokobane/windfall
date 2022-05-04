@@ -3650,7 +3650,7 @@ $(document).ready(function(e){
 				//console.log(data.duration)
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
-				$("#GTName").text(data.name)
+				$("#GTName").text(data.name+" [Template]")
 				$("#GTDuration").text(`${Math.round((data.duration/(1000*60*60))*10)/10} Hour(s)`)
 				$("#GTForType").text(data.distributionType)
 				$("#DeleteGTBtn").click(function(){
@@ -4673,12 +4673,6 @@ $(document).ready(function(e){
 															<p>Incentivize customers to spend more in your store.</p>
 														</div>
 													</div>
-													<div class="Polaris-EmptyState__Actions">
-														<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-															<div class="Polaris-Stack__Item"><a href="/campaign/new" class="Polaris-Button Polaris-Button--primary CreateGiveaway" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Create a giveaway</span></span></a></div>
-															<div class="Polaris-Stack__Item"><a class="Polaris-Button" href="#" data-polaris-unstyled="true"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Learn more</span></span></a></div>
-														</div>
-													</div>
 												</div>
 											</div>
 											<div class="Polaris-EmptyState__ImageContainer"></div>
@@ -5191,7 +5185,7 @@ $(document).ready(function(e){
 			type: "GET",
 			contentType: "application/json",
 			success: function(data){
-				console.log(data)
+				//console.log(data)
 				$(".Polaris-SkeletonBodyText").remove()
 				$(".Polaris-SkeletonDisplayText__DisplayText").remove()
 				const duration = data.dates.length
@@ -5199,7 +5193,7 @@ $(document).ready(function(e){
 				$("#RapidTStandard").text(data.prizes.normalPrize+" "+data.currencyCode)
 				$("#RapidTGrand").text(data.prizes.grandPrize+" "+data.currencyCode)
 				$("#RapidTEventType").text("Rapid")
-				$("#RapidTName").text(data.name)
+				$("#RapidTName").text(data.name+" [Template]")
 				$("#RapidTRevenueGoal").text(data.goals.totalRevenue+" "+data.currencyCode)
 				$("#RapidTEntriesGoal").text(data.goals.totalEntries)
 
@@ -5264,18 +5258,18 @@ $(document).ready(function(e){
 							})
 							const todayTime =  Number(new Date(new Date().toLocaleDateString('en-ZA')))
 							filteredTime.sort((a, b) => new Date(a) - new Date(b)).forEach((giv) => {
-								let otChild =  Number(new Date(giv)) - todayTime
+								let otChild =  Number(new Date(giv)) - todayTime // create a range of milliseconds from current time
 								oldTime.push(otChild)
 							})
 							oldTime.sort((a, b) => new Date(a) - new Date(b))
 							let everyDay = []
 							let numOne = 0
 							for(let i = 0; numOne <= oldTime[oldTime.length - 1]; i++){
-								everyDay.push(numOne)
+								everyDay.push(numOne) // count total days in the oldTime range
 								numOne+=1000*60*60*24
 							}
 							let crawler = [0, 3, 7, 14, 30] // days into the future
-							let final = []	// an array of non clashing full arrays w/o duplicates
+							let final = []	// an array of non clashing full arrays(7 items) w/o duplicates
 							everyDay.sort((a, b) => a - b)
 							crawler.forEach((crawl) => {
 								everyDay.forEach((item) => {
@@ -5298,8 +5292,119 @@ $(document).ready(function(e){
 							})
 							// mutate and remove more duplicates
 							final = Array.from(new Set(final.map(JSON.stringify)), JSON.parse)
-							console.log(final)
+							//console.log(final)
 							$(".RapidTPHSpinner").remove()
+
+							if(final.length === 0){
+								$("#RapidTActivatorBody").after(`
+									<form>
+										<div class="Polaris-FormLayout">
+											<div role="group" class="Polaris-FormLayout--grouped">
+												<div class="Polaris-FormLayout__Items">
+													<div class="Polaris-FormLayout__Item">
+														<div class="Polaris-Labelled">
+															<div class="Polaris-Labelled__LabelWrapper">
+																<div class="Polaris-Label"><label id="StartDateLabel" for="StartDate" class="Polaris-Label__Text">Start date</label></div>
+															</div>
+															<div class="Polaris-Connected">
+																<div class="Polaris-Connected__Item Polaris-Connected__Item--primary">
+																	<div class="Polaris-TextField Polaris-TextField--hasValue">
+																		<input id="StartDate" type="date" autocomplete="off" class="Polaris-TextField__Input" placeholder="yyyy-mm-dd" aria-labelledby="" aria-invalid="false" value="">
+																		<div class="Polaris-TextField__Backdrop"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="Polaris-FormLayout__Item">
+														<button id="ActivateSchedule" class="Polaris-Button Polaris-Button--primary" aria-label="Activate template" type="button">
+															<span class="Polaris-Button__Content">
+																<span class="Polaris-Button__Text">Activate</span>
+															</span>
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								`)
+								
+								$("#ActivateSchedule").click(function(e){
+									e.preventDefault()
+									//console.log("Clicked")
+									const startDate = $("#StartDate").val()
+									//console.log(startDate)
+									$("#RapidTActivatorBody").html(`
+										<div>
+											<span class="Polaris-Spinner Polaris-Spinner--sizeLarge">
+												<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+													<path d="M15.542 1.487A21.507 21.507 0 00.5 22c0 11.874 9.626 21.5 21.5 21.5 9.847 0 18.364-6.675 20.809-16.072a1.5 1.5 0 00-2.904-.756C37.803 34.755 30.473 40.5 22 40.5 11.783 40.5 3.5 32.217 3.5 22c0-8.137 5.3-15.247 12.942-17.65a1.5 1.5 0 10-.9-2.863z"></path>
+												</svg>
+											</span>
+											<span role="status">
+												<span class="Polaris-VisuallyHidden">Spinner</span>
+											</span>
+										</div>
+									`)
+
+									if(!startDate){
+										return $("#RapidTActivatorBody").html(`
+											<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+											<p class="Polaris-InlineError">Please fill in the start date.</p>
+										`)
+									}
+
+									$.ajax({
+										url: `/campaign/rapid/template/${idForRapidTemplate}/activate`,
+										type: "POST",
+										data: JSON.stringify({"future": new Date(startDate)}),
+										contentType: "application/json",
+										success: function(data){
+											$("#RapidTActivatorBody").html(`
+												<h3 id="WinnerDanger" class="Polaris-TextStyle--variationStrong" style="color: green;">Success</h3>
+												<p>${data}</p>
+											`)
+										},
+										error: function(data){
+											if(data.responseText === "Unauthorized"){
+												return location.href="/"
+											} else if(data.responseText === "Forbidden"){
+												return location.href="/billing/plans"
+											}
+											let decider = data.responseJSON
+											//console.log(decider)
+											//console.log(data)
+											if(decider) {
+												let arr = data.responseJSON
+												$("#RapidTActivatorBody").html(`
+													<p id="ValidDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Conflicts found</p>
+													<ul class="Polaris-List">
+														<span id="RapidTActivatorDecoy"></span>
+													</ul>
+												`)
+												arr.forEach(function(item){
+													const begin = new Date(item.startDate).toISOString().split('T')
+													const finish = new Date(item.endDate).toISOString().split('T')
+													$("#RapidTActivatorDecoy").after(`
+														<li class="Polaris-List__Item" aria-label="${item.name}">
+															<span class="Polaris-TextStyle--variationStrong">
+																${item.name}
+															</span>, active from
+															<span class="Polaris-TextStyle--variationStrong">${begin[0]} at ${begin[1].substring(0, 5)}</span> to 
+															<span class="Polaris-TextStyle--variationStrong">${finish[0]} at ${finish[1].substring(0, 5)}</span>
+														</li>
+													`)
+												})
+											} else {
+												$("#RapidTActivatorBody").html(`
+													<h3 id="WinnerDanger" class="Polaris-InlineError Polaris-TextStyle--variationStrong">Error</h3>
+													<p class="Polaris-InlineError">${data.responseText}</p>
+												`)
+											}
+										}
+									})	
+								})
+							}
 							final.reverse().forEach((item) => {
 								const start = item[0]
 								$("#RapidTActivatorBody").after(`
@@ -5342,8 +5447,8 @@ $(document).ready(function(e){
 												return location.href="/billing/plans"
 											}
 											let decider = data.responseJSON
-											console.log(decider)
-											console.log(data)
+											//console.log(decider)
+											//console.log(data)
 											if(decider) {
 												let arr = data.responseJSON
 												$("#RapidTActivatorBody").html(`
