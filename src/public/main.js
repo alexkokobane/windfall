@@ -6395,8 +6395,8 @@ $(document).ready(function(e){
 			<!--[if mso]><table role="presentation" width="100%"><tr><td style="width:145px;" align="left" valign="top">
 			<![endif]--><div class="col-sml" style="display:inline-block;width:100%;max-width:145px;vertical-align:top;text-align:left;">
 			<p id="email-name-body" style="margin-top:0; font-size: 22px; line-height: 28px;">`
-		const chunk9 = `</p></div><!--[if mso]></td><td style="width:395px;padding-bottom:20px;" valign="top"><![endif]-->
-			<div class="col-lge" style="display:inline-block;width:100%;max-width:395px;vertical-align:top;padding-bottom:20px;">
+		const chunk9 = `</p></div><!--[if mso]></td><td style="width:370px;padding-bottom:20px;" valign="top"><![endif]-->
+			<div class="col-lge" style="display:inline-block;width:100%;max-width:370px;vertical-align:top;padding-bottom:20px;">
 			<p id="email-about-text" style="margin-top:0;margin-bottom:12px;">`
 		const chunk10 = `</p><p style="margin:0;"><a id="email-button-href" href="`
 		const chunk11 = `" style="text-decoration: none; padding: 10px 25px; color: #000000; border-radius: 4px; border: 2px #000000 solid; display:inline-block; mso-padding-alt:0;text-underline-color:#ff3884">
@@ -6442,31 +6442,30 @@ $(document).ready(function(e){
 				const shopLink = template.find("#email-button-href")
 				const addressBar = template.find("#email-address-bar")
 
-				if(data.heading){
-					heading.text(data.heading+"  [voucher amount].")
-				}
-				if(data.body){
-					body.text(data.body)
-				}
-				if(data.aboutShop){
-					aboutShop.text(data.aboutShop)
-				}
-				shopNameHead.text(data.name)
-				shopNameBody.text("About "+data.name)
+				data.heading ? heading.text(data.heading+"  [voucher amount].") : heading.text("You've won [voucher amount].")
+				
+				data.body ? body.text(data.body) : body.text(`This is the body of this email, where you bond with 
+					your customers by telling them how grateful you're the chose to buy from your store and how 
+					they should use or spend the code below. Tell them about the cool stuff they could buy with this money.
+				`)
+
+				data.aboutShop ? aboutShop.text(data.aboutShop) : aboutShop.text(`This is the meta decription for shop. 
+					If you don't have one or don't like what it, change it in the editor.
+				`)
+
+				salutations.text("Hi [first name] [last name],")
+				shopNameHead.text(data.name ? data.name : "Shop name")
+				shopNameBody.text(data.name ? "About "+data.name : "About shop")
 				title.text(data.name)
 				logoLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
 				shopLink.attr("href", data.url ? data.url : `https://${data.shopDomain}`)
-				aboutShop.text(data.description)
+				//aboutShop.text(data.description)
 				addressBar.empty().html(`
-					${data.address.address1}
-					${data.address.address1 ? "<br>" : ""}
-					${data.address.address2}
-					${data.address.address2 ? "<br>" : ""}
-					${data.address.city}
-					${data.address.city ? "<br>" : ""}
-					${data.address.zip}
-					${data.address.zip ? "<br>" : ""}
-					${data.address.country}
+					${data.address.address1 ? data.address.address1+"<br>"  : ""}
+					${data.address.address2 ? data.address.address2+"<br>" : ""}
+					${data.address.city ? data.address.city+"<br>" : ""}
+					${data.address.zip ? data.address.zip+"<br>" : ""}
+					${data.address.country ? data.address.country : ""}
 				`)
 				$("#HeadingInput").val(heading.text().split("[")[0]).on("input", function(){
 					heading.text($(this).val()+" [voucher amount].")
@@ -6484,7 +6483,7 @@ $(document).ready(function(e){
 					e.preventDefault()
 
 					$(this).addClass("Polaris-Button--loading")
-				$("#SaveEmailTempBtnText").before(`
+					$("#SaveEmailTempBtnText").before(`
 						<span id="SaveEmailTempBtnSpinner" class="Polaris-Button__Spinner">
 							<span class="Polaris-Spinner Polaris-Spinner--sizeSmall">
 								<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
