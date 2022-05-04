@@ -26,7 +26,7 @@ login.post('/', loggedInCtx, async (req, res) => {
 			return res.status(401).send("Error! The top level domain of every 'myshopify' url is dot com.")
 		}
 
-		return res.status(401).send("Non-existent shop detected! Install Windfall from the Shopify App Store.")
+		return res.status(401).send("Shop not found! Install Windfall from the Shopify App Store.")
 	} catch(err: any) {
 		//console.log(err)
 		return res.status(401).send("Error: "+err)
