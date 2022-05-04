@@ -6202,6 +6202,24 @@ $(document).ready(function(e){
 										</div>
 									</div>
 								`)
+							} else if(!data.realistic.eventsRequired){
+								$("#CurrentForecast").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No enough data</p>
+														<div class="Polaris-EmptyState__Content">
+															<p>Run your first giveaway event to gather enough data. When you have, the forecast will be shown here.</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
+										</div>
+									</div>
+								`)
 							} else {
 								$("#CurrentForecast").html(`
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
@@ -6261,6 +6279,24 @@ $(document).ready(function(e){
 										</div>
 									</div>
 								`)
+							} else if(!data.tenfold.eventsRequired){
+								$("#CurrentForecast").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No enough data</p>
+														<div class="Polaris-EmptyState__Content">
+															<p>Run your first giveaway event to gather enough data. When you have, the forecast will be shown here.</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
+										</div>
+									</div>
+								`)
 							} else {
 								$("#ScenarioOne").html(`
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
@@ -6317,6 +6353,24 @@ $(document).ready(function(e){
 													</p>
 												</div>
 											</div>
+										</div>
+									</div>
+								`)
+							} else if(!data.fiftyfold.eventsRequired){
+								$("#CurrentForecast").html(`
+									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
+										<div class="Polaris-EmptyState__Section">
+											<div class="Polaris-EmptyState__DetailsContainer">
+												<div class="Polaris-EmptyState__Details">
+													<div class="Polaris-TextContainer">
+														<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">No enough data</p>
+														<div class="Polaris-EmptyState__Content">
+															<p>Run your first giveaway event to gather enough data. When you have, the forecast will be shown here.</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="Polaris-EmptyState__ImageContainer"></div>
 										</div>
 									</div>
 								`)
