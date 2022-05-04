@@ -8,6 +8,14 @@
     display: none;
 }
 
+.screenshot {
+    object-fit: cover;
+    width: 100%;
+    max-width: 800px;
+    border: 1px solid transparent;
+    border-radius: 1em;
+}
+
 .dp {
     font-size: 5em;  
     display: flex; 

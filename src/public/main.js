@@ -1664,7 +1664,7 @@ $(document).ready(function(e){
 		})		
 	})
 	$("#GetTutorial").click(function(){
-		location.href="#"
+		location.href="/tutorials"
 	})
 	$("#EmailBtn").click(function(){
 		location.href="/settings/email"
@@ -1696,6 +1696,9 @@ $(document).ready(function(e){
 	})
 	$(".ToGiveawayTemplates").click(function(){
 		location.href="/campaign/giveaways"
+	})
+	$(".SkipTutorials").click(function(){
+		location.href="/"
 	})
 
 	//url === /
@@ -3673,7 +3676,7 @@ $(document).ready(function(e){
 				})
 				data.winners.reverse().forEach((item) => {
 					$("#GTWinnerListDecoy").after(`
-						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} ${item.currencyCode}</li>
+						<li class="Polaris-List__Item">Number ${item.prizeId} - ${item.voucherPrize} ${data.currencyCode}</li>
 					`)
 				})
 				if(data.active === true){
@@ -6713,6 +6716,11 @@ $(document).ready(function(e){
 				}	
 			}
 		})
+	}
+
+	//url === /tutorials
+	if(window.location.pathname === "/tutorials"){
+		
 	}
 
 })

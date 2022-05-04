@@ -95,22 +95,22 @@ home.get('/progress', checkAuth, forAppetizer, async (req, res) => {
 	}
 })
 
-home.get('/tutorial', checkAuth, async (req, res) => {
+home.get('/tutorials', checkAuth, async (req, res) => {
 	try{
 		const render: renderFor = [
 			{
 				"plan": "Main",
-				"page": "pages/main/tutorials-main",
+				"page": "pagesfreebien/tutorials-freebie",
 				"layer": "layouts/main-main"
 			},
 			{
 				"plan": "Appetizer",
-				"page": "pages/main/tutorials-appetizer",
+				"page": "pages/freebie/tutorials-freebie",
 				"layer": "layouts/main-appetizer"
 			},
 			{
 				"plan": "Freebie",
-				"page": "pages/main/tutorials-freebie",
+				"page": "pages/freebie/tutorials-freebie",
 				"layer": "layouts/main-freebie"
 			}
 		]
