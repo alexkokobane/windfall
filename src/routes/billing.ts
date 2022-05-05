@@ -216,7 +216,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 				}
 			}
 
-			return res.redirect('/')
+			return res.redirect('/tutorials')
 		} else if(switcher.length > 0){
 			// Delete prev subscription
 			const deleteCurrentPlan: any = await client.query(
@@ -313,7 +313,7 @@ billing.get('/redirect', checkAuth, async (req, res) => {
 					)
 				}
 			}
-			return res.redirect('/')
+			return res.redirect('/tutorials')
 		}
 		
 		res.status(404).render('pages/404', {layout: 'layouts/minimal'})
