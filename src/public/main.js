@@ -6720,12 +6720,72 @@ $(document).ready(function(e){
 
 	//url === /tutorials
 	if(window.location.pathname === "/tutorials"){
-		$("#RapidTutBtn")
-		$("#LongTutBtn")
-		$("#AppBlockTutBtn")
-		$("#EmailTutBtn")
-		$("#EventTemplateTutBtn")
-		$("#PickWinnersTutBtn")
+		$("#RapidTutBtn").click(function(){
+			const state = $("#RapidTutSec").hasClass("disappear")
+			//state ? $("#RapidTutSec").removeClass("disappear") : $("#RapidTutSec").addClass("disappear")
+			if(state){
+				$("#RapidTutSec").removeClass("disappear")
+				$("#RapidTutBtnText").text("Hide")
+			} else {
+				$("#RapidTutSec").addClass("disappear")
+				$("#RapidTutBtnText").text("Show")
+			}
+		})
+		$("#LongTutBtn").click(function(){
+			const state = $("#LongTutSec").hasClass("disappear")
+			//state ? $("LongTutSec").removeClass("disappear") : $("LongTutSec").addClass("disappear")
+			if(state){
+				$("#LongTutSec").removeClass("disappear")
+				$("#LongTutBtnText").text("Hide")
+			} else {
+				$("#LongTutSec").addClass("disappear")
+				$("#LongTutBtnText").text("Show")
+			}
+		})
+		$("#AppBlockTutBtn").click(function(){
+			const state = $("#AppBlockTutSec").hasClass("disappear")
+			//state ? $("#AppBlockTutSec").removeClass("disappear") : $("#AppBlockTutSec").addClass("disappear")
+			if(state){
+				$("#AppBlockTutSec").removeClass("disappear")
+				$("#AppBlockTutBtnText").text("Hide")
+			} else {
+				$("#AppBlockTutSec").addClass("disappear")
+				$("#AppBlockTutBtnText").text("Show")
+			}
+		})
+		$("#EmailTutBtn").click(function(){
+			const state = $("#EmailTutSec").hasClass("disappear")
+			//state ? $("#EmailTutSec").removeClass("disappear") : $("#EmailTutSec").addClass("disappear")
+			if(state){
+				$("#EmailTutSec").removeClass("disappear")
+				$("#EmailTutBtnText").text("Hide")
+			} else {
+				$("#EmailTutSec").addClass("disappear")
+				$("#EmailTutBtnText").text("Show")
+			}
+		})
+		$("#EventTemplateTutBtn").click(function(){
+			const state = $("#EventTemplateTutSec").hasClass("disappear")
+			//state ? $("#EventTemplateTutSec").removeClass("disappear") : $("#EventTemplateTutSec").addClass("disappear")
+			if(state){
+				$("#EventTemplateTutSec").removeClass("disappear")
+				$("#EventTemplateTutBtnText").text("Hide")
+			} else {
+				$("#EventTemplateTutSec").addClass("disappear")
+				$("#EventTemplateTutBtnText").text("Show")
+			}
+		})
+		$("#PickWinnersTutBtn").click(function(){
+			const state = $("#PickWinnersTutSec").hasClass("disappear")
+			//state ? $("#PickWinnersTutSec").removeClass("disappear") : $("#PickWinnersTutSec").addClass("disappear")
+			if(state){
+				$("#PickWinnersTutSec").removeClass("disappear")
+				$("#PickWinnersTutBtnText").text("Hide")
+			} else {
+				$("#PickWinnersTutSec").addClass("disappear")
+				$("#PickWinnersTutBtnText").text("Show")
+			}
+		})
 	}
 
 })
