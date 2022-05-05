@@ -100,7 +100,7 @@ home.get('/tutorials', checkAuth, async (req, res) => {
 		const render: renderFor = [
 			{
 				"plan": "Main",
-				"page": "pagesfreebien/tutorials-freebie",
+				"page": "pages/freebie/tutorials-freebie",
 				"layer": "layouts/main-main"
 			},
 			{
@@ -120,7 +120,7 @@ home.get('/tutorials', checkAuth, async (req, res) => {
 	}
 })
 
-home.get('/test', checkAuth,  async (req, res) => {
+home.get('/theme-support', checkAuth,  async (req, res) => {
 	try{
 
 		// Specify the name of the template the app will integrate with

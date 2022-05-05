@@ -1723,6 +1723,26 @@ $(document).ready(function(e){
 			}
 		})
 		$.ajax({
+			url: "/theme-support",
+			type: "GET",
+			contentType: "application/json",
+			success: function(data){
+				$(".TSWSketch").remove()
+				if(data.status >= 3){
+					$("#ThemeSupportWatch").attr("style", "color: #00691c;").text("Supported")
+				} else {
+					$("#ThemeSupportWatch").attr("style", "color: red;").text("Not supported")
+				}
+			},
+			error: function(data){
+				if(data.responseText === "Unauthorized"){
+					return location.href="/"
+				} else if(data.responseText === "Forbidden"){
+					return location.href="/billing/plans"
+				}
+			}
+		})
+		$.ajax({
 			url: "/data/campaigns/unfinished",
 			type: "GET",
 			contentType: "application/json",
