@@ -1700,6 +1700,9 @@ $(document).ready(function(e){
 	$(".SkipTutorials").click(function(){
 		location.href="/"
 	})
+	$(".DiscardAny").click(function(){
+		location.href="/"
+	})
 
 	//url === /
 	if(window.location.pathname === "/"){
