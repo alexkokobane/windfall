@@ -9,17 +9,19 @@ const webhooks = express.Router()
 
 export const handleAppUninstall = async (topic: string, shop: string, webhookRequestBody: string) => {
 	try{
-		await Shop.deleteOne({'shop': shop})
-		await Long.deleteMany({'shop': shop})
-		await SavedLong.deleteMany({'shop': shop})
-		await Grand.deleteMany({'shop': shop})
-		await Customers.deleteMany({'shop': shop})
-		const session = await ActiveShop.find({'shop': shop})
-		if(session.length !== 0){
-			await ActiveShop.deleteMany({'shop': shop})
+		if(shop === "toally.myshopify.com"){
+			await Shop.deleteOne({'shop': shop})
+			await Long.deleteMany({'shop': shop})
+			await SavedLong.deleteMany({'shop': shop})
+			await Grand.deleteMany({'shop': shop})
+			await Customers.deleteMany({'shop': shop})
+			const session = await ActiveShop.find({'shop': shop})
+			if(session.length !== 0){
+				await ActiveShop.deleteMany({'shop': shop})
+			}
+			console.log(`${shop} has been obliterated.`)
+			//console.log(webhookRequestBody)
 		}
-		console.log(`${shop} has been obliterated.`)
-		//console.log(webhookRequestBody)
 	} catch(err: any){
 		console.log(err)
 	}

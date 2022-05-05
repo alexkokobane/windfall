@@ -415,7 +415,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					"variables": {
 						"name": "Windfall Appetizer Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
-						"test": true,
+						"test": false,
 						"trialDays": 14,
 						"lineItems": [
 							{
@@ -473,7 +473,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					"variables": {
 						"name": "Windfall Main Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
-						"test": true,
+						"test": false,
 						"trialDays": 14,
 						"lineItems": [
 							{
