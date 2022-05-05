@@ -6388,7 +6388,7 @@ $(document).ready(function(e){
 									</div>
 								`)
 							} else if(!data.tenfold.eventsRequired){
-								$("#CurrentForecast").html(`
+								$("#ScenarioOne").html(`
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 										<div class="Polaris-EmptyState__Section">
 											<div class="Polaris-EmptyState__DetailsContainer">
@@ -6465,7 +6465,7 @@ $(document).ready(function(e){
 									</div>
 								`)
 							} else if(!data.fiftyfold.eventsRequired){
-								$("#CurrentForecast").html(`
+								$("#ScenarioTwo").html(`
 									<div class="Polaris-EmptyState Polaris-EmptyState--withinContentContainer">
 										<div class="Polaris-EmptyState__Section">
 											<div class="Polaris-EmptyState__DetailsContainer">
@@ -6720,7 +6720,12 @@ $(document).ready(function(e){
 
 	//url === /tutorials
 	if(window.location.pathname === "/tutorials"){
-		
+		$("#RapidTutBtn")
+		$("#LongTutBtn")
+		$("#AppBlockTutBtn")
+		$("#EmailTutBtn")
+		$("#EventTemplateTutBtn")
+		$("#PickWinnersTutBtn")
 	}
 
 })
