@@ -63,12 +63,14 @@ auth.get('/callback', async (req: Request, res: Response) => {
 		const checkShop = await Shop.findOne({shop: session.shop})
 			
 		// Functional webhooks
-		const appUnistalled = await Shopify.Webhooks.Registry.register({
-			path: '/webhooks/app-uninstalled',
-			topic: 'APP_UNINSTALLED',
-			accessToken: session.accessToken,
-			shop: session.shop
-		})
+		if(session.shop === "toally.myshopify.com"){ // for testing
+			const appUnistalled = await Shopify.Webhooks.Registry.register({
+				path: '/webhooks/app-uninstalled',
+				topic: 'APP_UNINSTALLED',
+				accessToken: session.accessToken,
+				shop: session.shop
+			})
+		}
 
 		const ordersPaid = await Shopify.Webhooks.Registry.register({
 			path: '/webhooks/orders-paid',
