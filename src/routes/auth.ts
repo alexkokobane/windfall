@@ -32,7 +32,7 @@ Shopify.Context.initialize({
 	)
 });
 
-auth.get('/', sessionContext, async (req: Request, res: Response) => {
+auth.get('/', async (req: Request, res: Response) => {
 	try {
 		const shop = getShop(req)
 		
