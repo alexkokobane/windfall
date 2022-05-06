@@ -3170,17 +3170,6 @@ $(document).ready(function(e){
 													<p>Get started with creating your first giveaway rightaway.</p>
 												</div>
 											</div>
-											<div class="Polaris-EmptyState__Actions">
-												<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-													<div class="Polaris-Stack__Item">
-														<button class="Polaris-Button Polaris-Button--primary" type="button">
-															<span class="Polaris-Button__Content">
-																<span class="Polaris-Button__Text">Create</span>
-															</span>
-														</button>
-													</div>
-												</div>
-											</div>
 										</div>
 									</div>
 									<div class="Polaris-EmptyState__ImageContainer">
@@ -3302,17 +3291,6 @@ $(document).ready(function(e){
 													<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
 													<div class="Polaris-EmptyState__Content">
 														<p>Get started with creating your first giveaway rightaway.</p>
-													</div>
-												</div>
-												<div class="Polaris-EmptyState__Actions">
-													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-														<div class="Polaris-Stack__Item">
-															<button class="Polaris-Button Polaris-Button--primary" type="button">
-																<span class="Polaris-Button__Content">
-																	<span class="Polaris-Button__Text">Create</span>
-																</span>
-															</button>
-														</div>
 													</div>
 												</div>
 											</div>
@@ -3439,17 +3417,6 @@ $(document).ready(function(e){
 														<p>Get started with creating your first giveaway rightaway.</p>
 													</div>
 												</div>
-												<div class="Polaris-EmptyState__Actions">
-													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-														<div class="Polaris-Stack__Item">
-															<button class="Polaris-Button Polaris-Button--primary" type="button">
-																<span class="Polaris-Button__Content">
-																	<span class="Polaris-Button__Text">Create</span>
-																</span>
-															</button>
-														</div>
-													</div>
-												</div>
 											</div>
 										</div>
 										<div class="Polaris-EmptyState__ImageContainer">
@@ -3573,17 +3540,6 @@ $(document).ready(function(e){
 													<p class="Polaris-DisplayText Polaris-DisplayText--sizeSmall">Create a new giveaway </p>
 													<div class="Polaris-EmptyState__Content">
 														<p>Get started with creating your first giveaway rightaway.</p>
-													</div>
-												</div>
-												<div class="Polaris-EmptyState__Actions">
-													<div class="Polaris-Stack Polaris-Stack--spacingTight Polaris-Stack--distributionCenter Polaris-Stack--alignmentCenter">
-														<div class="Polaris-Stack__Item">
-															<button class="Polaris-Button Polaris-Button--primary" type="button">
-																<span class="Polaris-Button__Content">
-																	<span class="Polaris-Button__Text">Create</span>
-																</span>
-															</button>
-														</div>
 													</div>
 												</div>
 											</div>
