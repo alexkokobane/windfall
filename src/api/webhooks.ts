@@ -22,6 +22,15 @@ export const handleAppUninstall = async (topic: string, shop: string, webhookReq
 			console.log(`${shop} has been obliterated.`)
 			//console.log(webhookRequestBody)
 		}
+		const removeBilling = await Shop.updateOne(
+			{'shop': shop},
+			{
+				'$unset': {
+					'pricePlan': 1,
+					'chargeDetails': 1
+				}
+			}
+		)
 	} catch(err: any){
 		console.log(err)
 	}
