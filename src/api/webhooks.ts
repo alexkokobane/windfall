@@ -31,6 +31,10 @@ export const handleAppUninstall = async (topic: string, shop: string, webhookReq
 				}
 			}
 		)
+		const session = await ActiveShop.find({'shop': shop})
+		if(session.length !== 0){
+			await ActiveShop.deleteMany({'shop': shop})
+		}
 	} catch(err: any){
 		console.log(err)
 	}
