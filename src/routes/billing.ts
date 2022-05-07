@@ -17,6 +17,14 @@ import { divide, renderFor } from '../utils/render-divider'
 import getShop from '../utils/get-shop'
 import { generateDiscountCode, newSubs } from '../utils/functions'
 
+const devStores = [
+	"toally.myshopify.com",
+	"shoesfordads.myshopify.com",
+	"windfall-demo.myshopify.com",
+	"candy-high.myshopify.com",
+	"lalas-candles.myshopify.com"
+]
+
 const billing = express.Router()
 
 billing.get('/', checkAuth, async (req, res) => {
@@ -336,6 +344,8 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 		const checkShop = await Shop.findOne({shop: session.shop})
+
+		let test: boolean = false // makes sure billing happens out of test mode
 		
 		console.log(plan)
 		if(plan === "Freebie"){
@@ -398,6 +408,10 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		}
 
 		if(plan === "Appetizer"){
+			//console.log(devStores.includes(session.shop))
+			if(devStores.includes(session.shop)){
+				test = true
+			}
 			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
@@ -415,7 +429,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 					"variables": {
 						"name": "Windfall Appetizer Recurring Plan",
 						"returnUrl": "https://"+process.env.HOST+"/billing/redirect",
-						"test": false,
+						"test": test,
 						"trialDays": 14,
 						"lineItems": [
 							{
@@ -456,6 +470,9 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		}
 
 		if(plan === "Main"){
+			if(devStores.includes(session.shop)){
+				test = true
+			}
 			const selected: any =  await client.query({
 				data: {
 					"query": `mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean, $trialDays: Int! ){
