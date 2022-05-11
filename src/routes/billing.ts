@@ -345,7 +345,7 @@ billing.get('/plans/subscribe', checkAuth, async (req, res) => {
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 		const checkShop = await Shop.findOne({shop: session.shop})
 
-		let test: boolean | null = null // makes sure billing happens out of test mode
+		let test: boolean = false // makes sure billing happens out of test mode
 		
 		console.log(plan)
 		if(plan === "Freebie"){
