@@ -18,7 +18,7 @@ const newSubs = (plan: string): any[] => {
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
-				"maxValue": 350,
+				"maxValue": 150,
 				"plan": "Freebie"
 			})
 		}
@@ -29,7 +29,7 @@ const newSubs = (plan: string): any[] => {
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
-				"maxValue": 10000,
+				"maxValue": 5000,
 				"plan": "Appetizer"
 			})
 		}	
@@ -41,7 +41,7 @@ const newSubs = (plan: string): any[] => {
 			priorSix.push({
 				"month": new Date(dateNow.setMonth(month)).toISOString().substring(0, 7),
 				"value": 0,
-				"maxValue": 100000,
+				"maxValue": 20000,
 				"plan": "Main"
 			})
 		}
