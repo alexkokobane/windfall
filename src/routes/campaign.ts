@@ -178,6 +178,7 @@ campaign.post('/long/new', checkApiAuth, forCommonApi, quotaApi, async (req, res
 				shop: session.shop,
 				id: giveawayId,
 				name: data.name,
+				description: data.description,
 				eventType: 'Long',
 				winnersChosen: false,
 				winnersGifted: false,

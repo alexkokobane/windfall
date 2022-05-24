@@ -2360,6 +2360,7 @@ $(document).ready(function(e){
 			e.preventDefault()
 			console.log(qualify)
 			let name = $("#GiveawayNameInput").val()
+			let description = $("#EventDescriptionInput").val()
 			let startDate = $("#StartDate").val()
 			let startTime = $("#StartTime").val()
 			let endDate = $("#EndDate").val()
@@ -2371,7 +2372,7 @@ $(document).ready(function(e){
 			if(isNaN(parseInt(ofWinners)) === true){
 				return alert("The number of winners has to be a number")
 			}
-			if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === ""){
+			if(name === "" || startDate === "" || startTime === "" || endTime === "" || endDate === "" || ofWinners === "" || distrubution === "" || description === ""){
 				return alert("Please fill all fields")
 			}
 			if(qualify.products === "select" && qualify.items.length === 0){
@@ -2401,6 +2402,7 @@ $(document).ready(function(e){
 			const ending = new Date(endDate+"T"+endTime)
 			let form = {
 				"name": name,
+				"description": description,
 				"startDate": starting,
 				"endDate": ending,
 				"ofWinners": ofWinners,
