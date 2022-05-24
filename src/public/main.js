@@ -1485,7 +1485,7 @@ $(document).ready(function(e){
 										<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
 											<span class="Polaris-Choice__Control">
 												<span class="Polaris-Checkbox">
-													<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url}">
+													<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url},${giv.handle}">
 														<span class="Polaris-Checkbox__Backdrop"></span>
 														<span class="Polaris-Checkbox__Icon">
 															<span class="Polaris-Icon">

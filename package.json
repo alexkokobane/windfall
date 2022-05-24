@@ -1,6 +1,6 @@
 {
   "name": "Windfall",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "A Shopify app that automates the process of running giveaways.",
   "main": "dist/index.js",
   "scripts": {

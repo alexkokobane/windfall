@@ -55,6 +55,7 @@ data.get('/products', checkApiAuth, async (req, res) => {
 							node{
 								id,
 								title,
+								handle,
 								featuredImage{
 									altText,
 									url
