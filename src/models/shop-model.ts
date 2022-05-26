@@ -84,6 +84,7 @@ const longEventSchema = new mongoose.Schema({
 	id: Number,
 	name: String,
 	description: String,
+	descriptionHtml: String,
 	templateId: Number,
 	eventType: String,
 	startDate: Date,

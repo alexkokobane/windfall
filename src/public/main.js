@@ -1485,7 +1485,7 @@ $(document).ready(function(e){
 										<label class="Polaris-Choice Polaris-Choice--labelHidden" for="${id}">
 											<span class="Polaris-Choice__Control">
 												<span class="Polaris-Checkbox">
-													<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url},${giv.handle}">
+													<input id="${id}" type="checkbox" class="Polaris-Checkbox__Input ProductSelectionModalItem" aria-invalid="false" role="checkbox" aria-checked="false" value="${giv.id},${giv.title},${giv.featuredImage.url},${giv.featuredImage.altText},${giv.featuredImage.id},${giv.handle}">
 														<span class="Polaris-Checkbox__Backdrop"></span>
 														<span class="Polaris-Checkbox__Icon">
 															<span class="Polaris-Icon">
@@ -2355,12 +2355,13 @@ $(document).ready(function(e){
 			}
 		})
 
-		let qualify = chooseProducts()
+		let qualify = chooseProducts() //very important
 		$("#ContinueButton").click(function(e){
 			e.preventDefault()
 			console.log(qualify)
 			let name = $("#GiveawayNameInput").val()
-			let description = $("#EventDescriptionInput").val()
+			let description = $("#EventDescriptionInput").text()
+			let descriptionHtml = $("#EventDescriptionInput").html()
 			let startDate = $("#StartDate").val()
 			let startTime = $("#StartTime").val()
 			let endDate = $("#EndDate").val()
@@ -2403,6 +2404,7 @@ $(document).ready(function(e){
 			let form = {
 				"name": name,
 				"description": description,
+				"descriptionHtml": descriptionHtml,
 				"startDate": starting,
 				"endDate": ending,
 				"ofWinners": ofWinners,

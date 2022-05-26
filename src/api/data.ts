@@ -58,7 +58,8 @@ data.get('/products', checkApiAuth, async (req, res) => {
 								handle,
 								featuredImage{
 									altText,
-									url
+									url,
+									id
 								}
 							}
 						}

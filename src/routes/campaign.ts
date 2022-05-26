@@ -179,6 +179,7 @@ campaign.post('/long/new', checkApiAuth, forCommonApi, quotaApi, async (req, res
 				id: giveawayId,
 				name: data.name,
 				description: data.description,
+				descriptionHtml: data.descriptionHtml,
 				eventType: 'Long',
 				winnersChosen: false,
 				winnersGifted: false,
@@ -2573,6 +2574,101 @@ campaign.post('/store', checkApiAuth, forCommonApi, async (req, res) => {
 		).save()
 		res.send(`/campaign/template/${giveawayId}`)
 	} catch(err: any) {
+		console.log(err)
+	}
+})
+
+campaign.get('/create-collection', checkAuth, async (req, res) => {
+	try{
+		let decoyId: string
+		if (req.query.id && typeof req.query.id === 'string') {
+			decoyId = req.query.id
+		} else {
+			return undefined
+		}
+		const giveawayId: number = parseInt(decoyId)
+		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const long = await Long.findOne({
+			'shop': session.shop,
+			'id': giveawayId
+		})
+		if(!long){
+			res.redirect('/')
+		}
+		const handle = long.name.replace(/[^a-zA-Z ]/g, "").replace(/\s+/g, '-').toLowerCase()
+		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
+		const collectionCreate = await client.query({
+			data: {
+				"query": `mutation collectionCreate($input: CollectionInput!) {
+					collectionCreate(input: $input) {
+						collection {
+							# Collection fields
+						}
+						userErrors {
+							field
+							message
+						}
+					}
+				}`,
+				"variables": {
+					"input": {
+						"descriptionHtml": long.descriptionHtml,
+						"handle": handle,
+						"image": {
+							"altText": long.qualifyingItems[0][3],
+							"id": long.qualifyingItems[0][4],
+							"src": long.qualifyingItems[0][2]
+						},
+						"metafields": [
+							{
+								"description": "",
+								"id": "",
+								"key": "",
+								"namespace": "",
+								"type": "",
+								"value": ""
+							}
+						],
+						"privateMetafields": [
+							{
+								"key": "",
+								"namespace": "",
+								"owner": "",
+								"valueInput": {
+									"value": "",
+									"valueType": ""
+								}
+							}
+						],
+						"products": long.qualifyingId,
+						"publications": [
+							{
+								"channelHandle": "",
+								"channelId": "",
+								"publicationId": ""
+							}
+						],
+						"redirectNewHandle": true,
+						"ruleSet": {
+							"appliedDisjunctively": true,
+							"rules": {
+								"column": "",
+								"condition": "",
+								"relation": ""
+							}
+						},
+						"seo": {
+							"description": "",
+							"title": ""
+						},
+						"sortOrder": "",
+						"templateSuffix": "",
+						"title": long.name
+					}
+				}
+			}
+		})
+	} catch (err: any){
 		console.log(err)
 	}
 })
