@@ -2590,11 +2590,15 @@ campaign.get('/create-collection', checkAuth, async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
 		const long = await Long.findOne({
 			'shop': session.shop,
-			'id': giveawayId
+			'id': giveawayId,
+			'qualifying': 'select'
 		})
 		if(!long){
-			res.redirect('/')
+			return res.redirect('/')
 		}
+		const productIds = long.qualifyingItems.map((item: any) => {
+			return item[0]
+		})
 		const handle = long.name.replace(/[^a-zA-Z ]/g, "").replace(/\s+/g, '-').toLowerCase()
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
 		const collectionCreate = await client.query({
@@ -2602,7 +2606,12 @@ campaign.get('/create-collection', checkAuth, async (req, res) => {
 				"query": `mutation collectionCreate($input: CollectionInput!) {
 					collectionCreate(input: $input) {
 						collection {
-							# Collection fields
+							id
+							handle
+							image {
+								altText
+								url
+							}
 						}
 						userErrors {
 							field
@@ -2621,55 +2630,37 @@ campaign.get('/create-collection', checkAuth, async (req, res) => {
 						},
 						"metafields": [
 							{
-								"description": "",
-								"id": "",
-								"key": "",
-								"namespace": "",
-								"type": "",
-								"value": ""
+								"description": "Products for a giveaway titled "+long.description,
+								"key": "giveaway",
+								"namespace": "marketing",
+								"type": "single_line_text_field",
+								"value": long.name
 							}
 						],
 						"privateMetafields": [
 							{
-								"key": "",
-								"namespace": "",
-								"owner": "",
+								"key": "giveaway",
+								"namespace": "marketing",
 								"valueInput": {
-									"value": "",
-									"valueType": ""
+									"value": long.name,
+									"valueType": "STRING"
 								}
 							}
 						],
-						"products": long.qualifyingId,
-						"publications": [
-							{
-								"channelHandle": "",
-								"channelId": "",
-								"publicationId": ""
-							}
-						],
-						"redirectNewHandle": true,
-						"ruleSet": {
-							"appliedDisjunctively": true,
-							"rules": {
-								"column": "",
-								"condition": "",
-								"relation": ""
-							}
-						},
+						"products": productIds,
 						"seo": {
-							"description": "",
-							"title": ""
+							"description": long.description,
+							"title": long.name
 						},
-						"sortOrder": "",
-						"templateSuffix": "",
 						"title": long.name
 					}
 				}
 			}
 		})
+		return res.json(collectionCreate.body)
 	} catch (err: any){
 		console.log(err)
+		res.json({"data": err})
 	}
 })
 
