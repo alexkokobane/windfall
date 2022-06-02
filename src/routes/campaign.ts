@@ -2601,63 +2601,78 @@ campaign.get('/create-collection', checkAuth, async (req, res) => {
 		})
 		const handle = long.name.replace(/[^a-zA-Z ]/g, "").replace(/\s+/g, '-').toLowerCase()
 		const client = new Shopify.Clients.Graphql(session.shop, session.accessToken)
-		const collectionCreate = await client.query({
-			data: {
-				"query": `mutation collectionCreate($input: CollectionInput!) {
-					collectionCreate(input: $input) {
-						collection {
-							id
-							handle
-							image {
-								altText
-								url
+		// const collectionCreate = await client.query({
+		// 	data: {
+		// 		"query": `mutation collectionCreate($input: CollectionInput!) {
+		// 			collectionCreate(input: $input) {
+		// 				collection {
+		// 					id
+		// 					handle
+		// 					image {
+		// 						altText
+		// 						url
+		// 					}
+		// 				}
+		// 				userErrors {
+		// 					field
+		// 					message
+		// 				}
+		// 			}
+		// 		}`,
+		// 		"variables": {
+		// 			"input": {
+		// 				"descriptionHtml": long.descriptionHtml,
+		// 				"handle": handle,
+		// 				"image": {
+		// 					"altText": long.qualifyingItems[0][3],
+		// 					"id": long.qualifyingItems[0][4],
+		// 					"src": long.qualifyingItems[0][2]
+		// 				},
+		// 				"metafields": [
+		// 					{
+		// 						"description": "Products for a giveaway titled "+long.description,
+		// 						"key": "giveaway",
+		// 						"namespace": "marketing",
+		// 						"type": "single_line_text_field",
+		// 						"value": long.name
+		// 					}
+		// 				],
+		// 				"privateMetafields": [
+		// 					{
+		// 						"key": "giveaway",
+		// 						"namespace": "marketing",
+		// 						"valueInput": {
+		// 							"value": long.name,
+		// 							"valueType": "STRING"
+		// 						}
+		// 					}
+		// 				],
+		// 				"products": productIds,
+		// 				"seo": {
+		// 					"description": long.description,
+		// 					"title": long.name
+		// 				},
+		// 				"title": long.name
+		// 			}
+		// 		}
+		// 	}
+		// })
+		const getPublications = await client.query({
+			data: `
+				{
+					publications(first:10){
+						edges {
+							node {
+								id
+								name
 							}
 						}
-						userErrors {
-							field
-							message
-						}
-					}
-				}`,
-				"variables": {
-					"input": {
-						"descriptionHtml": long.descriptionHtml,
-						"handle": handle,
-						"image": {
-							"altText": long.qualifyingItems[0][3],
-							"id": long.qualifyingItems[0][4],
-							"src": long.qualifyingItems[0][2]
-						},
-						"metafields": [
-							{
-								"description": "Products for a giveaway titled "+long.description,
-								"key": "giveaway",
-								"namespace": "marketing",
-								"type": "single_line_text_field",
-								"value": long.name
-							}
-						],
-						"privateMetafields": [
-							{
-								"key": "giveaway",
-								"namespace": "marketing",
-								"valueInput": {
-									"value": long.name,
-									"valueType": "STRING"
-								}
-							}
-						],
-						"products": productIds,
-						"seo": {
-							"description": long.description,
-							"title": long.name
-						},
-						"title": long.name
 					}
 				}
-			}
+			`
 		})
-		return res.json(collectionCreate.body)
+		res.json(getPublications.body)
+		// return res.json(collectionCreate.body)
 	} catch (err: any){
 		console.log(err)
 		res.json({"data": err})
