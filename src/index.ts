@@ -66,7 +66,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((req: Request, res: Response, next: NextFunction) =>{
 	res.setHeader(
 		"Content-Security-Policy", 
-		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline' https://client.crisp.chat; script-src 'self' https://cdn.jsdelivr.net https://client.crisp.chat; img-src 'self' data: https://client.crisp.chat https://image.crisp.chat https://storage.crisp.chat https://cdn.shopify.com; connect-src 'self' wss://client.relay.crisp.chat https://storage.crisp.chat https://client.crisp.chat; font-src 'self' https://client.crisp.chat; media-src https://client.crisp.chat; frame-src 'self' https://game.crisp.chat;"
+		"default-src 'self' makamuta.com *.makamuta.com *.ngrok.io; style-src 'self' 'unsafe-inline' https://client.crisp.chat; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://client.crisp.chat; img-src 'self' data: https://client.crisp.chat https://image.crisp.chat https://storage.crisp.chat https://cdn.shopify.com; connect-src 'self' wss://client.relay.crisp.chat https://storage.crisp.chat https://client.crisp.chat; font-src 'self' https://client.crisp.chat; media-src https://client.crisp.chat; frame-src 'self' https://game.crisp.chat;"
 		)
 	next()
 })

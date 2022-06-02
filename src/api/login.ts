@@ -16,7 +16,7 @@ login.post('/', loggedInCtx, async (req, res) => {
 		const store = await Shop.findOne({shop: url})
 		const plans = ["Freebie", "Appetizer", "Main"]
 		if(store){
-			plans.includes(store.pricePlan) ? res.status(200).send("/auth?shop="+store.shop) : res.status(401).send("Subscription not found! Reinstall Windfall from the Shopify App Store to continue using it.")
+			return plans.includes(store.pricePlan) ? res.status(200).send("/auth?shop="+store.shop) : res.status(401).send("Subscription not found! Reinstall Windfall from the Shopify App Store to continue using it.")
 		}
 
 		const holder: string[] = url.split(".")
