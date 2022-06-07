@@ -15,10 +15,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="Polaris-Page__Content">
-		<div class="Polaris-Layout"><a id="SkipToContentTarget" tabindex="-1"></a>
-			<div class="Polaris-Layout__Section Polaris-Layout__Section--primary">
-				<form x-data="{ continuous: true }">
+	<form>
+		<div class="Polaris-Page__Content">
+			<div id="NewEvent" class="Polaris-Layout">
+				<a id="SkipToContentTarget" tabindex="-1"></a>
+				<div class="Polaris-Layout__Section Polaris-Layout__Section--primary">				
 					<div class="Polaris-Card">
 						<div class="Polaris-Card__Header">
 							<h2 class="Polaris-Heading">Event name</h2>
@@ -60,10 +61,10 @@
 						<div class="Polaris-Card__Section">
 							<div class="Polaris-ButtonGroup">
 								<div class="Polaris-ButtonGroup__Item">
-									<button @click="continuous=true" :class="continuous ? 'Polaris-Button Polaris-Button--pressed' : 'Polaris-Button'" class="Polaris-Button Polaris-Button--pressed" aria-label="All products" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Continuous giveaway</span></span></button>
+									<button class="Polaris-Button Polaris-Button--pressed" aria-label="All products" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Continuous giveaway</span></span></button>
 								</div>
 								<div class="Polaris-ButtonGroup__Item">
-									<button @click="continuous=false" :class="!continuous ? 'Polaris-Button Polaris-Button--pressed' : 'Polaris-Button'" class="Polaris-Button" aria-label="Choose products" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Recurring giveaway</span></span></button>
+									<button class="Polaris-Button" aria-label="Choose products" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Recurring giveaway</span></span></button>
 								</div>
 							</div>
 						</div>
@@ -208,21 +209,24 @@
 						</div>
 					</div>		
 					<%- include('../partials/event-goals')%>			
-				</form>
-			</div>
-			<div class="Polaris-Layout__Section Polaris-Layout__Section--fullWidth">
-				<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
-					<div class="Polaris-Stack__Item">
-						<button class="Polaris-Button DiscardAny" aria-label="discard" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Discard</span></span></button>
-					</div>
-					<div class="Polaris-Stack__Item">
-						<button id="ContinueButton" class="Polaris-Button Polaris-Button--primary" aria-label="Save giveaway" type="button"><span class="Polaris-Button__Content"><span id="ContinueButtonText" class="Polaris-Button__Text">Continue</span></span></button>
+				</div>
+				<div class="Polaris-Layout__Section Polaris-Layout__Section--fullWidth">
+					<div class="Polaris-Stack Polaris-Stack--distributionEqualSpacing">
+						<div class="Polaris-Stack__Item">
+							<button class="Polaris-Button DiscardAny" aria-label="discard" type="button"><span class="Polaris-Button__Content"><span class="Polaris-Button__Text">Discard</span></span></button>
+						</div>
+						<div class="Polaris-Stack__Item">
+							<button id="ContinueButton" class="Polaris-Button Polaris-Button--primary" aria-label="Save giveaway" type="button"><span class="Polaris-Button__Content"><span id="ContinueButtonText" class="Polaris-Button__Text">Continue</span></span></button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</form>
 	<div>
 		<%- include('../partials/products-modal')%>
 	</div>
 </div>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script type="text/javascript" src="/events.js"></script>
