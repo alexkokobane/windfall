@@ -2,9 +2,68 @@
 
 const e = React.createElement;
 
-const {useState, useRef} = React
+const {useState, useRef, useEffect} = React
 
-// important function
+const eyedee = new Date(item.date).toISOString().split("T")[0]
+						if(data.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(data.includes(item.date)){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(chosenDays.includes(item.date)){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayChosen" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else if(new Date(item.date) < new Date(Date.now())){
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						} else {
+							one = one.concat(`
+								<td class="Polaris-DatePicker__DayCell">
+									<button id="${eyedee}" type="button" tabindex="-1" class="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+										${new Date(item.date).getDate()}
+									</button>
+								</td>
+							`)
+						}
+
+// important functions
 function toISOLocal(d) {
 	let z  = n =>  ('0' + n).slice(-2);
 	let zz = n => ('00' + n).slice(-3);
@@ -70,15 +129,137 @@ const LoadingMonth = () => {
 		</tbody>
 	)
 }
+
+const DaySwitcher = ({item, events, selected, onSelect}) => {
+  	let component;
+
+  	const eyedee = new Date(item.date).toISOString().split("T")[0]
+	if(events.includes(item.date) && new Date(item.date) < new Date(Date.now())){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button type="button" tabindex="-1" className="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--disabled calendarDayInUse" aria-label="Disabled date, ${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else if(events.includes(item.date)){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button id="${eyedee}" onClick={onSelect} type="button" tabindex="-1" className="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayInUse" aria-label="${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else if(selected.includes(item.date) && item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button id="${eyedee}" onClick={onSelect} type="button" tabindex="-1" className={selected.includes(item.date) ? "Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today calendarDayChosen" : "Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today"} aria-label="${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else if(selected.includes(item.date)){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button id="${eyedee}" onClick={onSelect} type="button" tabindex="-1" className={selected.includes(item.date) ? "Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight calendarDayChosen" : "Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight"} aria-label="${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else if(item.date === new Date(Date.now()).toLocaleDateString('en-ZA')){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button id="${eyedee}" onClick={onSelect} type="button" tabindex="-1" className="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today" aria-label="${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else if(new Date(item.date) < new Date(Date.now())){
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button type="button" tabindex="-1" className="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight Polaris-DatePicker__Day--today Polaris-DatePicker__Day--disabled" aria-label="Disabled date, ${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	} else {
+		component = (
+			<td className="Polaris-DatePicker__DayCell">
+				<button id="${eyedee}" onClick={onSelect} type="button" tabindex="-1" className="Polaris-DatePicker__Day Polaris-DatePicker__Day--hoverRight" aria-label="${item.date}">
+					{new Date(item.date).getDate()}
+				</button>
+			</td>
+		)
+	}
+  	return component
+}
+
 const CalendarMutable = ({picked}) => {
 
 	const [count, setCount] = useState(new Date(Date.now()).getMonth())
+	const [loading, setLoading] = useState(true)
+	const [events, setEvents] = useState([])
+	const [selected, setSelected] = useState([])
+
+	const onSelect = () => {
+
+	}
+
+	useEffect(async () => {
+		try{
+			const res = await fetch('/data/all-event-dates')
+			const data = res.json()
+			data.forEach((item, index, arr) => {
+				return arr[index] = new Date(item).toLocaleDateString('en-ZA')
+			})
+			setEvents(data)
+			setLoading(false)
+		} catch(err){
+			setLoading(false)
+		}
+	}, [])
 
 	const nextMonth = () => setCount++
 	const prevMonth = () => setCount--
 	const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December']
 	const dater = new Date(toISOLocal(new Date(Date.now())).substring(0,8)+"01")
 	const anyMonth = new Date(dater.setMonth(count))
+
+	function calendar(){
+		let daySoFar = 0
+		let firstDay = new Date(Number(anyMonth))
+		let aMonth = []
+		for(let i = 2; anyMonth.getMonth() === firstDay.getMonth(); i++){
+	
+			aMonth.push({
+				"day": firstDay.getDay(),
+				"date": firstDay.toLocaleDateString('en-ZA')
+			})
+			daySoFar++
+			firstDay = new Date(Number(anyMonth)+(1000*60*60*24*daySoFar))
+		}
+		
+		return aMonth
+	}
+
+	let fullMonth = calendar()
+			
+	function allocateWeeks() {
+		let fromWeekend = 7 - fullMonth[0].day
+		let week1 = fullMonth.slice(0,fromWeekend)
+		let week2 = fullMonth.slice(fromWeekend, fromWeekend+7)
+		let week3 = fullMonth.slice(fromWeekend+7, fromWeekend+14)
+		let week4 = fullMonth.slice(fromWeekend+14, fromWeekend+21)
+		let week5 = fullMonth.slice(fromWeekend+21, fromWeekend+28)
+		let week6 = fullMonth.slice(fromWeekend+28, fromWeekend+35)
+				
+		return[week1, week2, week3, week4, week5, week6]
+	}
+
+	let rowEmpty = [], row1 = [], row2 = [], row3 = [], row4 = [], row5 = [], row6 = []
+	for(let i = 0; weeks[0].length + i !== 7; i++){
+		rowEmpty.push(<td key={i} class="Polaris-DatePicker__EmptyDayCell"></td>)
+	}
 
 	return (
 		<div class="Polaris-DatePicker">
