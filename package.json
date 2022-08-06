@@ -4,6 +4,8 @@
   "description": "A Shopify app that automates the process of running giveaways.",
   "main": "dist/index.js",
   "scripts": {
+    "devplus": "npx ts-node src/index.ts babel --watch src/files/react --out-dir src/public --presets react-app/prod",
+    "dev": "npx babel src/files/react --out-dir src/public --presets react-app/prod && nodemon src/index.ts",
     "build": "npx tsc",
     "postbuild": "npx ts-node copy",
     "prestart": "npm run build",
@@ -20,6 +22,8 @@
   "dependencies": {
     "@shopify/shopify-api": "^2.1.0",
     "axios": "^0.25.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
     "body-parser": "^1.19.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
