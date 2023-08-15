@@ -4,7 +4,7 @@ import { shopifyApi, ApiVersion, AuthQuery, DeliveryMethod } from '@shopify/shop
 import cors from 'cors'
 import getShop from '../utils/get-shop'
 import { shopify } from '../index'
-import { storeCallback, loadCallback, deleteCallback } from '../utils/custom-session'
+import { storeSession, loadSession, deleteSession } from '../utils/custom-session'
 import { 
 	handleOrdersPaid,
 	handleShopUpdate,
@@ -39,6 +39,9 @@ auth.get('/callback', async (req: Request, res: Response) => {
 			rawRequest: req,
 			rawResponse: res,
 		});
+
+		const saveSession = await storeSession(session)
+		if(!saveSession){ throw new Error('Could not store session') }
 		
 		const shop = getShop(req)
 		const checkShop = await Shop.findOne({shop: session.shop})
@@ -105,16 +108,14 @@ auth.get('/callback', async (req: Request, res: Response) => {
 				'metaDescription': shopData.description
 			})
 			storeShop.save()
-			//console.log("check point 1")
 			return res.redirect("/billing/plans")
 		}
 		
 		if(checkShop.pricePlan === "Main" || checkShop.pricePlan === "Appetizer" || checkShop.pricePlan === "Freebie"){
-			//console.log("check point 2")
 			return res.redirect(`/`)
-		}
-
-		return res.redirect("/billing/plans")		
+		} else {
+			return res.redirect("/billing/plans")
+		}				
 	} catch (error) {
 		//console.error(error);
 		//console.log("THE ERROR IS ON auth/callback")

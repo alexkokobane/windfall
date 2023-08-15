@@ -1,4 +1,4 @@
-import { SessionInterface } from '@shopify/shopify-api'
+import { Session } from '@shopify/shopify-api'
 import ActiveShop from '../models/session-model'
 
 interface StringSession {
@@ -6,7 +6,7 @@ interface StringSession {
 	session: string
 }
 
-export const storeCallback = async (session: SessionInterface): Promise<boolean> => {
+export const storeSession = async (session: Session): Promise<boolean> => {
 	try {
 		const check =  await ActiveShop.findOne({id: session.id})
 		if(check !== null ) {
@@ -28,11 +28,11 @@ export const storeCallback = async (session: SessionInterface): Promise<boolean>
 	}
 }
 
-export const loadCallback = async (id: string): Promise<SessionInterface | undefined> => {
+export const loadSession = async (id: string): Promise<Session | undefined> => {
 	try {
 		const load: StringSession = await ActiveShop.findOne({id: id})
 		if(load) {
-			const session: SessionInterface = JSON.parse(load.session)
+			const session: Session = JSON.parse(load.session)
 			return session
 		} else {
 			return undefined
@@ -43,7 +43,7 @@ export const loadCallback = async (id: string): Promise<SessionInterface | undef
 	}
 }
 
-export const deleteCallback = async (id: string): Promise<boolean> => {
+export const deleteSession = async (id: string): Promise<boolean> => {
 	try {
 		await ActiveShop.findOneAndDelete({id: id})
 		return true
