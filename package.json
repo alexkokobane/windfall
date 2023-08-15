@@ -4,6 +4,7 @@
   "description": "A Shopify app that automates the process of running giveaways.",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "npx ts-node src/index.ts",
     "build": "npx tsc",
     "postbuild": "npx ts-node copy",
     "prestart": "npm run build",

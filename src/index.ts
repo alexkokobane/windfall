@@ -4,10 +4,24 @@ import morgan from 'morgan'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import expressLayouts from 'express-ejs-layouts'
-import Shopify from '@shopify/shopify-api'
+import { shopifyApi, ApiVersion } from '@shopify/shopify-api'
 require('dotenv').config()
 
-const { DB_URL, API_SECRET_KEY } = process.env
+const { API_KEY, API_SECRET_KEY, SCOPES, HOST, SHOP, DB_URL } = process.env
+const shopify = shopifyApi({
+	apiKey: API_KEY,
+	apiSecretKey: API_SECRET_KEY,
+	scopes: [SCOPES],
+	hostName: HOST,
+	isEmbeddedApp: false,
+	apiVersion: ApiVersion.July23,
+	
+	// sessionStorage: new Shopify.Session.CustomSessionStorage(
+	// 	storeCallback,
+	// 	loadCallback,
+	// 	deleteCallback
+	// )
+});
 
 import checkAuth from './utils/middlewares/check-auth'
 import { setActiveCampaign } from './utils/campaign-worker'
@@ -110,6 +124,9 @@ app.use(/^(?!.*_ah).*$/, checkAuth, async (req: Request, res: Response, next: Ne
 		]
 		divide(req, res, render, true)
 })
+
+export { shopify }
+
 // Run the app
 
 const port = process.env.PORT || 4000

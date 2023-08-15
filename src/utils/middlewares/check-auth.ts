@@ -5,7 +5,7 @@ import getShop from '../get-shop'
 
 const checkAuth = async (req: Request, res: Response, next:NextFunction) => {
 	try {
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const session = await Shopify.utils.loadCurrentSession(req, res, true)
 		const shop = getShop(req)
 		if (!session && shop === 'undefined') {
 			return res.status(401).render('pages/login', {layout: 'layouts/minimal'})
@@ -25,7 +25,7 @@ const checkAuth = async (req: Request, res: Response, next:NextFunction) => {
 
 export const checkApiAuth = async (req: Request, res: Response, next:NextFunction) => {
 	try {
-		const session = await Shopify.Utils.loadCurrentSession(req, res, true)
+		const session = await Shopify.utils.loadCurrentSession(req, res, true)
 		if (!session) {
 			return res.status(401).send("Unauthorized")
 		}
